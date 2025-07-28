@@ -1,0 +1,24 @@
+<!--pages/user/user.wxml-->
+<t-navbar t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
+    <view class="title" slot="left">我</view>
+</t-navbar>
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height: {{scrollHeightPx-56}}px;">
+    <view class="pt-96rpx mx-32rpx" wx:if="{{jwt===EMPTY_JWT}}">
+        <t-result theme="default" title="尚未登录"/>
+        <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
+    </view>
+    <view class="mt-32rpx">
+        <t-cell-group theme="card">
+            <t-cell align="top" bordered="{{false}}" description="团体号占位符" hover title="名称占位符"/>
+        </t-cell-group>
+    </view>
+    <view class="mt-32rpx pb-32rpx">
+        <t-cell-group theme="card">
+            <t-cell arrow bordered hover leftIcon="user-setting" title="团体管理"/>
+            <t-cell arrow bind:click="clickSetting" bordered hover leftIcon="setting" title="设置"/>
+            <t-cell arrow bind:click="clickAbout" bordered="{{false}}" hover leftIcon="info-circle" title="关于"/>
+        </t-cell-group>
+    </view>
+</scroll-view>
+

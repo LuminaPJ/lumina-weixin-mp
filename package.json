@@ -1,0 +1,31 @@
+{
+  "name": "lumina",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "author": "lumina",
+  "license": "",
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "json5": "^2.2.3",
+    "jsuri": "^1.3.1",
+    "mobx-miniprogram": "^6.12.3",
+    "mobx-miniprogram-bindings": "^5.1.1",
+    "tdesign-miniprogram": "^1.9.7"
+  },
+  "devDependencies": {
+    "@types/jsuri": "^1.3.35",
+    "license-checker-rseidelsohn": "^4.4.2",
+    "miniprogram-api-typings": "^4.1.0",
+    "shelljs": "^0.10.0",
+    "spdx-license-list": "^6.10.0",
+    "uglify-js": "^3.19.3",
+    "unocss": "^66.3.3"
+  },
+  "main": "index.js",
+  "scripts": {
+    "unocss": "unocss miniprogram/pages/**/*.wxml !miniprogram/pages/**/node_modules/** !miniprogram/pages/**/miniprogram_npm/** -c uno.config.js --watch -o ./miniprogram/unocss.wxss",
+    "unocss:build": "unocss miniprogram/pages/**/*.wxml !miniprogram/pages/**/node_modules/** !miniprogram/pages/**/miniprogram_npm/** -c uno.config.js -o ./miniprogram/unocss.wxss",
+    "build-oss-licenses-dist": "node OSSLicensesBuilder.js"
+  }
+}

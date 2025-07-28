@@ -1,0 +1,19 @@
+<!--index.wxml-->
+<t-navbar t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
+    <view class="title" slot="left">日程</view>
+</t-navbar>
+
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height: {{scrollHeightPx-56}}px;">
+    <view class="pt-96rpx mx-32rpx" wx:if="{{jwt===EMPTY_JWT}}">
+        <t-result theme="default" title="尚未登录"/>
+        <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
+    </view>
+
+</scroll-view>
+
+<t-fab aria-label="新建" bind:click="handleAddTaskClick" icon="add" style="margin-bottom: {{40+safeMarginBottomPx}}px;"
+       using-custom-navbar wx:if="{{jwt!==EMPTY_JWT}}"></t-fab>
+
+<t-action-sheet bind:selected="handleSelected" id="t-action-sheet"/>
+

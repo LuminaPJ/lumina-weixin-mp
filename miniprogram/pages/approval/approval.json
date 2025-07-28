@@ -1,0 +1,13 @@
+{
+  "component": true,
+  "disableScroll": true,
+  "styleIsolation": "apply-shared",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-footer": "tdesign-miniprogram/footer/footer",
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",
+    "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
+    "t-result": "tdesign-miniprogram/result/result"
+  }
+}

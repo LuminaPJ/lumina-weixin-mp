@@ -1,0 +1,17 @@
+{
+  "component": true,
+  "disableScroll": true,
+  "styleIsolation": "apply-shared",
+  "usingComponents": {
+    "t-action-sheet": "tdesign-miniprogram/action-sheet/action-sheet",
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-fab": "tdesign-miniprogram/fab/fab",
+    "t-footer": "tdesign-miniprogram/footer/footer",
+    "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",
+    "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-result": "tdesign-miniprogram/result/result"
+  }
+}

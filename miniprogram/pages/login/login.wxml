@@ -1,0 +1,27 @@
+<!--pages/login/login.wxml-->
+<t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder"/>
+
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;" type="list">
+    <view style="height: 17vh"></view>
+    <view class="mx-32rpx flex justify-center items-center">
+        <image class="h-auto self-center" mode="widthFix"
+               src="{{ theme === 'dark' ? '../../assets/LogoColorWhite.png' : '../../assets/LogoColorBlack.png' }}"
+               style="width: 66%;"/>
+    </view>
+    <view style="height: 17vh"></view>
+    <view class="mx-32rpx">
+        <t-button bind:tap="login" block disabled="{{isLogining}}" loading="{{isLogining}}" size="large"
+                  theme="primary">
+            微信快捷登录
+        </t-button>
+    </view>
+    <view class="mb-32rpx mt-16rpx mx-32rpx">
+        <t-footer text="登录即代表您已阅读并同意用户协议和隐私政策"/>
+    </view>
+    <view style="height: 20vh"></view>
+    <view class="py-16rpx">
+        <t-footer links="{{footerLink}}" text="ICP 备案号：{{icpInfo}}"/>
+    </view>
+    <view style="height: {{safeAreaBottomPx}}px"></view>
+</scroll-view>

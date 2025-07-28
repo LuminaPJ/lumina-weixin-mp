@@ -1,0 +1,20 @@
+<!--pages/luminaSetting/luminaSetting.wxml-->
+<t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
+    <view class="title" slot="left">设置</view>
+</t-navbar>
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height:{{scrollHeightPx-44+safeAreaBottomPx}}px;">
+    <view class="pt-32rpx pb-32rpx">
+        <t-cell-group theme="card">
+            <t-cell bordered="{{false}}" description="开启后，当您的账号在执行高危操作（如退出团体、投出无法撤回的投票）时，需要进行设备端生物认证才可进行下一步操作" leftIcon="user-safety"
+                    title="Soter 生物认证">
+                <t-switch bind: slot="note" value="{{isSoterEnabled}}"/>
+            </t-cell>
+        </t-cell-group>
+    </view>
+    <view class="mx-32rpx pb-32rpx">
+        <t-button bind:tap="logout" block disabled="{{jwt===EMPTY_JWT}}" size="large"
+                  theme="danger">{{jwt === EMPTY_JWT ? '尚未登录' : '退出登录'}}</t-button>
+    </view>
+</scroll-view>
+
