@@ -2,6 +2,7 @@
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil} from "../../utils/LoginStoreUtil";
+import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
 
 const util = require('../../utils/CommonUtil');
 
@@ -10,7 +11,7 @@ interface IData {
     scrollHeightPx: number
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, TrivialInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT
     }, async onLoad() {
@@ -29,11 +30,11 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         wx.navigateTo({
             url: '/pages/about/about'
         })
-    }, clickSetting(){
+    }, clickSetting() {
         wx.navigateTo({
             url: '/pages/luminaSetting/luminaSetting',
         })
-    },login() {
+    }, login() {
         wx.navigateTo({
             url: '/pages/login/login',
         })

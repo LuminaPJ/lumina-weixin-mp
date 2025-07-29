@@ -1,14 +1,14 @@
 import {getWeixinStorageSyncWithDefault, getWeixinStorageWithDefault} from './WeixinStorageUtil';
 import {isNullOrEmptyOrUndefined} from "./CommonUtil";
-
-const env = require("../envInfo");
+import {LUMINA_SERVER_HOST} from "../envInfo";
+import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
 
 export const EMPTY_JWT = 'Empty JSON Web Token'
 
 export const loginStoreUtil = {
-    initLoginStore: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    initLoginStore: async function (that: TrivialInstance) {
         await this.checkLoginStatus(that);
-    }, checkLoginStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    }, checkLoginStatus: async function (that: TrivialInstance) {
         if (!that.getIsLoginStateChecked()) {
             const isCancellationStateFromWeixinStorage: boolean = getWeixinStorageSyncWithDefault<boolean>('isCancellationState', true)
             that.setIsCancellationState(isCancellationStateFromWeixinStorage)
@@ -36,7 +36,7 @@ export const loginStoreUtil = {
     }
 }
 
-export const luminaLogin = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
+export const luminaLogin = async (that: TrivialInstance): Promise<void> => {
     const jwt = await luminaLoginRequestPromise();
     if (!isNullOrEmptyOrUndefined(jwt)) {
         that.setJWT(jwt);
@@ -45,7 +45,7 @@ export const luminaLogin = async (that: WechatMiniprogram.App.TrivialInstance): 
     }
 }
 
-export const luminaLogout = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
+export const luminaLogout = async (that: TrivialInstance): Promise<void> => {
     await wx.setStorage({key: 'JWT', data: EMPTY_JWT, encrypt: true})
     await wx.setStorage({key: 'isCancellationState', data: true})
     that.setJWT(EMPTY_JWT);
@@ -60,9 +60,7 @@ async function weixinLoginPromise(): Promise<string> {
         wx.login({
             success: (res) => {
                 if (res.code) resolve(res.code); else reject(new Error('获取登录 code 失败'));
-            }, fail: (err) => {
-                reject(err);
-            }
+            }, fail: reject
         });
     });
 }
@@ -74,7 +72,7 @@ async function luminaLoginRequestPromise(): Promise<string> {
     const weixinLoginCode = await weixinLoginPromise();
     return new Promise((resolve, reject) => {
         wx.request({
-            url: 'https://' + env.LUMINA_SERVER_HOST + '/weixin/login',
+            url: 'https://' + LUMINA_SERVER_HOST + '/weixin/login',
             method: 'POST',
             data: JSON.stringify({code: weixinLoginCode}),
             success: (res) => {
@@ -85,9 +83,7 @@ async function luminaLoginRequestPromise(): Promise<string> {
                     } else reject(new Error('服务端未返回 JWT'));
                 } else if ('jwt' in res.data) resolve(res.data.jwt); else reject(new Error('服务端未返回 JWT'));
             },
-            fail: (err) => {
-                reject(err);
-            }
+            fail: reject
         })
     })
 }
@@ -98,13 +94,11 @@ async function luminaLoginRequestPromise(): Promise<string> {
 async function validateJwtPromise(jwt: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
         wx.request({
-            url: 'https://' + env.LUMINA_SERVER_HOST + '/weixin/validate', header: {
+            url: 'https://' + LUMINA_SERVER_HOST + '/weixin/validate', header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
                 if (res.statusCode === 200) resolve(true); else resolve(false);
-            }, fail: (err) => {
-                reject(err);
-            }
+            }, fail: reject
         })
     })
 }

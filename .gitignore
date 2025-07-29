@@ -18,8 +18,6 @@ yarn.lock
 # Weixin Mini Program
 /miniprogram/miniprogram_npm/**
 !/miniprogram/miniprogram_npm/.gitkeep
-/typings/types/wx/**
-!/typings/types/wx/.gitkeep
 
 # Other
 project.private.config.json

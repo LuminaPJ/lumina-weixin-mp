@@ -4,9 +4,11 @@
 import {loginStoreUtil, luminaLogin} from "../../utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
+import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../envInfo";
+import {checkIsSupportSoter} from "../../utils/SoterUtil";
 
 const util = require("../../utils/CommonUtil");
-const envInfo = require("../../envInfo");
+import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
 
 interface IData {
     safeMarginBottomPx: number;
@@ -20,13 +22,13 @@ interface IData {
     isLogining: boolean;
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, TrivialInstance>({
     // @ts-ignore
     data: {
         footerLink: [{
-            name: '用户协议', url: envInfo.USER_AGREEMENT_URL, openType: '',
+            name: '用户协议', url: USER_AGREEMENT_URL, openType: '',
         }, {
-            name: '隐私政策', url: envInfo.PRIVACY_POLICY_URL, openType: '',
+            name: '隐私政策', url: PRIVACY_POLICY_URL, openType: '',
         }], isLogining: false,
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
@@ -37,12 +39,13 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             scrollHeightPx: util.getHeightPx(),
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
             theme: wx.getAppBaseInfo().theme || 'light',
-            icpInfo: envInfo.ICP_NUMBER,
+            icpInfo: ICP_NUMBER,
+            isSupportSoter: (await checkIsSupportSoter()).length > 0,
         })
         await loginStoreUtil.initLoginStore(this)
-    }, onUnload(){
+    }, onUnload() {
         this.storeBindings.destroyStoreBindings();
-    },async login() {
+    }, async login() {
         try {
             this.setData({
                 isLogining: true,

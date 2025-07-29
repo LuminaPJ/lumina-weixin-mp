@@ -6,10 +6,15 @@
     <view style="height: 17vh"></view>
     <view class="mx-32rpx flex justify-center items-center">
         <image class="h-auto self-center" mode="widthFix"
-               src="{{ theme === 'dark' ? '../../assets/LogoColorWhite.png' : '../../assets/LogoColorBlack.png' }}"
+               src="{{theme === 'dark' ? '../../assets/LogoColorWhite.png' : '../../assets/LogoColorBlack.png'}}"
                style="width: 66%;"/>
     </view>
-    <view style="height: 17vh"></view>
+    <view style="height: 2vh"></view>
+    <view class="mx-32rpx flex justify-center items-center">
+        <t-tag class="align-top" icon="{{isSupportSoter ? 'secured' : 'error-circle'}}" theme="primary"
+               variant="light-outline">{{isSupportSoter ? '设备支持 SOTER' : '设备不支持 SOTER'}}</t-tag>
+    </view>
+    <view style="height: 13vh"></view>
     <view class="mx-32rpx">
         <t-button bind:tap="login" block disabled="{{isLogining}}" loading="{{isLogining}}" size="large"
                   theme="primary">
@@ -19,7 +24,7 @@
     <view class="mb-32rpx mt-16rpx mx-32rpx">
         <t-footer text="登录即代表您已阅读并同意用户协议和隐私政策"/>
     </view>
-    <view style="height: 20vh"></view>
+    <view style="height: 17vh"></view>
     <view class="py-16rpx">
         <t-footer links="{{footerLink}}" text="ICP 备案号：{{icpInfo}}"/>
     </view>

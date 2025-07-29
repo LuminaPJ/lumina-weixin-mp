@@ -1,5 +1,9 @@
+var EMPTY_JWT = 'Empty JSON Web Token'
+
 module.exports = {
-    formatVersion: function(version) {
+    formatVersion: function (version) {
         return '1234567890'.indexOf(version[0]) !== -1 ? 'v' + version : version;
+    }, isLogin: function (jwt) {
+        return jwt !== EMPTY_JWT
     }
 };

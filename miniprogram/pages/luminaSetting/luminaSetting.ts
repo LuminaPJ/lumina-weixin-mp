@@ -2,6 +2,7 @@
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil, luminaLogout} from "../../utils/LoginStoreUtil";
+import {luminaStartSoter} from "../../utils/SoterUtil";
 
 const util = require('../../utils/CommonUtil');
 
@@ -18,8 +19,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             store, fields: [...loginStoreUtil.storeBinding.fields], actions: [...loginStoreUtil.storeBinding.actions]
         });
         this.setData({
-            scrollHeightPx: util.getHeightPx(),
-            safeAreaBottomPx: util.getSafeAreaBottomPx(),
+            scrollHeightPx: util.getHeightPx(), safeAreaBottomPx: util.getSafeAreaBottomPx(),
         })
         await loginStoreUtil.initLoginStore(this)
     }, onUnload() {
@@ -27,6 +27,8 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, async logout() {
         await luminaLogout(this)
         wx.navigateBack()
+    }, async soter() {
+        console.log(await luminaStartSoter("test"))
     }
 })
 

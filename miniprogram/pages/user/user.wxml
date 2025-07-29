@@ -1,10 +1,12 @@
 <!--pages/user/user.wxml-->
+<wxs module="utils" src="../../utils/CommonUtil.wxs"></wxs>
+
 <t-navbar t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
     <view class="title" slot="left">我</view>
 </t-navbar>
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height: {{scrollHeightPx-56}}px;">
-    <view class="pt-96rpx mx-32rpx" wx:if="{{jwt===EMPTY_JWT}}">
+    <view class="pt-96rpx mx-32rpx" wx:if="{{!utils.isLogin(jwt)}}">
         <t-result theme="default" title="尚未登录"/>
         <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
     </view>

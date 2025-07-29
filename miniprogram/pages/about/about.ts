@@ -2,16 +2,16 @@
 
 // @ts-ignore
 const util = require("../../utils/CommonUtil");
-const envInfo = require('../../envInfo');
+import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from '../../envInfo';
 
-const app = getApp<IAppOption>()
+const app = getApp()
 
 Page({
     data: {
         footerLink: [{
-            name: '用户协议', url: envInfo.USER_AGREEMENT_URL, openType: '',
+            name: '用户协议', url: USER_AGREEMENT_URL, openType: '',
         }, {
-            name: '隐私政策', url: envInfo.PRIVACY_POLICY_URL, openType: '',
+            name: '隐私政策', url: PRIVACY_POLICY_URL, openType: '',
         }]
     }, onLoad() {
         const accountInfo = wx.getAccountInfoSync();
@@ -20,7 +20,7 @@ Page({
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
             theme: wx.getAppBaseInfo().theme || 'light',
             luminaVersion: `${app.globalData.LUMINA_VERSION} (${accountInfo.miniProgram.envVersion})`,
-            icpInfo: envInfo.ICP_NUMBER,
+            icpInfo: ICP_NUMBER,
         })
     }, onResize() {
         this.setData({

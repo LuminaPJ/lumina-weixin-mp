@@ -17,7 +17,6 @@
     # 对于 yarn 用户，请执行 yarn install
     ```
     2. 在微信开发者工具中，点击开发者工具中的菜单栏：工具 --> 构建 `npm` 
-3. 在微信开发者工具中的编辑器目录树上，找到 `/根目录/typings/types/wx` 目录，右键，点击「更新声明文件」（参见[微信官方文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/compilets.html)）
 
 ### 后续开发
 
