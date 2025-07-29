@@ -28,7 +28,7 @@
 <t-popup bind:visible-change="onFeedbackPopupVisibleChange" placement="bottom" visible="{{feedbackPopupVisible}}">
     <view class="popupBlock">
         <view class="flex items-center h-116rpx">
-            <view class="flex-1 text-align-center font-600 popupTitleColor">问题反馈</view>
+            <view class="flex-1 text-center font-600 popupTitleColor">问题反馈</view>
         </view>
         <view class="mx-32rpx mt-16rpx mb-32rpx">
             <t-button block contact open-type="contact" size="large" theme="primary">打开客服会话</t-button>

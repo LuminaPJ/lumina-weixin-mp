@@ -1,3 +1,5 @@
+import {MessageType} from "../miniprogram_npm/tdesign-miniprogram/message/message.interface";
+
 export const formatTime = (date: Date) => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
@@ -38,7 +40,51 @@ export const getSafeAreaBottomPx = (): number => {
     return safeAreaBottom
 }
 
-export const isNullOrEmptyOrUndefined=(value: any): boolean => {
+/**
+ * 复制字符串并弹出 Toast 提示
+ *
+ * **注意**：需要在使用的页面中，插入
+ *
+ * ```wxml
+ * <t-message id="t-message"/>
+ * ```
+ *
+ * ```json
+ * {
+ *   "component": true,
+ *   "usingComponents": {
+ *     "t-message": "tdesign-miniprogram/message/message",
+ *   }
+ * }
+ * ```
+ *
+ * @param copyData 要复制的字符串
+ * @param that 当前页面实例
+ */
+export function copyUtil(copyData: string, Message: any, that: WechatMiniprogram.App.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
+    wx.setClipboardData({
+        data: copyData, success(_) {
+            setTimeout(() => {
+                wx.showToast({
+                    title: '', duration: 0, icon: 'none'
+                });
+                wx.hideToast();
+            }, 0)
+            Message.success({
+                context: that,
+                offset: [90, 32],
+                duration: 3000,
+                icon: false,
+                single: false,
+                content: `已复制：${copyData}`,
+                align: 'center'
+            });
+        }, fail: function (_) {
+        }
+    })
+}
+
+export const isNullOrEmptyOrUndefined = (value: any): boolean => {
     return value === null || value === undefined || value === ''
 }
 

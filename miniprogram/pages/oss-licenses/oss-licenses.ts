@@ -1,34 +1,13 @@
 // pages/oss-licenses/oss-licenses.ts
-import Message from 'tdesign-miniprogram/message/index';
 import {createStoreBindings} from 'mobx-miniprogram-bindings';
 import Uri from 'jsuri'
 import ossLicensesDistText from '../../utils/OSSLicensesDistText';
 import {store} from "../../utils/MobX";
+import {copyUtil} from "../../utils/CommonUtil";
 
 const util = require("../../utils/CommonUtil");
 
-function copyUtil(copyData: string, that: WechatMiniprogram.App.TrivialInstance) {
-    wx.setClipboardData({
-        data: copyData, success(_) {
-            setTimeout(() => {
-                wx.showToast({
-                    title: '', duration: 0, icon: 'none'
-                });
-                wx.hideToast();
-            }, 0)
-            Message.success({
-                context: that,
-                offset: [90, 32],
-                duration: 3000,
-                icon: false,
-                single: false,
-                content: `已复制：${copyData}`,
-                align: 'center'
-            });
-        }, fail: function (_) {
-        }
-    })
-}
+import Message from "tdesign-miniprogram/message/index"
 
 interface IData {
     title: string;
@@ -78,9 +57,8 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, onUnload() {
         this.storeBindings.destroyStoreBindings();
     }, copyRepo() {
-        copyUtil(this.data.repoLink, this)
+        copyUtil(this.data.repoLink, Message, this)
     }
-
 })
 
 

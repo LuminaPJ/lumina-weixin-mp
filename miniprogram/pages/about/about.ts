@@ -2,7 +2,7 @@
 
 // @ts-ignore
 const util = require("../../utils/CommonUtil");
-import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from '../../envInfo';
+import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from '../../env';
 
 const app = getApp()
 

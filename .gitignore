@@ -22,6 +22,6 @@ yarn.lock
 # Other
 project.private.config.json
 /.idea/
-miniprogram/envInfo.js
+miniprogram/env.js
 
 

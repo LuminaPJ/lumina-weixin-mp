@@ -1,4 +1,4 @@
-<!--pages/luminaSetting/luminaSetting.wxml-->
+<!--pages/lumina-setting/lumina-setting.wxml-->
 <wxs module="utils" src="../../utils/CommonUtil.wxs"></wxs>
 
 <t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
@@ -8,8 +8,10 @@
              style="height:{{scrollHeightPx-44+safeAreaBottomPx}}px;">
     <view class="pt-32rpx pb-32rpx">
         <t-cell-group theme="card">
-            <t-cell bordered="{{false}}" description="开启后，当您的账号在执行高危操作（如退出团体、投出无法撤回的投票）时，需要进行设备端生物认证才可进行下一步操作" leftIcon="secured"
-                    title="Soter 生物认证">
+            <t-cell bordered="{{false}}"
+                    description="开启后，当您的账号在执行重要操作（如退出团体、投出无法撤回的投票）时，需要进行设备端 SOTER 生物认证才可进行下一步操作"
+                    leftIcon="secured"
+                    title="SOTER 生物认证保护">
                 <t-switch bind: slot="note" value="{{isSoterEnabled}}"/>
             </t-cell>
         </t-cell-group>
@@ -19,8 +21,14 @@
                   theme="danger">{{utils.isLogin(jwt) ? '退出登录' : '尚未登录'}}</t-button>
     </view>
 
-    <view class="mx-32rpx pb-32rpx">
+    <!--<view class="mx-32rpx pb-32rpx">
         <t-button bind:tap="soter" block size="large" theme="primary">SOTER 测试</t-button>
     </view>
-</scroll-view>
 
+    <view class="mx-32rpx pb-32rpx">
+        <t-button bind:tap="errorPopup" block size="large" theme="primary">报错测试</t-button>
+    </view>-->
+</scroll-view>
+<!--
+<error-popup message="{{test}}" visible="{{errorTestVisible}}" bind:visible-change="errorVisibleChange"/>
+-->

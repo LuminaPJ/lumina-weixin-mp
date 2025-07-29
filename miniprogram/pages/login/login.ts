@@ -4,11 +4,10 @@
 import {loginStoreUtil, luminaLogin} from "../../utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
-import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../envInfo";
+import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
 import {checkIsSupportSoter} from "../../utils/SoterUtil";
 
 const util = require("../../utils/CommonUtil");
-import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
 
 interface IData {
     safeMarginBottomPx: number;
@@ -20,16 +19,17 @@ interface IData {
         name: string; url: string; openType: string;
     }[];
     isLogining: boolean;
+    soterHelpPopupVisible: boolean;
 }
 
-Page<IData, TrivialInstance>({
+Page<IData, WechatMiniprogram.App.TrivialInstance>({
     // @ts-ignore
     data: {
         footerLink: [{
             name: '用户协议', url: USER_AGREEMENT_URL, openType: '',
         }, {
             name: '隐私政策', url: PRIVACY_POLICY_URL, openType: '',
-        }], isLogining: false,
+        }], isLogining: false, soterHelpPopupVisible: false,
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store, fields: [...loginStoreUtil.storeBinding.fields], actions: [...loginStoreUtil.storeBinding.actions]
@@ -61,5 +61,17 @@ Page<IData, TrivialInstance>({
                 isLogining: false,
             })
         }
+    }, openSoterHelpPopup() {
+        this.setData({
+            soterHelpPopupVisible: true,
+        })
+    }, closeSoterHelpPopup() {
+        this.setData({
+            soterHelpPopupVisible: false,
+        })
+    }, soterHelpPopupVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            soterHelpPopupVisible: e.detail.visible,
+        })
     }
 })

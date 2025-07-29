@@ -9,7 +9,7 @@
     "pages/oss-licenses/oss-licenses",
     "pages/oss-licenses-menu/oss-licenses-menu",
     "pages/login/login",
-    "pages/luminaSetting/luminaSetting"
+    "pages/lumina-setting/lumina-setting"
   ],
   "tabBar": {
     "custom": true,

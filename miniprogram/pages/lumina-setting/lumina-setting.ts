@@ -1,10 +1,8 @@
-// pages/luminaSetting/luminaSetting.ts
+// pages/lumina-setting/lumina-setting.ts
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil, luminaLogout} from "../../utils/LoginStoreUtil";
-import {luminaStartSoter} from "../../utils/SoterUtil";
-
-const util = require('../../utils/CommonUtil');
+import {getHeightPx, getSafeAreaBottomPx} from '../../utils/CommonUtil';
 
 interface IData {
     EMPTY_JWT: string
@@ -19,7 +17,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             store, fields: [...loginStoreUtil.storeBinding.fields], actions: [...loginStoreUtil.storeBinding.actions]
         });
         this.setData({
-            scrollHeightPx: util.getHeightPx(), safeAreaBottomPx: util.getSafeAreaBottomPx(),
+            scrollHeightPx: getHeightPx(), safeAreaBottomPx: getSafeAreaBottomPx(),
         })
         await loginStoreUtil.initLoginStore(this)
     }, onUnload() {
@@ -27,8 +25,19 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, async logout() {
         await luminaLogout(this)
         wx.navigateBack()
-    }, async soter() {
+    },
+
+    /*async soter() {
         console.log(await luminaStartSoter("test"))
-    }
+    }, errorPopup() {
+        this.setData({
+            test: this.data.test+1,
+            errorTestVisible: true
+        })
+    },errorVisibleChange(e:WechatMiniprogram.CustomEvent){
+        this.setData({
+            errorTestVisible: e.detail.visible
+        })
+    }*/
 })
 

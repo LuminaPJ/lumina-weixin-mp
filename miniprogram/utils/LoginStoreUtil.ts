@@ -1,14 +1,13 @@
 import {getWeixinStorageSyncWithDefault, getWeixinStorageWithDefault} from './WeixinStorageUtil';
 import {isNullOrEmptyOrUndefined} from "./CommonUtil";
-import {LUMINA_SERVER_HOST} from "../envInfo";
-import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
+import {LUMINA_SERVER_HOST} from "../env";
 
 export const EMPTY_JWT = 'Empty JSON Web Token'
 
 export const loginStoreUtil = {
-    initLoginStore: async function (that: TrivialInstance) {
+    initLoginStore: async function (that: WechatMiniprogram.App.TrivialInstance) {
         await this.checkLoginStatus(that);
-    }, checkLoginStatus: async function (that: TrivialInstance) {
+    }, checkLoginStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
         if (!that.getIsLoginStateChecked()) {
             const isCancellationStateFromWeixinStorage: boolean = getWeixinStorageSyncWithDefault<boolean>('isCancellationState', true)
             that.setIsCancellationState(isCancellationStateFromWeixinStorage)
@@ -36,7 +35,7 @@ export const loginStoreUtil = {
     }
 }
 
-export const luminaLogin = async (that: TrivialInstance): Promise<void> => {
+export const luminaLogin = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
     const jwt = await luminaLoginRequestPromise();
     if (!isNullOrEmptyOrUndefined(jwt)) {
         that.setJWT(jwt);
@@ -45,7 +44,7 @@ export const luminaLogin = async (that: TrivialInstance): Promise<void> => {
     }
 }
 
-export const luminaLogout = async (that: TrivialInstance): Promise<void> => {
+export const luminaLogout = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
     await wx.setStorage({key: 'JWT', data: EMPTY_JWT, encrypt: true})
     await wx.setStorage({key: 'isCancellationState', data: true})
     that.setJWT(EMPTY_JWT);

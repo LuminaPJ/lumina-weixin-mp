@@ -5,7 +5,6 @@ import ActionSheet, {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/in
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil} from "../../utils/LoginStoreUtil"
-import TrivialInstance = WechatMiniprogram.App.TrivialInstance;
 
 const util = require('../../utils/CommonUtil');
 
@@ -18,7 +17,7 @@ interface IData {
     safeMarginBottomPx: number
 }
 
-Page<IData, TrivialInstance>({
+Page<IData, WechatMiniprogram.App.TrivialInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT
     }, async onLoad() {

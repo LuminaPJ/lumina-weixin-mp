@@ -1,4 +1,4 @@
-var EMPTY_JWT = 'Empty JSON Web Token'
+var EMPTY_JWT = 'Empty JSON Web Token';
 
 module.exports = {
     formatVersion: function (version) {

@@ -11,7 +11,8 @@
     </view>
     <view style="height: 2vh"></view>
     <view class="mx-32rpx flex justify-center items-center">
-        <t-tag class="align-top" icon="{{isSupportSoter ? 'secured' : 'error-circle'}}" theme="primary"
+        <t-tag bind:click="openSoterHelpPopup" class="align-top" icon="{{isSupportSoter ? 'secured' : 'error-circle'}}"
+               theme="primary"
                variant="light-outline">{{isSupportSoter ? '设备支持 SOTER' : '设备不支持 SOTER'}}</t-tag>
     </view>
     <view style="height: 13vh"></view>
@@ -30,3 +31,27 @@
     </view>
     <view style="height: {{safeAreaBottomPx}}px"></view>
 </scroll-view>
+
+<t-popup bind:visible-change="soterHelpPopupVisibleChange" placement="bottom" visible="{{soterHelpPopupVisible}}">
+    <view class="block">
+        <view class="flex items-center h-116rpx">
+            <view class="flex-1 text-center font-600 text-36rpx">什么是 SOTER 生物认证？</view>
+        </view>
+        <view class="mx-32rpx">
+            <view class="pb-12rpx text-28rpx">
+                TENCENT SOTER 是腾讯于 2015 年开始制定的生物认证平台与标准，在不获取用户指纹图案和/或面容的前提下实现可信的用户生物特征认证。
+            </view>
+            <view class="py-12rpx text-28rpx">
+                在琳琅问中开启 SOTER 生物认证保护开关后，该用户账号在执行任何重要操作时（如退出团体、投出无法撤回的投票），需通过
+                SOTER 生物认证后才可执行。
+            </view>
+            <view class="pt-12rpx text-28rpx">
+                <rich-text
+                        nodes="如果您的设备未经过腾讯 SOTER 终端设备认证，则无法在琳琅问中使用 SOTER 生物认证保护。<b>同理，如果您在支持 SOTER 的设备下使用琳琅问打开 SOTER 生物认证保护开关后，您将无法在任何未经过 SOTER 认证的设备下使用琳琅问执行重要操作。</b>"></rich-text>
+            </view>
+        </view>
+        <view class="mt-32rpx mx-32rpx mb-32rpx flex">
+            <t-button bind:tap="closeSoterHelpPopup" block size="large" theme="primary">确定</t-button>
+        </view>
+    </view>
+</t-popup>

@@ -10,6 +10,7 @@
     "t-fab": "tdesign-miniprogram/fab/fab",
     "t-footer": "tdesign-miniprogram/footer/footer",
     "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-popup": "tdesign-miniprogram/popup/popup",
     "t-result": "tdesign-miniprogram/result/result",
     "t-tag": "tdesign-miniprogram/tag/tag"
   }
