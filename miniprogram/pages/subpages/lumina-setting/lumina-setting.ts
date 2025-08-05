@@ -1,8 +1,8 @@
 // pages/lumina-setting/lumina-setting.ts
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../utils/MobX";
-import {EMPTY_JWT, loginStoreUtil, luminaLogout} from "../../utils/LoginStoreUtil";
-import {getHeightPx, getSafeAreaBottomPx} from '../../utils/CommonUtil';
+import {store} from "../../../utils/MobX";
+import {EMPTY_JWT, loginStoreUtil, luminaLogout} from "../../../utils/store-utils/LoginStoreUtil";
+import {getHeightPx, getSafeAreaBottomPx} from '../../../utils/CommonUtil';
 
 interface IData {
     EMPTY_JWT: string

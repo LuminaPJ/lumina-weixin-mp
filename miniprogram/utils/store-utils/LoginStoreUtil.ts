@@ -1,6 +1,6 @@
-import {getWeixinStorageSyncWithDefault, getWeixinStorageWithDefault} from './WeixinStorageUtil';
-import {isNullOrEmptyOrUndefined} from "./CommonUtil";
-import {LUMINA_SERVER_HOST} from "../env";
+import {getWeixinStorageSyncWithDefault, getWeixinStorageWithDefault} from '../WeixinStorageUtil';
+import {isNullOrEmptyOrUndefined} from "../CommonUtil";
+import {LUMINA_SERVER_HOST} from "../../env";
 
 export const EMPTY_JWT = 'Empty JSON Web Token'
 
@@ -12,20 +12,18 @@ export const loginStoreUtil = {
             const isCancellationStateFromWeixinStorage: boolean = getWeixinStorageSyncWithDefault<boolean>('isCancellationState', true)
             that.setIsCancellationState(isCancellationStateFromWeixinStorage)
             if (isCancellationStateFromWeixinStorage) that.setIsLoginStateChecked(true); else {
-                const jwtFromWeixinStorage: string = await getWeixinStorageWithDefault<string>('JWT', EMPTY_JWT, true);
-                const isSoterEnabledFromWeixinStorage: boolean = getWeixinStorageSyncWithDefault<boolean>('isSoterEnabled', false)
+                const jwtFromWeixinStorage = await getWeixinStorageWithDefault<string>('JWT', EMPTY_JWT, true);
+                const isSoterEnabledFromWeixinStorage = getWeixinStorageSyncWithDefault<boolean>('isSoterEnabled', false)
                 try {
-                    if (jwtFromWeixinStorage !== EMPTY_JWT) {
-                        await validateJwtPromise(jwtFromWeixinStorage);
-                        that.setJWT(jwtFromWeixinStorage)
-                        that.setIsSoterEnabled(isSoterEnabledFromWeixinStorage)
+                    if (isLogin(jwtFromWeixinStorage)) {
+                        const isValidJwt = await validateJwtPromise(jwtFromWeixinStorage);
+                        if (isValidJwt) {
+                            that.setJWT(jwtFromWeixinStorage)
+                            that.setIsSoterEnabled(isSoterEnabledFromWeixinStorage)
+                        } else await luminaLogin(that);
                     } else await luminaLogin(that);
                 } catch (_) {
-                    try {
-                        await luminaLogin(that);
-                    } catch (e) {
-                        // TODO: 等待公共报错组件完成
-                    }
+                    await luminaLogin(that);
                 }
             }
         }
@@ -49,6 +47,10 @@ export const luminaLogout = async (that: WechatMiniprogram.App.TrivialInstance):
     await wx.setStorage({key: 'isCancellationState', data: true})
     that.setJWT(EMPTY_JWT);
     that.setIsCancellationState(true);
+}
+
+export const isLogin = (jwt: string): boolean => {
+    return jwt !== EMPTY_JWT && jwt !== '' && jwt !== null && jwt !== undefined
 }
 
 /**
@@ -97,7 +99,9 @@ async function validateJwtPromise(jwt: string): Promise<boolean> {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
                 if (res.statusCode === 200) resolve(true); else resolve(false);
-            }, fail: reject
+            }, fail() {
+                resolve(false)
+            }
         })
     })
 }

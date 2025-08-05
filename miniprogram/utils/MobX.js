@@ -1,5 +1,5 @@
 import {action, observable} from 'mobx-miniprogram';
-import {EMPTY_JWT} from "./LoginStoreUtil";
+import {EMPTY_JWT} from "./store-utils/LoginStoreUtil";
 
 export const store = observable({
     isLoginStateChecked: false,
@@ -35,6 +35,10 @@ export const store = observable({
     approvalInfo: {},
     taskInfo: {},
     groupInfo: {},
+    userInfo: {
+        userId: '',
+        userName: ''
+    },
     setApprovalInfo: action(function (approvalInfo) {
         this.approvalInfo = approvalInfo;
     }),
@@ -46,6 +50,18 @@ export const store = observable({
     }),
     getTaskInfo: action(function () {
         return this.taskInfo;
+    }),
+    setGroupInfo: action(function (groupInfo) {
+        this.groupInfo = groupInfo;
+    }),
+    getGroupInfo: action(function () {
+        return this.groupInfo;
+    }),
+    setUserInfo: action(function (userInfo) {
+        this.userInfo = userInfo;
+    }),
+    getUserInfo: action(function () {
+        return this.userInfo;
     }),
 
     ossLicensesDist: {},

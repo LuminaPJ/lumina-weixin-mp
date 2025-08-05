@@ -1,7 +1,7 @@
 // pages/login/login.ts
 
 // @ts-ignore
-import {loginStoreUtil, luminaLogin} from "../../utils/LoginStoreUtil";
+import {loginStoreUtil, luminaLogin} from "../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
@@ -51,16 +51,20 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isLogining: true,
             })
             await luminaLogin(this);
-            // TODO: Soter、名称团体等信息获取的处理
             wx.navigateBack()
-        } catch (e) {
-            // TODO: 等待公共报错组件完成
-            console.log(e)
+        } catch (e: any) {
+            this.setData({
+                errorMessage: e.message, errorVisible: true
+            })
         } finally {
             this.setData({
                 isLogining: false,
             })
         }
+    }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            errorVisible: e.detail.visible
+        })
     }, openSoterHelpPopup() {
         this.setData({
             soterHelpPopupVisible: true,

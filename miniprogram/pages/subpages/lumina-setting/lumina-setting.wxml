@@ -1,5 +1,5 @@
 <!--pages/lumina-setting/lumina-setting.wxml-->
-<wxs module="utils" src="../../utils/CommonUtil.wxs"></wxs>
+<wxs module="utils" src="../../../utils/CommonUtil.wxs"></wxs>
 
 <t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
     <view class="title" slot="left">设置</view>

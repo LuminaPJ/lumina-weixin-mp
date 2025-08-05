@@ -4,6 +4,6 @@ module.exports = {
     formatVersion: function (version) {
         return '1234567890'.indexOf(version[0]) !== -1 ? 'v' + version : version;
     }, isLogin: function (jwt) {
-        return jwt !== EMPTY_JWT
+        return jwt !== EMPTY_JWT && jwt !== null && jwt !== undefined && jwt !== '';
     }
 };
