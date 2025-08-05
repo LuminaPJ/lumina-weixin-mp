@@ -32,9 +32,9 @@ export const store = observable({
         return this.isSoterEnabled;
     }),
 
-    approvalInfo: {},
-    taskInfo: {},
-    groupInfo: {},
+    approvalInfo: [],
+    taskInfo: [],
+    groupInfo: [],
     userInfo: {
         userId: '',
         userName: ''

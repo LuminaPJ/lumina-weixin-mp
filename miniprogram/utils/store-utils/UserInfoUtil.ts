@@ -6,13 +6,12 @@ export const userInfoStoreUtil = {
         const jwt = that.getJWT();
         if (isLogin(jwt)) await getUserInfo(that, that.getJWT())
     }, storeBinding: {
-        fields: ['userInfo'],
-        actions: ['setUserInfo', 'getUserInfo']
+        fields: ['userInfo'], actions: ['setUserInfo', 'getUserInfo']
     }
 }
 
 export const getUserInfo = async (that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> => {
-    const userInfo:UserInfo = await getUserInfoPromise(jwt);
+    const userInfo: UserInfo = await getUserInfoPromise(jwt);
     that.setUserInfo(userInfo);
 }
 
@@ -26,14 +25,16 @@ interface UserInfo {
  * 获取用户信息
  * @param jwt JSON Web Token
  */
-async function getUserInfoPromise(jwt:string): Promise<UserInfo> {
+async function getUserInfoPromise(jwt: string): Promise<UserInfo> {
     return new Promise((resolve, reject) => {
         wx.request({
-            url: 'https://' + LUMINA_SERVER_HOST + '/group', header: {
+            url: 'https://' + LUMINA_SERVER_HOST + '/user', header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
-                const resData = res.data as UserInfo;
-                resolve(resData);
+                if (res.statusCode === 200) {
+                    const resData = res.data as UserInfo;
+                    resolve(resData);
+                } else resolve({userId: '', userName: ''});
             }, fail: reject
         })
     })

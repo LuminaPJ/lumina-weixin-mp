@@ -1,11 +1,11 @@
-// pages/user/user.ts
+// pages/subpages/group-management/group-management.ts
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../utils/MobX";
-import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil";
-import {userInfoStoreUtil} from "../../utils/store-utils/UserInfoUtil";
-import {groupStoreUtil} from "../../utils/store-utils/GroupStoreUtil";
+import {store} from "../../../utils/MobX";
+import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../../utils/store-utils/LoginStoreUtil";
+import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
+import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 
-const util = require('../../utils/CommonUtil');
+const util = require('../../../utils/CommonUtil');
 
 interface IData {
     EMPTY_JWT: string
@@ -22,13 +22,12 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             fields: [...loginStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields],
             actions: [...loginStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions]
         });
-        this.getTabBar().init();
-        const scrollHeightPx = util.getHeightPx()
         this.setData({
-            scrollHeightPx: scrollHeightPx - util.rpx2px(80), isRefreshing: true
+            safeMarginBottomPx: util.getSafeAreaBottomPx(),
+            scrollHeightPx: util.getHeightPx(),
+            safeAreaBottomPx: util.getSafeAreaBottomPx(), isRefreshing: true
         })
         try {
-            await loginStoreUtil.initLoginStore(this)
             if (isLogin(this.getJWT())) {
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
@@ -47,18 +46,6 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible
-        })
-    }, clickGroupManagement() {
-        wx.navigateTo({
-            url: '/pages/subpages/group-management/group-management',
-        })
-    }, clickAbout() {
-        wx.navigateTo({
-            url: '/pages/about/about'
-        })
-    }, clickSetting() {
-        wx.navigateTo({
-            url: '/pages/subpages/lumina-setting/lumina-setting',
         })
     }, login() {
         wx.navigateTo({
@@ -84,4 +71,3 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         }
     },
 })
-

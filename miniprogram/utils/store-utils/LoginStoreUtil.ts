@@ -99,9 +99,7 @@ async function validateJwtPromise(jwt: string): Promise<boolean> {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
                 if (res.statusCode === 200) resolve(true); else resolve(false);
-            }, fail() {
-                resolve(false)
-            }
+            }, fail: reject
         })
     })
 }

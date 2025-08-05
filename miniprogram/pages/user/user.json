@@ -10,6 +10,7 @@
     "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
     "t-cell": "tdesign-miniprogram/cell/cell",
     "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
-    "t-result": "tdesign-miniprogram/result/result"
+    "t-result": "tdesign-miniprogram/result/result",
+    "error-popup": "/components/error-popup/error-popup"
   }
 }
