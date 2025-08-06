@@ -19,7 +19,10 @@ export const weixinStartSoter = async (challenge: string, mode: ("fingerPrint" |
     if (mode.length === 0) return null;
     return new Promise((resolve, reject) => {
         wx.startSoterAuthentication({
-            requestAuthModes: mode, challenge: challenge, authContent: "SOTER 生物认证", success: resolve, fail: reject
+            requestAuthModes: mode, challenge: challenge, authContent: "SOTER 生物认证", success: resolve, fail(err){
+                console.log(err);
+                if (err.errMsg === 'startSoterAuthentication:fail cancel') reject(new Error("用户手动取消 SOTER 生物认证")); else reject(err);
+            }
         })
     })
 }

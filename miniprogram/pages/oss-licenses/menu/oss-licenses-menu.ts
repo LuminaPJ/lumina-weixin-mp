@@ -1,9 +1,9 @@
-// pages/oss-licenses-menu/oss-licenses-menu.ts
+// pages/oss-licenses/menu/oss-licenses-menu.ts
 import {createStoreBindings} from 'mobx-miniprogram-bindings';
-import {store} from '../../utils/MobX';
-import ossLicensesDist from '../../utils/OSSLicensesDist';
+import {store} from '../../../utils/MobX';
+import ossLicensesDist from '../../../utils/OSSLicensesDist';
 
-const util = require("../../utils/CommonUtil");
+const util = require("../../../utils/CommonUtil");
 
 interface IData {
     scrollHeightPx: number

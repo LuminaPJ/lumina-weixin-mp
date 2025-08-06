@@ -103,3 +103,29 @@ async function validateJwtPromise(jwt: string): Promise<boolean> {
         })
     })
 }
+
+interface IsUserSoterEnabledResponse{
+    isUserSoterEnabled: boolean
+}
+
+/**
+ * 获取用户是否开启 Soter 生物认证保护
+ * @param that 小程序 Page 实例
+ */
+export async function getIsUserSoterEnabled(that: WechatMiniprogram.App.TrivialInstance): Promise<void>{
+    const isUserSoterEnabled = await getIsUserSoterEnabledPromise(that.getJWT());
+    that.setIsSoterEnabled(isUserSoterEnabled)
+}
+
+async function getIsUserSoterEnabledPromise(jwt: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/soter/check', header: {
+                Authorization: 'Bearer ' + jwt
+            }, success: (res) => {
+                const resData = res.data as IsUserSoterEnabledResponse;
+                resolve(resData.isUserSoterEnabled);
+            }, fail: reject
+        })
+    })
+}

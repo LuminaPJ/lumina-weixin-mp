@@ -11,10 +11,8 @@
             <t-result description="{{errorMessage}}" theme="error" title="发生错误"/>
         </view>
         <view class="m-32rpx flex">
-            <t-button bind:tap="copyError" block class="mr-16rpx" size="large" theme="light">复制报错
-            </t-button>
-            <t-button bind:tap="closeErrorPopup" block class="ml-16rpx" size="large" theme="light">确定
-            </t-button>
+            <t-button bind:tap="copyError" block class="mr-16rpx" size="large" theme="light">复制报错</t-button>
+            <t-button bind:tap="closeErrorPopup" block class="ml-16rpx" size="large" theme="light">确定</t-button>
         </view>
     </view>
 </t-popup>

@@ -6,6 +6,7 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
 import {checkIsSupportSoter} from "../../utils/SoterUtil";
+import {getErrorMessage} from "../../utils/CommonUtil";
 
 const util = require("../../utils/CommonUtil");
 
@@ -54,7 +55,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             wx.navigateBack()
         } catch (e: any) {
             this.setData({
-                errorMessage: e.message, errorVisible: true
+                errorMessage: getErrorMessage(e), errorVisible: true
             })
         } finally {
             this.setData({

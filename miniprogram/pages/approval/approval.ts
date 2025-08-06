@@ -4,6 +4,7 @@
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil";
+import {getErrorMessage} from "../../utils/CommonUtil";
 
 const util = require('../../utils/CommonUtil');
 
@@ -28,9 +29,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         })
         try {
             await loginStoreUtil.initLoginStore(this)
-        } catch (e) {
+        } catch (e: any) {
             this.setData({
-                errorMessage: e.message, errorVisible: true
+                errorMessage: getErrorMessage(e), errorVisible: true
             })
         } finally {
             this.setData({

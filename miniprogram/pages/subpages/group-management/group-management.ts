@@ -4,6 +4,7 @@ import {store} from "../../../utils/MobX";
 import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../../utils/store-utils/LoginStoreUtil";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
+import {getErrorMessage} from "../../../utils/CommonUtil";
 
 const util = require('../../../utils/CommonUtil');
 
@@ -36,7 +37,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             }
         } catch (e: any) {
             this.setData({
-                errorMessage: e.message, errorVisible: true
+                errorMessage: getErrorMessage(e), errorVisible: true
             })
         } finally {
             this.setData({
@@ -62,9 +63,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
             }
-        } catch (e) {
+        } catch (e: any) {
             this.setData({
-                errorMessage: e.message, errorVisible: true
+                errorMessage: getErrorMessage(e), errorVisible: true
             })
         } finally {
             this.setData({

@@ -1,5 +1,5 @@
-<!--pages/oss-licenses-menu/oss-licenses-menu.wxml-->
-<wxs module="utils" src="../../utils/CommonUtil.wxs"></wxs>
+<!--pages/oss-licenses/menu/oss-licenses-menu.wxml-->
+<wxs module="utils" src="../../../utils/CommonUtil.wxs"></wxs>
 
 <t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
     <view class="ml-16rpx text-36rpx font-600" slot="left">开放源代码许可</view>

@@ -5,7 +5,7 @@ import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../../utils/store-utils/Log
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 import {LUMINA_SERVER_HOST} from "../../../env";
-import {ErrorResponse} from "../../../utils/CommonUtil";
+import {ErrorResponse, getErrorMessage} from "../../../utils/CommonUtil";
 
 const util = require('../../../utils/CommonUtil');
 
@@ -48,7 +48,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             }
         } catch (e: any) {
             this.setData({
-                errorMessage: e.message, errorVisible: true
+                errorMessage: getErrorMessage(e), errorVisible: true
             })
         }
         // TODO：在用户已加入任意团体的情况下，再次加入团体时无法控制用户号和用户名的页面逻辑
@@ -93,7 +93,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 await joinNewGroupPromise(this.getJWT(), this.data.groupIdValue, this.data.userIdValue, this.data.userNameValue, this.data.groupPreAuthTokenValue === '' ? null : this.data.groupPreAuthTokenValue, this.data.requesterCommentValue === '' ? null : this.data.requesterCommentValue)
             } catch (e: any) {
                 this.setData({
-                    errorMessage: e.message, errorVisible: true
+                    errorMessage: getErrorMessage(e), errorVisible: true
                 })
             } finally {
                 this.setData({

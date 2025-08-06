@@ -1,5 +1,3 @@
-import {MessageType} from "../miniprogram_npm/tdesign-miniprogram/message/message.interface";
-
 export const formatTime = (date: Date) => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
@@ -91,6 +89,10 @@ export const isNullOrEmptyOrUndefined = (value: any): boolean => {
 export interface ErrorResponse {
     code: number;
     message: string;
+}
+
+export const getErrorMessage = (e: any): string => {
+    if (e.message) return e.message; else if (e.errMsg) return e.errMsg; else return e.toString()
 }
 
 

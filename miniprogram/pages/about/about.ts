@@ -36,7 +36,7 @@ Page({
         })
     }, ossLicense() {
         wx.navigateTo({
-            url: '/pages/oss-licenses-menu/oss-licenses-menu',
+            url: '/pages/oss-licenses/menu/oss-licenses-menu',
         })
     }
 })
