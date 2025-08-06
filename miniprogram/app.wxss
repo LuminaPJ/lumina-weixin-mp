@@ -31,6 +31,7 @@
 Page {
     background-color: var(--td-bg-color-secondarycontainer);
     --td-navbar-bg-color: var(--td-bg-color-secondarycontainer);
+    --td-input-align-items: start;
 }
 
 @media (prefers-color-scheme: dark)  {

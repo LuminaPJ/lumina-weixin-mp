@@ -7,10 +7,7 @@
          show-overlay="{{false}}" visible="{{errorVisible}}"
          z-index="14555">
     <view class="block">
-        <view class="flex items-center h-116rpx">
-            <view class="flex-1 text-center font-600 text-36rpx" id="ability-error">错误</view>
-        </view>
-        <view class="mx-32rpx mt-80rpx mb-96rpx">
+        <view class="mx-32rpx mt-104rpx mb-96rpx">
             <t-result description="{{errorMessage}}" theme="error" title="发生错误"/>
         </view>
         <view class="m-32rpx flex">

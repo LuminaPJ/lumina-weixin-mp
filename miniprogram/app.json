@@ -10,7 +10,8 @@
     "pages/oss-licenses-menu/oss-licenses-menu",
     "pages/login/login",
     "pages/subpages/lumina-setting/lumina-setting",
-    "pages/subpages/group-management/group-management"
+    "pages/subpages/group-management/group-management",
+    "pages/subpages/join-group/join-group"
   ],
   "tabBar": {
     "custom": true,

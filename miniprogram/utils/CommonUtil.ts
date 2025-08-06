@@ -88,4 +88,9 @@ export const isNullOrEmptyOrUndefined = (value: any): boolean => {
     return value === null || value === undefined || value === ''
 }
 
+export interface ErrorResponse {
+    code: number;
+    message: string;
+}
+
 

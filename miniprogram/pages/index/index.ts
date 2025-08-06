@@ -8,9 +8,6 @@ import {EMPTY_JWT, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
 
 const util = require('../../utils/CommonUtil');
 
-// 获取应用实例
-const app = getApp()
-
 interface IData {
     EMPTY_JWT: string
     scrollHeightPx: number
@@ -53,9 +50,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.setData({
             errorVisible: e.detail.visible
         })
-    }, handleAddTaskClick() {
+    }, handleFabTaskClick() {
         ActionSheet.show({
-            theme: ActionSheetTheme.Grid, selector: '#t-action-sheet', context: this, items: addTaskGrid,
+            theme: ActionSheetTheme.Grid, selector: '#t-action-sheet', context: this, items: fabTaskGrid,
         });
     }, login() {
         wx.navigateTo({
@@ -69,14 +66,30 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.setData({
             isRefreshing: false
         });
-    },
+    }, handleFabSelected(e: WechatMiniprogram.CustomEvent) {
+        switch (e.detail.selected.label) {
+            case '加入新团体':
+                wx.navigateTo({
+                    url: '/pages/subpages/join-group/join-group',
+                })
+                break;
+            case '新建日程':
+                // TODO: 新建日程
+                break;
+            case '刷新':
+                this.onRefresh()
+                break;
+            default:
+                break;
+        }
+    }
 })
 
 /**
  * 点击首页浮动按钮的弹出菜单
  */
-const addTaskGrid = [{
-    label: '加入新团体', icon: 'usergroup-add',
+const fabTaskGrid = [{
+    label: '加入团体', icon: 'usergroup-add',
 }, {
     label: '新建日程', icon: 'task-add',
 }, {

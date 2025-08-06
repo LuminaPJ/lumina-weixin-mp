@@ -26,18 +26,5 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         await luminaLogout(this)
         wx.navigateBack()
     },
-
-    /*async soter() {
-        console.log(await luminaStartSoter("test"))
-    }, errorPopup() {
-        this.setData({
-            test: this.data.test+1,
-            errorTestVisible: true
-        })
-    },errorVisibleChange(e:WechatMiniprogram.CustomEvent){
-        this.setData({
-            errorTestVisible: e.detail.visible
-        })
-    }*/
 })
 

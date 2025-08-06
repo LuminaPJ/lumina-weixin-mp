@@ -25,14 +25,16 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.setData({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
             scrollHeightPx: util.getHeightPx(),
-            safeAreaBottomPx: util.getSafeAreaBottomPx(), isRefreshing: true
+            safeAreaBottomPx: util.getSafeAreaBottomPx(),
+            isRefreshing: true
         })
         try {
+            await loginStoreUtil.initLoginStore(this)
             if (isLogin(this.getJWT())) {
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
             }
-        } catch (e) {
+        } catch (e: any) {
             this.setData({
                 errorMessage: e.message, errorVisible: true
             })
@@ -69,5 +71,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isRefreshing: false
             });
         }
-    },
+    }, joinNewGroup() {
+        wx.navigateTo({
+            url: '/pages/subpages/join-group/join-group',
+        })
+    }
 })

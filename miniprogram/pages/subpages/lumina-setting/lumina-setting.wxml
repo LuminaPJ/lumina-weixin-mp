@@ -1,4 +1,4 @@
-<!--pages/lumina-setting/lumina-setting.wxml-->
+<!--pages/subpages/lumina-setting/lumina-setting.wxml-->
 <wxs module="utils" src="../../../utils/CommonUtil.wxs"></wxs>
 
 <t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
@@ -20,15 +20,4 @@
         <t-button bind:tap="logout" block disabled="{{!utils.isLogin(jwt)}}" size="large"
                   theme="danger">{{utils.isLogin(jwt) ? '退出登录' : '尚未登录'}}</t-button>
     </view>
-
-    <!--<view class="mx-32rpx pb-32rpx">
-        <t-button bind:tap="soter" block size="large" theme="primary">SOTER 测试</t-button>
-    </view>
-
-    <view class="mx-32rpx pb-32rpx">
-        <t-button bind:tap="errorPopup" block size="large" theme="primary">报错测试</t-button>
-    </view>-->
 </scroll-view>
-<!--
-<error-popup message="{{test}}" visible="{{errorTestVisible}}" bind:visible-change="errorVisibleChange"/>
--->
