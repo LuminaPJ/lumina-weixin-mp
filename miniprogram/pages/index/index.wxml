@@ -17,6 +17,10 @@
             <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
         </view>
 
+        <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&taskInfo.length===0}}">
+            <t-result description="暂未收到任何日程" theme="default" title="暂无日程"/>
+        </view>
+
     </scroll-view>
 </t-pull-down-refresh>
 

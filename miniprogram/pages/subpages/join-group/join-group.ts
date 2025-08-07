@@ -5,7 +5,7 @@ import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../../utils/store-utils/Log
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 import {LUMINA_SERVER_HOST} from "../../../env";
-import {ErrorResponse, getErrorMessage} from "../../../utils/CommonUtil";
+import {ErrorResponse, getErrorMessage, isNullOrEmptyOrUndefined} from "../../../utils/CommonUtil";
 
 const util = require('../../../utils/CommonUtil');
 
@@ -18,6 +18,8 @@ interface IData {
     userIdValue: string
     userNameValue: string
     requesterCommentValue: string
+    isUserSignedIn: boolean
+    isLoading: boolean
 }
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
@@ -28,7 +30,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         groupPreAuthTokenValue: '',
         userIdValue: '',
         userNameValue: '',
-        requesterCommentValue: ''
+        requesterCommentValue: '',
+        isUserSignedIn: false,
+        isLoading: true,
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -39,6 +43,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
             scrollHeightPx: util.getHeightPx(),
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
+            isLoading: true
         })
         try {
             await loginStoreUtil.initLoginStore(this)
@@ -50,8 +55,16 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             this.setData({
                 errorMessage: getErrorMessage(e), errorVisible: true
             })
+        } finally {
+            this.setData({
+                isLoading: false
+            })
+            const userId = this.getUserInfo().userId
+            const userName = this.getUserInfo().userName
+            if (!isNullOrEmptyOrUndefined(userId) || !isNullOrEmptyOrUndefined(userName)) this.setData({
+                isUserSignedIn: true, userIdValue: userId, userNameValue: userName
+            })
         }
-        // TODO：在用户已加入任意团体的情况下，再次加入团体时无法控制用户号和用户名的页面逻辑
     }, onUnload() {
         this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
@@ -90,7 +103,12 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isJoining: true
             })
             try {
-                await joinNewGroupPromise(this.getJWT(), this.data.groupIdValue, this.data.userIdValue, this.data.userNameValue, this.data.groupPreAuthTokenValue === '' ? null : this.data.groupPreAuthTokenValue, this.data.requesterCommentValue === '' ? null : this.data.requesterCommentValue)
+                const userId = this.data.isUserSignedIn ? this.getUserInfo().userId : this.data.userIdValue
+                const userName = this.data.isUserSignedIn ? this.getUserInfo().userName : this.data.userNameValue
+                const groupPreAuthToken = this.data.groupPreAuthTokenValue === '' ? null : this.data.groupPreAuthTokenValue
+                const requesterComment = this.data.requesterCommentValue === '' ? null : this.data.requesterCommentValue
+                await joinNewGroupPromise(this.getJWT(), this.data.groupIdValue, userId, userName, groupPreAuthToken, requesterComment)
+                await groupStoreUtil.checkGroupStatus(this)
             } catch (e: any) {
                 this.setData({
                     errorMessage: getErrorMessage(e), errorVisible: true

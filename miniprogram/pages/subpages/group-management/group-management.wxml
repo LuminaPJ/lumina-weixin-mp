@@ -21,5 +21,20 @@
             <t-button bind:tap="joinNewGroup" block class="mt-32rpx" size="large" theme="primary">加入团体</t-button>
         </view>
 
+        <view class="py-16rpx">
+            <view class="py-16rpx" wx:for="{{groupInfo}}" wx:key="id">
+                <t-cell-group class="my-16rpx" theme="card">
+                    <t-cell arrow description="{{item.groupId}}" hover title="{{item.groupName}}">
+                        <t-tag slot="note" theme="{{item.permission==='MEMBER'?'default':item.permission==='ADMIN'?'primary':'success'}}" variant="light">
+                            {{item.permission === 'MEMBER' ? '普通成员' : item.permission === 'ADMIN' ? '管理员' : item.permission === 'SUPER_ADMIN' ? '超级管理员' : ''}}
+                        </t-tag>
+                    </t-cell>
+                </t-cell-group>
+            </view>
+        </view>
+
     </scroll-view>
 </t-pull-down-refresh>
+
+<t-fab aria-label="加入团体" bind:click="joinNewGroup" icon="usergroup-add" using-custom-navbar
+       wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&groupInfo.length>0}}"></t-fab>

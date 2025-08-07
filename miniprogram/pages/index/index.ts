@@ -6,6 +6,7 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
 import {getErrorMessage} from "../../utils/CommonUtil";
+import {taskStoreUtil} from "../../utils/store-utils/TaskStoreUtil";
 
 const util = require('../../utils/CommonUtil');
 
@@ -21,7 +22,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
-            store, fields: [...loginStoreUtil.storeBinding.fields], actions: [...loginStoreUtil.storeBinding.actions]
+            store,
+            fields: [...loginStoreUtil.storeBinding.fields, ...taskStoreUtil.storeBinding.fields],
+            actions: [...loginStoreUtil.storeBinding.actions, ...taskStoreUtil.storeBinding.actions]
         });
         this.getTabBar().init();
         const scrollHeightPx = util.getHeightPx()
@@ -69,7 +72,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         });
     }, handleFabSelected(e: WechatMiniprogram.CustomEvent) {
         switch (e.detail.selected.label) {
-            case '加入新团体':
+            case '加入团体':
                 wx.navigateTo({
                     url: '/pages/subpages/join-group/join-group',
                 })

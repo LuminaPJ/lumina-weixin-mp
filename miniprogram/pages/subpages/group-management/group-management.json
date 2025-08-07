@@ -3,12 +3,16 @@
   "disableScroll": true,
   "styleIsolation": "apply-shared",
   "usingComponents": {
+    "error-popup": "/components/error-popup/error-popup",
     "t-button": "tdesign-miniprogram/button/button",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-fab": "tdesign-miniprogram/fab/fab",
     "t-footer": "tdesign-miniprogram/footer/footer",
     "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-result": "tdesign-miniprogram/result/result",
     "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",
     "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
-    "t-result": "tdesign-miniprogram/result/result",
-    "error-popup": "/components/error-popup/error-popup"
+    "t-tag": "tdesign-miniprogram/tag/tag"
   }
 }

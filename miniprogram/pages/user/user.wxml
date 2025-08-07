@@ -20,13 +20,21 @@
             <t-cell-group theme="card">
                 <t-cell align="top" bordered="{{false}}"
                         description="{{groupInfo.length===0?'尚未加入任何团体':'已加入 '+groupInfo.length+' 个团体'}}"
-                        hover
-                        title="{{userInfo.userId===''?'琳琅问新用户':(userInfo.userName===''?'':userInfo.userName+' ')+userInfo.userId}}"/>
+                        hover>
+                    <view slot="title">
+                        <view class="mr-16rpx inline">{{userInfo.userId === '' ? '琳琅问新用户' : userInfo.userName}}</view>
+                        <t-tag class="inline-block vertical-bottom" theme="default" variant="light"
+                               wx:if="{{userInfo.userId!==''}}">
+                            {{userInfo.userId}}
+                        </t-tag>
+                    </view>
+                </t-cell>
             </t-cell-group>
         </view>
         <view class="mt-32rpx pb-32rpx">
             <t-cell-group theme="card">
-                <t-cell arrow bind:click="clickGroupManagement" bordered hover leftIcon="user-setting" title="团体管理"/>
+                <t-cell arrow bind:click="clickGroupManagement" bordered hover leftIcon="user-setting"
+                        title="团体管理"/>
                 <t-cell arrow bind:click="clickSetting" bordered hover leftIcon="setting" title="设置"/>
                 <t-cell arrow bind:click="clickAbout" bordered="{{false}}" hover leftIcon="info-circle" title="关于"/>
             </t-cell-group>

@@ -31,6 +31,10 @@
 Page {
     background-color: var(--td-bg-color-secondarycontainer);
     --td-navbar-bg-color: var(--td-bg-color-secondarycontainer);
+    --td-tab-nav-bg-color: var(--td-bg-color-secondarycontainer);
+    --td-tab-item-tag-bg: var(--td-bg-color-container);
+    --td-tab-item-active-color: var(--td-text-color-anti);
+    --td-tab-item-tag-active-bg: var(--td-brand-color);
     --td-input-align-items: start;
 }
 
@@ -38,6 +42,10 @@ Page {
     Page{
         background-color: var(--td-bg-color-page);
         --td-navbar-bg-color: var(--td-bg-color-page);
+        --td-tab-nav-bg-color: var(--td-bg-color-page);
+        --td-tab-item-tag-bg: var(--td-bg-color-container);
+        --td-tab-item-active-color: var(--td-text-color-anti);
+        --td-tab-item-tag-active-bg: var(--td-brand-color);
     }
 }
 

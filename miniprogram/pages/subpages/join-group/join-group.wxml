@@ -22,9 +22,12 @@
                  tips="预授权凭证可免审批加入团体，由团体管理员控制，不填则需管理员手动审批"
                  value="{{groupPreAuthTokenValue}}"/>
         <t-input bind:change="onUserIdInput" borderless class="rounded-18rpx mt-32rpx" confirm-type="next"
-                 label="用户号" placeholder="必填" tips="请按照团体管理员的相关要求填写，可能是工号、学号等语义化编号" value="{{userIdValue}}"/>
+                 disabled="{{isUserSignedIn||isLoading}}" label="用户号" placeholder="必填"
+                 tips="{{isUserSignedIn?'已自动填入':'请按照团体管理员的相关要求填写，可能是工号、学号等语义化编号'}}"
+                 value="{{userIdValue}}"/>
         <t-input bind:change="onUserNameInput" borderless class="rounded-18rpx mt-32rpx" confirm-type="done"
-                 label="用户名" placeholder="必填" value="{{userNameValue}}"/>
+                 disabled="{{isUserSignedIn||isLoading}}" label="用户名" placeholder="必填"
+                 tips="{{isUserSignedIn?'已自动填入':''}}" value="{{userNameValue}}"/>
         <t-input bind:change="onRequesterCommentInput" borderless class="rounded-18rpx mt-32rpx" confirm-type="done"
                  label="留言" placeholder="选填" tips="仅申请者本人和团体管理员可查看留言内容"
                  value="{{requesterCommentValue}}"/>
