@@ -37,3 +37,29 @@ async function getGroupListPromise(jwt: string): Promise<GroupInfo[]> {
         })
     })
 }
+
+export interface GroupInfo {
+    groupId: string,
+    groupName: string | null,
+    createAt: string,
+    isPreAuthTokenEnable: boolean,
+    memberList: GroupInfoMember[]
+}
+
+export interface GroupInfoMember {
+    userId: string,
+    userName: string | null,
+    permission: string
+}
+
+export async function getGroupInfoPromise(jwt: string, groupId: string): Promise<GroupInfo> {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/group/' + groupId, header: {
+                Authorization: 'Bearer ' + jwt
+            }, success: (res) => {
+                resolve(res.data as GroupInfo);
+            }, fail: reject
+        })
+    })
+}

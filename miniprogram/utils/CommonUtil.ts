@@ -87,12 +87,22 @@ export const isNullOrEmptyOrUndefined = (value: any): boolean => {
 }
 
 export interface ErrorResponse {
-    code: number;
+    statusCode: number;
     message: string;
 }
 
 export const getErrorMessage = (e: any): string => {
     if (e.message) return e.message; else if (e.errMsg) return e.errMsg; else return e.toString()
 }
+
+export function isAdminAndSuperAdmin(permission: string) {
+    return permission === 'ADMIN' || permission === 'SUPER_ADMIN'
+}
+
+export function isSuperAdmin(permission: string) {
+    return permission === 'SUPER_ADMIN'
+}
+
+
 
 

@@ -124,14 +124,12 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
 })
 
 function buildJoinNewGroupRequestBodyJson(userId: string, userName: string, groupPreAuthToken: string | null, requesterComment: string | null): Object {
-    {
-        const optionalFields = {
-            ...(groupPreAuthToken && {groupPreAuthToken}), ...(requesterComment && {requesterComment})
-        };
-        return {
-            requesterUserId: userId, requesterUserName: userName, ...optionalFields
-        };
-    }
+    const optionalFields = {
+        ...(groupPreAuthToken && {groupPreAuthToken}), ...(requesterComment && {requesterComment})
+    };
+    return {
+        requesterUserId: userId, requesterUserName: userName, ...optionalFields
+    };
 }
 
 async function joinNewGroupPromise(jwt: string, groupId: string, userId: string, userName: string, groupPreAuthToken: string | null, requesterComment: string | null) {

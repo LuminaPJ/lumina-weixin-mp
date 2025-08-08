@@ -8,7 +8,7 @@
 </t-navbar>
 
 <t-pull-down-refresh bind:refresh="onRefresh"
-                     enable-passive loadingTexts="{{['下拉刷新', '松手刷新', '', '刷新完成']}}"
+                     enable-passive loadingTexts="{{['下拉刷新', '松手刷新', '', '加载完成']}}"
                      usingCustomNavbar value="{{isRefreshing}}">
     <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
                  style="height: {{scrollHeightPx-56}}px;">

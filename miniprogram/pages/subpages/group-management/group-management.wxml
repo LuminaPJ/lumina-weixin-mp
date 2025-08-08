@@ -7,10 +7,11 @@
     <view class="title" slot="left">团体管理</view>
 </t-navbar>
 
-<t-pull-down-refresh bind:refresh="onRefresh" enable-passive loadingTexts="{{['下拉刷新', '松手刷新', '', '刷新完成']}}"
-                     usingCustomNavbar value="{{isRefreshing}}">
-    <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
-                 style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;">
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;">
+    <t-pull-down-refresh bind:refresh="onRefresh" enable-passive
+                         loadingTexts="{{['下拉刷新', '松手刷新', '', '加载完成']}}" usingCustomNavbar
+                         value="{{isRefreshing}}">
         <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&!utils.isLogin(jwt)}}">
             <t-result theme="default" title="尚未登录"/>
             <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
@@ -22,19 +23,22 @@
         </view>
 
         <view class="py-16rpx">
-            <view class="py-16rpx" wx:for="{{groupInfo}}" wx:key="id">
-                <t-cell-group class="my-16rpx" theme="card">
-                    <t-cell arrow description="{{item.groupId}}" hover title="{{item.groupName}}">
-                        <t-tag slot="note" theme="{{item.permission==='MEMBER'?'default':item.permission==='ADMIN'?'primary':'success'}}" variant="light">
-                            {{item.permission === 'MEMBER' ? '普通成员' : item.permission === 'ADMIN' ? '管理员' : item.permission === 'SUPER_ADMIN' ? '超级管理员' : ''}}
+            <view class="py-16rpx" wx:for="{{groupInfo}}" wx:key="groupId">
+                <t-cell-group theme="card">
+                    <t-cell arrow bind:click="onGroupItemClick" data-group-id="{{item.groupId}}"
+                            description="{{item.groupId}}" hover title="{{item.groupName}}">
+                        <t-tag slot="note"
+                               theme="{{item.permission==='MEMBER'?'default':item.permission==='ADMIN'?'primary':'success'}}"
+                               variant="light">
+                            {{utils.semanticsPermission(item.permission)}}
                         </t-tag>
                     </t-cell>
                 </t-cell-group>
             </view>
         </view>
-
-    </scroll-view>
-</t-pull-down-refresh>
+        <view style="padding-bottom: {{safeAreaBottomPx}}px;"/>
+    </t-pull-down-refresh>
+</scroll-view>
 
 <t-fab aria-label="加入团体" bind:click="joinNewGroup" icon="usergroup-add" using-custom-navbar
        wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&groupInfo.length>0}}"></t-fab>

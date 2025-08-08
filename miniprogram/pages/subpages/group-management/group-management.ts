@@ -76,5 +76,10 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         wx.navigateTo({
             url: '/pages/subpages/join-group/join-group',
         })
+    }, onGroupItemClick(e: WechatMiniprogram.CustomEvent) {
+        const selectedGroupId = e.currentTarget.dataset.groupId
+        wx.navigateTo({
+            url: '/pages/subpages/group-management/selected-group/selected-group?selectedGroupId=' + selectedGroupId,
+        })
     }
 })

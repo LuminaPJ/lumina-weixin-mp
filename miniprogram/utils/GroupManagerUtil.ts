@@ -1,0 +1,39 @@
+import {LUMINA_SERVER_HOST} from "../env";
+import {ErrorResponse} from "./CommonUtil";
+
+/**
+ * 设置团体预授权凭证
+ * @param jwt JSON Web Token
+ * @param groupId 团体号
+ * @param preAuthToken 预授权凭证
+ * @param validity 凭证有效期
+ * @param soterResult SOTER 生物认证结果
+ */
+export async function setGroupPreAuthTokenPromise(jwt: string, groupId: string, preAuthToken: string, validity: number, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/groupManager/' + groupId + '/setPreAuthToken',
+            method: 'POST',
+            header: {
+                Authorization: 'Bearer ' + jwt
+            },
+            data: JSON.stringify(buildSetGroupPreAuthTokenRequestBody(preAuthToken, validity, soterResult)),
+            success(res) {
+                if (res.statusCode === 200) resolve(res.data); else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
+            },
+            fail: reject
+        })
+    })
+}
+
+function buildSetGroupPreAuthTokenRequestBody(preAuthToken: string, validity: number, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null): Object {
+    const soterInfo = soterResult ? {
+        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
+    } : {}
+    return {
+        preAuthToken: preAuthToken, validity: validity, ...(soterResult && {soterInfo: {...soterInfo}})
+    };
+}

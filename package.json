@@ -1,14 +1,15 @@
 {
-  "name": "lumina",
+  "name": "lumina-weixin-mp",
   "version": "0.0.1",
-  "description": "",
+  "description": "LuminaPJ Weixin Mini Program",
   "keywords": [],
   "author": "lumina",
-  "license": "",
+  "license": "MulanPSL-2.0",
   "dependencies": {
     "dayjs": "^1.11.13",
     "json5": "^2.2.3",
     "jsuri": "^1.3.1",
+    "miniprogram-sm-crypto": "^0.3.13",
     "mobx-miniprogram": "^6.12.3",
     "mobx-miniprogram-bindings": "^5.1.1",
     "tdesign-miniprogram": "^1.10.0"

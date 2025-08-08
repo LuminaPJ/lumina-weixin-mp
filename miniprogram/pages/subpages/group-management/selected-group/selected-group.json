@@ -8,9 +8,13 @@
     "t-cell": "tdesign-miniprogram/cell/cell",
     "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
     "t-fab": "tdesign-miniprogram/fab/fab",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-message": "tdesign-miniprogram/message/message",
     "t-navbar": "tdesign-miniprogram/navbar/navbar",
+    "t-popup": "tdesign-miniprogram/popup/popup",
     "t-pull-down-refresh": "tdesign-miniprogram/pull-down-refresh/pull-down-refresh",
     "t-result": "tdesign-miniprogram/result/result",
+    "t-stepper": "tdesign-miniprogram/stepper/stepper",
     "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",
     "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
     "t-tag": "tdesign-miniprogram/tag/tag"

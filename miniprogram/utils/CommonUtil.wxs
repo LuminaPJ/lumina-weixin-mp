@@ -5,5 +5,11 @@ module.exports = {
         return '1234567890'.indexOf(version[0]) !== -1 ? 'v' + version : version;
     }, isLogin: function (jwt) {
         return jwt !== EMPTY_JWT && jwt !== null && jwt !== undefined && jwt !== '';
-    }
+    }, semanticsPermission: function (permission){
+        return permission === 'MEMBER' ? '普通成员' : permission === 'ADMIN' ? '管理员' : permission === 'SUPER_ADMIN' ? '超级管理员' : ''
+    }, isAdminAndSuperAdmin: function (permission) {
+        return permission === 'ADMIN' || permission === 'SUPER_ADMIN'
+    },isSuperAdmin: function (permission) {
+        return permission === 'SUPER_ADMIN'
+    },
 };
