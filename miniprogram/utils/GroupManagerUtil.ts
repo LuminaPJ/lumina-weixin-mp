@@ -2,6 +2,41 @@ import {LUMINA_SERVER_HOST} from "../env";
 import {ErrorResponse} from "./CommonUtil";
 
 /**
+ * 重命名团体
+ * @param jwt JSON Web Token
+ * @param groupId 团体号
+ * @param newGroupName 新团体名
+ * @param soterResult SOTER 生物认证结果
+ */
+export async function renameGroupPromise(jwt: string, groupId: string, newGroupName: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/groupManager/' + groupId + '/rename',
+            method: 'POST',
+            header: {
+                Authorization: 'Bearer ' + jwt
+            },data: JSON.stringify(buildRenameGroupRequestBody(newGroupName,soterResult)),
+            success(res) {
+                if (res.statusCode === 200) resolve(res.data); else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
+            },
+            fail: reject
+        })
+    })
+}
+
+function buildRenameGroupRequestBody(newGroupName: string,soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null): Object {
+    const soterInfo = soterResult ? {
+        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
+    } : {}
+    return {
+        newGroupName: newGroupName, ...(soterResult && {soterInfo: {...soterInfo}})
+    };
+}
+
+/**
  * 设置团体预授权凭证
  * @param jwt JSON Web Token
  * @param groupId 团体号
@@ -37,3 +72,8 @@ function buildSetGroupPreAuthTokenRequestBody(preAuthToken: string, validity: nu
         preAuthToken: preAuthToken, validity: validity, ...(soterResult && {soterInfo: {...soterInfo}})
     };
 }
+
+
+
+
+

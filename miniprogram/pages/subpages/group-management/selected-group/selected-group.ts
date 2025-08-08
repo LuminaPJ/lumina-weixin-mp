@@ -18,7 +18,7 @@ import {
 } from "../../../../utils/CommonUtil";
 import dayjs from "dayjs";
 import {luminaStartSoter} from "../../../../utils/SoterUtil";
-import {setGroupPreAuthTokenPromise} from "../../../../utils/GroupManagerUtil";
+import {renameGroupPromise, setGroupPreAuthTokenPromise} from "../../../../utils/GroupManagerUtil";
 
 const util = require('../../../../utils/CommonUtil');
 
@@ -37,6 +37,9 @@ interface IData {
     setPreAuthTokenPopupVisible: boolean
     preAuthTokenValue: string
     isPreAuthTokenSubmitting: boolean
+    renameGroupValue: string
+    renameGroupPopupVisible: boolean
+    isGroupRenaming: boolean
 }
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
@@ -53,7 +56,10 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         preAuthTokenValidityValue: 10,
         setPreAuthTokenPopupVisible: false,
         preAuthTokenValue: '',
-        isPreAuthTokenSubmitting: false
+        isPreAuthTokenSubmitting: false,
+        renameGroupValue: '',
+        renameGroupPopupVisible: false,
+        isGroupRenaming: false
     }, async onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -157,34 +163,71 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 }
                 await setGroupPreAuthTokenPromise(this.getJWT(), this.data.selectedGroupId, this.data.preAuthTokenValue, this.data.preAuthTokenValidityValue, soterResult)
                 if (!this.data.isSelectedNotFound) await getSelectedGroupInfo(this, this.data.selectedGroupId)
-                Message.success({
-                    context: this,
-                    offset: [90, 32],
-                    duration: 3000,
-                    icon: false,
-                    single: false,
-                    content: '预授权凭证已生效',
-                    align: 'center'
-                });
+                normalToast(this, '预授权凭证已生效')
                 this.setData({
                     setPreAuthTokenPopupVisible: false
                 });
             } catch (e: any) {
                 const errMsg = getErrorMessage(e)
-                if (errMsg === "用户手动取消 SOTER 生物认证") Message.success({
-                    context: this,
-                    offset: [90, 32],
-                    duration: 3000,
-                    icon: false,
-                    single: false,
-                    content: errMsg,
-                    align: 'center'
-                }); else this.setData({
+                if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
                     errorMessage: getErrorMessage(e), errorVisible: true
                 });
             } finally {
                 this.setData({
                     isPreAuthTokenSubmitting: false
+                })
+            }
+        }
+    }, renameGroupPopupVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            renameGroupPopupVisible: e.detail.visible
+        })
+    }, onRenameGroupClick() {
+        if (isAdminAndSuperAdmin(this.data.selectedGroupUserPermission)) this.setData({
+            renameGroupPopupVisible: true
+        })
+    }, closeRenameGroupPopup() {
+        this.setData({
+            renameGroupPopupVisible: false
+        })
+    }, onChangeRenameGroup(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            renameGroupValue: e.detail.value
+        })
+    }, async continueRenameGroup() {
+        if (this.data.renameGroupValue === '') this.setData({
+            errorMessage: '请输入群组名称', errorVisible: true
+        }); else {
+            this.setData({
+                isGroupRenaming: true
+            })
+            try {
+                let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
+                await getIsUserSoterEnabled(this)
+                if (this.getIsSoterEnabled()) {
+                    soterResult = await luminaStartSoter("重命名团体 " + this.data.selectedGroupId)
+                    if (soterResult === null) {
+                        this.setData({
+                            errorMessage: "此设备不支持 SOTER 生物认证，或用户未在设备中录入任何生物特征",
+                            errorVisible: true
+                        });
+                        return;
+                    }
+                }
+                await renameGroupPromise(this.getJWT(), this.data.selectedGroupId, this.data.renameGroupValue, soterResult)
+                if (!this.data.isSelectedNotFound) await getSelectedGroupInfo(this, this.data.selectedGroupId)
+                normalToast(this, '重命名成功')
+                this.setData({
+                    renameGroupPopupVisible: false
+                });
+            } catch (e: any) {
+                const errMsg = getErrorMessage(e)
+                if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                    errorMessage: getErrorMessage(e), errorVisible: true
+                });
+            } finally {
+                this.setData({
+                    isGroupRenaming: false
                 })
             }
         }
@@ -203,5 +246,11 @@ async function getSelectedGroupInfo(that: WechatMiniprogram.App.TrivialInstance,
         selectedIsPreAuthTokenEnable: selectedGroupInfo.isPreAuthTokenEnable,
         selectedGroupMemberList: selectedGroupInfo.memberList
     })
+}
+
+function normalToast(that: WechatMiniprogram.App.TrivialInstance, content: string) {
+    Message.success({
+        context: that, offset: [90, 32], duration: 3000, icon: false, single: false, content: content, align: 'center'
+    });
 }
 

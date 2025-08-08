@@ -1,12 +1,13 @@
 <!--pages/subpages/group-management/selected-group/selected-group.wxml-->
 <wxs module="utils" src="../../../../utils/CommonUtil.wxs"></wxs>
 
+<t-message id="t-message"/>
+
 <error-popup bind:visible-change="errorVisibleChange" message="{{errorMessage}}" visible="{{errorVisible}}"/>
 
 <t-navbar left-arrow t-class-content="t-navbar-content" t-class-placeholder="t-navbar-placeholder">
     <view class="title" slot="left">团体管理</view>
 </t-navbar>
-
 
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;">
@@ -18,40 +19,35 @@
             <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
         </view>
 
-        <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&isSelectedNotFound}}">
+        <view class="pt-96rpx mx-32rpx" wx:if="{{utils.isLogin(jwt)&&isSelectedNotFound}}">
             <t-result description="此页面需要传参才可正常显示。若您在稳定版中遇见此提示，可联系客服进行反馈。"
                       theme="default" title="参数缺失"/>
         </view>
 
-        <view class="pt-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound}}">
+        <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-cell-group theme="card">
-                <t-cell description="{{selectedGroupId}}" hover title="{{selectedGroupName}}">
+                <t-cell hover note="{{selectedGroupId}}" title="团体号"/>
+                <t-cell arrow="{{utils.isAdminAndSuperAdmin(selectedGroupUserPermission)}}"
+                        bind:click="onRenameGroupClick" hover
+                        note="{{selectedGroupName===null?'未命名':selectedGroupName}}" title="团体名"/>
+                <t-cell hover note="{{selectedGroupCreateAt}}" title="创建时间"/>
+                <t-cell hover title="成员权限">
                     <t-tag slot="note"
                            theme="{{selectedGroupUserPermission==='MEMBER'?'default':selectedGroupUserPermission==='ADMIN'?'primary':'success'}}"
-                           variant="light">
+                           variant="light" wx:if="{{utils.semanticsPermission(selectedGroupUserPermission)!==''}}">
                         {{utils.semanticsPermission(selectedGroupUserPermission)}}
                     </t-tag>
                 </t-cell>
             </t-cell-group>
         </view>
 
-        <view class="pt-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound}}">
-            <t-cell-group theme="card">
-                <t-cell hover note="{{selectedGroupId}}" title="团体号"/>
-                <t-cell arrow="{{utils.isAdminAndSuperAdmin(selectedGroupUserPermission)}}" hover
-                        note="{{selectedGroupName===null?'未命名':selectedGroupName}}" title="团体名"/>
-                <t-cell hover note="{{selectedGroupCreateAt}}" title="创建时间"/>
-                <t-cell hover note="{{utils.semanticsPermission(selectedGroupUserPermission)}}" title="成员权限"/>
-            </t-cell-group>
-        </view>
-
-        <view class="pt-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound}}">
+        <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-cell-group theme="card">
                 <t-cell arrow hover note="{{selectedGroupMemberList.length + ' 位成员'}}" title="团体成员"/>
             </t-cell-group>
         </view>
 
-        <view class="pt-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound}}">
+        <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-cell-group theme="card">
                 <t-cell arrow="{{utils.isAdminAndSuperAdmin(selectedGroupUserPermission)}}"
                         bind:click="onPreAuthTokenClick" hover leftIcon="key"
@@ -60,14 +56,14 @@
         </view>
 
         <view class="pt-32rpx"
-              wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound&&utils.isSuperAdmin(selectedGroupUserPermission)}}">
+              wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&utils.isSuperAdmin(selectedGroupUserPermission)}}">
             <t-cell-group theme="card">
                 <t-cell arrow hover leftIcon="cooperate" title="设置管理员"/>
                 <t-cell arrow hover leftIcon="undertake" title="转让超级管理员"/>
             </t-cell-group>
         </view>
 
-        <view class="py-32rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&!isSelectedNotFound}}">
+        <view class="py-32rpx mx-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-button bind:tap="retreatGroup" block
                       disabled="{{utils.isSuperAdmin(selectedGroupUserPermission)||isRefreshing||!utils.isLogin(jwt)}}"
                       icon="{{isSoterEnabled?'secured' : ''}}" size="large" theme="danger">
@@ -87,10 +83,9 @@
             <view class="flex-1 text-center font-600 text-36rpx">团体预授权凭证设置</view>
         </view>
         <view>
-            <t-input bind:change="onChangePreAuthToken" label="预授权凭证" placeholder="请输入凭证内容"
-                     value="{{preAuthTokenValue}}"/>
-            <t-cell bordered="{{false}}" description="凭证有效时间间隔，单位为分钟" leftIcon="hourglass"
-                    title="凭证有效期">
+            <t-input bind:change="onChangePreAuthToken" cursor-spacing="30" label="预授权凭证"
+                     placeholder="请输入凭证内容" value="{{preAuthTokenValue}}"/>
+            <t-cell bordered="{{false}}" description="凭证有效时间间隔，单位为分钟" title="凭证有效期">
                 <t-stepper bind:change="onChangePreAuthTokenValidity" max="999" min="1" slot="note"
                            theme="filled" value="{{preAuthTokenValidityValue}}"/>
             </t-cell>
@@ -104,6 +99,31 @@
         </view>
         <view class="mt-32rpx mx-32rpx mb-32rpx flex">
             <t-button bind:tap="closeSetPreAuthTokenPopup" block disabled="{{isPreAuthTokenSubmitting}}" size="large"
+                      theme="light">取消
+            </t-button>
+        </view>
+    </view>
+</t-popup>
+
+<t-popup bind:visible-change="renameGroupPopupVisibleChange" placement="bottom"
+         visible="{{renameGroupPopupVisible}}">
+    <view class="block">
+        <view class="flex items-center h-116rpx">
+            <view class="flex-1 text-center font-600 text-36rpx">团体名设置</view>
+        </view>
+        <view>
+            <t-input bind:change="onChangeRenameGroup" bordered="{{false}}" cursor-spacing="30" label="团体名"
+                     placeholder="点击以输入" tips="{{selectedGroupName===''?'':'原团体名：'+selectedGroupName}}"
+                     value="{{renameGroupValue}}"/>
+        </view>
+        <view class="mt-32rpx mx-32rpx flex">
+            <t-button bind:tap="continueRenameGroup" block disabled="{{isGroupRenaming}}"
+                      icon="{{isSoterEnabled&&!isGroupRenaming?'secured':''}}"
+                      loading="{{isGroupRenaming}}" size="large" theme="primary">重命名
+            </t-button>
+        </view>
+        <view class="mt-32rpx mx-32rpx mb-32rpx flex">
+            <t-button bind:tap="closeRenameGroupPopup" block disabled="{{isGroupRenaming}}" size="large"
                       theme="light">取消
             </t-button>
         </view>
