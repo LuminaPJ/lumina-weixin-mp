@@ -5,7 +5,7 @@ import {loginStoreUtil, luminaLogin} from "../../utils/store-utils/LoginStoreUti
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
-import {checkIsSupportSoter} from "../../utils/SoterUtil";
+import {checkIsSupportSoter} from "../../utils/security/SoterUtil";
 import {getErrorMessage} from "../../utils/CommonUtil";
 
 const util = require("../../utils/CommonUtil");

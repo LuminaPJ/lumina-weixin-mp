@@ -12,7 +12,7 @@ import {
 import {ErrorResponse, getErrorMessage, getHeightPx, getSafeAreaBottomPx} from '../../../utils/CommonUtil';
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
-import {checkIsSoterEnrolledInDevice, checkIsSupportSoter, luminaStartSoter} from "../../../utils/SoterUtil";
+import {checkIsSoterEnrolledInDevice, checkIsSupportSoter, luminaStartSoter} from "../../../utils/security/SoterUtil";
 import {LUMINA_SERVER_HOST} from "../../../env";
 
 interface IData {

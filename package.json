@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "LuminaPJ Weixin Mini Program",
   "keywords": [],
-  "author": "lumina",
+  "author": "LuminaPJ",
   "license": "MulanPSL-2.0",
   "dependencies": {
     "dayjs": "^1.11.13",

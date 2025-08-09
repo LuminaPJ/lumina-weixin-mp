@@ -17,7 +17,7 @@ import {
     isNullOrEmptyOrUndefined
 } from "../../../../utils/CommonUtil";
 import dayjs from "dayjs";
-import {luminaStartSoter} from "../../../../utils/SoterUtil";
+import {luminaStartSoter} from "../../../../utils/security/SoterUtil";
 import {renameGroupPromise, setGroupPreAuthTokenPromise} from "../../../../utils/GroupManagerUtil";
 
 const util = require('../../../../utils/CommonUtil');

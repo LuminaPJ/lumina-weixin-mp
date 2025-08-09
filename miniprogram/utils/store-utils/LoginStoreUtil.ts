@@ -56,7 +56,7 @@ export const isLogin = (jwt: string): boolean => {
 /**
  * 获取微信小程序登录 code
  */
-async function weixinLoginPromise(): Promise<string> {
+export async function weixinLoginPromise(): Promise<string> {
     return new Promise((resolve, reject) => {
         wx.login({
             success: (res) => {
