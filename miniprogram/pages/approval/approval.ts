@@ -61,10 +61,20 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.setData({
             isRefreshing: true
         });
-        // TODO: 审批列表刷新
-        this.setData({
-            isRefreshing: false
-        });
+        try {
+            await loginStoreUtil.initLoginStore(this)
+            if (isLogin(this.getJWT())) {
+                await approvalStoreUtil.checkApprovalStatus(this)
+            }
+        } catch (e: any) {
+            this.setData({
+                errorMessage: getErrorMessage(e), errorVisible: true
+            })
+        } finally {
+            this.setData({
+                isRefreshing: false
+            })
+        }
     }, onApprovalTypeTabValueChange(e: WechatMiniprogram.CustomEvent){
         this.setData({
             approvalTypeTabValue: e.detail.value

@@ -59,6 +59,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             isRefreshing: true
         });
         try {
+            await loginStoreUtil.initLoginStore(this)
             if (isLogin(this.getJWT())) {
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
