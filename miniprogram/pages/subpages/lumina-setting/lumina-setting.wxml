@@ -13,9 +13,9 @@
     <view class="pt-32rpx pb-32rpx">
         <t-cell-group theme="card" wx:if="{{utils.isLogin(jwt)&&groupInfo.length>0}}">
             <t-cell bordered="{{false}}"
-                    description="开启后，当您的账号在执行重要操作时，需要进行设备端 SOTER 生物认证才可进行下一步操作"
+                    description="{{isSupportSoter?'开启后，当您的账号在执行重要操作时，需要进行设备端 SOTER 生物认证才可进行下一步操作':'此设备不支持 SOTER 生物认证'}}"
                     leftIcon="secured" title="SOTER 生物认证保护">
-                <t-switch bind:change="switchSoter" disabled="{{isLoading||isSoterLoading}}" loading="{{isLoading||isSoterLoading}}"
+                <t-switch bind:change="switchSoter" disabled="{{isLoading||isSoterLoading||!isSupportSoter}}" loading="{{isLoading||isSoterLoading}}"
                           slot="note" value="{{isSoterEnabled}}" wx:if="{{!isLoading}}"/>
             </t-cell>
         </t-cell-group>

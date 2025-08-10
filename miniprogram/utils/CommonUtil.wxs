@@ -1,15 +1,34 @@
 var EMPTY_JWT = 'Empty JSON Web Token';
 
+function formatNumber(n) {
+    var s = n.toString()
+    return s[1] ? s : '0' + s
+}
+
 module.exports = {
     formatVersion: function (version) {
         return '1234567890'.indexOf(version[0]) !== -1 ? 'v' + version : version;
     }, isLogin: function (jwt) {
         return jwt !== EMPTY_JWT && jwt !== null && jwt !== undefined && jwt !== '';
-    }, semanticsPermission: function (permission){
+    }, semanticsPermission: function (permission) {
         return permission === 'MEMBER' ? '普通成员' : permission === 'ADMIN' ? '管理员' : permission === 'SUPER_ADMIN' ? '超级管理员' : ''
     }, isAdminAndSuperAdmin: function (permission) {
         return permission === 'ADMIN' || permission === 'SUPER_ADMIN'
-    },isSuperAdmin: function (permission) {
+    }, isSuperAdmin: function (permission) {
         return permission === 'SUPER_ADMIN'
-    },
+    }, semanticsApprovalType: function (approvalType) {
+        return approvalType === 'TASK_CREATION' ? '创建任务' : approvalType === 'GROUP_JOIN' ? '加入团体' : approvalType === 'TASK_EXPAND_GROUP' ? '扩展任务团体' : '';
+    }, semanticsApprovalStatus: function (approvalStatus) {
+        return approvalStatus === 'PENDING' ? '待审批' : approvalStatus === 'APPROVED' ? '已通过' : approvalStatus === 'AUTO_PASSED' ? '自动通过' : approvalStatus === 'REJECTED' ? '已拒绝' : approvalStatus === 'WITHDRAWN' ? '已撤回' : '';
+    }, formatTime: function (dateString) {
+        var date = getDate(dateString);
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        return ([year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':'))
+    }
 };

@@ -109,6 +109,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 const requesterComment = this.data.requesterCommentValue === '' ? null : this.data.requesterCommentValue
                 await joinNewGroupPromise(this.getJWT(), this.data.groupIdValue, userId, userName, groupPreAuthToken, requesterComment)
                 await groupStoreUtil.checkGroupStatus(this)
+                wx.navigateBack()
             } catch (e: any) {
                 this.setData({
                     errorMessage: getErrorMessage(e), errorVisible: true

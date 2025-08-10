@@ -35,13 +35,19 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.storeBindings = createStoreBindings(this, {
             store, fields: [...loginStoreUtil.storeBinding.fields], actions: [...loginStoreUtil.storeBinding.actions]
         });
+        let isSupportSoter = false
+        try {
+            isSupportSoter = (await checkIsSupportSoter()).length > 0
+        } catch (e) {
+            isSupportSoter = false
+        }
         this.setData({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
             scrollHeightPx: util.getHeightPx(),
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
             theme: wx.getAppBaseInfo().theme || 'light',
             icpInfo: ICP_NUMBER,
-            isSupportSoter: (await checkIsSupportSoter()).length > 0,
+            isSupportSoter: isSupportSoter ?? false,
         })
         await loginStoreUtil.initLoginStore(this)
     }, onUnload() {

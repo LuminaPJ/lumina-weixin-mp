@@ -29,8 +29,42 @@
             </view>
         </view>
         <view wx:if="{{approvalTypeTabValue==='我申请'}}">
-            <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&approvalInfo.length===0}}">
+            <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&selfApprovalInfo.length===0}}">
                 <t-result description="暂未发出任何申请" theme="default" title="暂无申请"/>
+            </view>
+        </view>
+
+        <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我收到'}}">
+            <view class="py-16rpx" wx:for="{{approvalInfo}}" wx:key="approvalId">
+                <t-cell-group theme="card">
+                    <t-cell arrow bind:click="onApprovalItemClick" data-group-id="{{item.approvalId}}"
+                            description="{{utils.formatTime(item.createdAt)}}" hover
+                            left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
+                            title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">
+                        <t-tag slot="note"
+                               theme="{{item.status==='REJECTED'||item.status==='WITHDRAWN'?'default':item.status==='PENDING'?'warning':item.status==='AUTO_PASSED'?'primary':item.status==='APPROVED'?'success':''}}"
+                               variant="light">
+                            {{utils.semanticsApprovalStatus(item.status)}}
+                        </t-tag>
+                    </t-cell>
+                </t-cell-group>
+            </view>
+        </view>
+
+        <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我申请'}}">
+            <view class="py-16rpx" wx:for="{{selfApprovalInfo}}" wx:key="approvalId">
+                <t-cell-group theme="card">
+                    <t-cell arrow bind:click="onApprovalItemClick" data-group-id="{{item.approvalId}}"
+                            description="{{utils.formatTime(item.createdAt)}}" hover
+                            left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
+                            title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">
+                        <t-tag slot="note"
+                               theme="{{item.status==='REJECTED'||item.status==='WITHDRAWN'?'default':item.status==='PENDING'?'warning':item.status==='AUTO_PASSED'?'primary':item.status==='APPROVED'?'success':''}}"
+                               variant="light">
+                            {{utils.semanticsApprovalStatus(item.status)}}
+                        </t-tag>
+                    </t-cell>
+                </t-cell-group>
             </view>
         </view>
 

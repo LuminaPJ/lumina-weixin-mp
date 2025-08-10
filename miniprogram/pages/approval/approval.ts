@@ -3,7 +3,7 @@
 // @ts-ignore
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
-import {EMPTY_JWT, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil";
+import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil";
 import {getErrorMessage} from "../../utils/CommonUtil";
 import {approvalStoreUtil} from "../../utils/store-utils/ApprovalStoreUtil";
 
@@ -35,6 +35,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         })
         try {
             await loginStoreUtil.initLoginStore(this)
+            if (isLogin(this.getJWT())) {
+                await approvalStoreUtil.checkApprovalStatus(this)
+            }
         } catch (e: any) {
             this.setData({
                 errorMessage: getErrorMessage(e), errorVisible: true

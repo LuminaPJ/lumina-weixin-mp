@@ -19,21 +19,35 @@ interface IData {
     EMPTY_JWT: string
     scrollHeightPx: number
     isLoading: boolean
+    isSupportSoter: boolean
     isSoterLoading: boolean
     soterHelpPopupVisible: boolean
 }
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
     data: {
-        EMPTY_JWT: EMPTY_JWT, isLoading: true, isSoterLoading: false, soterHelpPopupVisible: false,
+        EMPTY_JWT: EMPTY_JWT,
+        isLoading: true,
+        isSoterLoading: false,
+        soterHelpPopupVisible: false,
+        isSupportSoter: false
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
             fields: [...loginStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields],
             actions: [...loginStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions]
         });
+        let isSupportSoter = false
+        try {
+            isSupportSoter = (await checkIsSupportSoter()).length > 0
+        } catch (e) {
+            isSupportSoter = false
+        }
         this.setData({
-            scrollHeightPx: getHeightPx(), safeAreaBottomPx: getSafeAreaBottomPx(), isLoading: true
+            scrollHeightPx: getHeightPx(),
+            safeAreaBottomPx: getSafeAreaBottomPx(),
+            isLoading: true,
+            isSupportSoter: isSupportSoter ?? false,
         })
         try {
             await loginStoreUtil.initLoginStore(this)

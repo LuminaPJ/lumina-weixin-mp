@@ -31,7 +31,6 @@ export async function sm4EncryptContent(content: string): Promise<EncryptContent
     }
 }
 
-
 /**
  * 微信 CryptoKey
  * @interface encryptKey 用户加密密钥
@@ -45,7 +44,6 @@ export interface WeixinCryptoKey {
     version: number;
     expireTime: number;
 }
-
 
 async function getWeixinCryptoKey(): Promise<WeixinCryptoKey> {
     const userCryptoManager = wx.getUserCryptoManager()

@@ -33,6 +33,7 @@ export const store = observable({
     }),
 
     approvalInfo: [],
+    selfApprovalInfo: [],
     taskInfo: [],
     groupInfo: [],
     userInfo: {
@@ -44,6 +45,12 @@ export const store = observable({
     }),
     getApprovalInfo: action(function () {
         return this.approvalInfo;
+    }),
+    setSelfApprovalInfo: action(function (selfApprovalInfo) {
+        this.selfApprovalInfo = selfApprovalInfo;
+    }),
+    getSelfApprovalInfo: action(function () {
+        return this.selfApprovalInfo;
     }),
     setTaskInfo: action(function (taskInfo) {
         this.taskInfo = taskInfo;
