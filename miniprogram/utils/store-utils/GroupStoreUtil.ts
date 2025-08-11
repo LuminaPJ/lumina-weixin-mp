@@ -1,5 +1,6 @@
 import {LUMINA_SERVER_HOST} from "../../env";
 import {isLogin} from "./LoginStoreUtil";
+import {ErrorResponse} from "../CommonUtil";
 
 export const groupStoreUtil = {
     checkGroupStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
@@ -62,4 +63,32 @@ export async function getGroupInfoPromise(jwt: string, groupId: string): Promise
             }, fail: reject
         })
     })
+}
+
+/**
+ * 退出团体
+ * @param jwt JSON Web Token
+ * @param groupId 团体号
+ * @param soterResult SOTER 生物认证结果
+ */
+export async function quitGroupPromise(jwt: string, groupId: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/group/' + groupId + '/quit', method: 'POST', header: {
+                Authorization: 'Bearer ' + jwt
+            }, data: JSON.stringify(buildQuitGroupRequestBody(soterResult)), success(res) {
+                if (res.statusCode === 200) resolve(res.data); else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
+            }, fail: reject
+        })
+    })
+}
+
+function buildQuitGroupRequestBody(soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null): Object {
+    const soterInfo = soterResult ? {
+        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
+    } : {}
+    return {...(soterResult && {soterInfo: {...soterInfo}})};
 }

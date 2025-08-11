@@ -6,6 +6,7 @@ import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 import {LUMINA_SERVER_HOST} from "../../../env";
 import {ErrorResponse, getErrorMessage, isNullOrEmptyOrUndefined} from "../../../utils/CommonUtil";
+import {approvalStoreUtil} from "../../../utils/store-utils/ApprovalStoreUtil";
 
 const util = require('../../../utils/CommonUtil');
 
@@ -109,6 +110,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 const requesterComment = this.data.requesterCommentValue === '' ? null : this.data.requesterCommentValue
                 await joinNewGroupPromise(this.getJWT(), this.data.groupIdValue, userId, userName, groupPreAuthToken, requesterComment)
                 await groupStoreUtil.checkGroupStatus(this)
+                await approvalStoreUtil.checkApprovalStatus(this)
                 wx.navigateBack()
             } catch (e: any) {
                 this.setData({

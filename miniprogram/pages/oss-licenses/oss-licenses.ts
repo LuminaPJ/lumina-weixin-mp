@@ -4,10 +4,9 @@ import Uri from 'jsuri'
 import ossLicensesDistText from '../../utils/OSSLicensesDistText';
 import {store} from "../../utils/MobX";
 import {copyUtil} from "../../utils/CommonUtil";
+import Message from "tdesign-miniprogram/message/index"
 
 const util = require("../../utils/CommonUtil");
-
-import Message from "tdesign-miniprogram/message/index"
 
 interface IData {
     title: string;

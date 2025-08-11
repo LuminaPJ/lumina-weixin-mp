@@ -43,7 +43,8 @@
 
         <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-cell-group theme="card">
-                <t-cell arrow hover note="{{selectedGroupMemberList.length + ' 位成员'}}" title="团体成员"/>
+                <t-cell arrow hover leftIcon="user-list" note="{{selectedGroupMemberList.length + ' 位成员'}}"
+                        title="团体成员"/>
             </t-cell-group>
         </view>
 
@@ -55,18 +56,10 @@
             </t-cell-group>
         </view>
 
-        <view class="pt-32rpx"
-              wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&utils.isSuperAdmin(selectedGroupUserPermission)}}">
-            <t-cell-group theme="card">
-                <t-cell arrow hover leftIcon="cooperate" title="设置管理员"/>
-                <t-cell arrow hover leftIcon="undertake" title="转让超级管理员"/>
-            </t-cell-group>
-        </view>
-
         <view class="py-32rpx mx-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
-            <t-button bind:tap="retreatGroup" block
+            <t-button bind:tap="onQuitGroupClick" block
                       disabled="{{utils.isSuperAdmin(selectedGroupUserPermission)||isRefreshing||!utils.isLogin(jwt)}}"
-                      icon="{{isSoterEnabled?'secured' : ''}}" size="large" theme="danger">
+                      size="large" theme="danger">
                 {{utils.isSuperAdmin(selectedGroupUserPermission) ? '超级管理员无法退出团体' : '退出团体'}}
             </t-button>
         </view>
@@ -124,6 +117,26 @@
         </view>
         <view class="mt-32rpx mx-32rpx mb-32rpx flex">
             <t-button bind:tap="closeRenameGroupPopup" block disabled="{{isGroupRenaming}}" size="large"
+                      theme="light">取消
+            </t-button>
+        </view>
+    </view>
+</t-popup>
+
+<t-popup bind:visible-change="quitGroupPopupVisibleChange" placement="bottom"
+         visible="{{quitGroupPopupVisible}}">
+    <view class="block">
+        <view class="flex items-center h-116rpx">
+            <view class="flex-1 text-center font-600 text-36rpx">确认退出团体？</view>
+        </view>
+        <view class="mx-32rpx flex">
+            <t-button bind:tap="continueQuitGroup" block disabled="{{isGroupQuiting}}"
+                      icon="{{isSoterEnabled&&!isGroupQuiting?'secured':''}}"
+                      loading="{{isGroupQuiting}}" size="large" theme="danger">退出
+            </t-button>
+        </view>
+        <view class="mt-32rpx mx-32rpx mb-32rpx flex">
+            <t-button bind:tap="closeQuitGroupPopup" block disabled="{{isGroupQuiting}}" size="large"
                       theme="light">取消
             </t-button>
         </view>

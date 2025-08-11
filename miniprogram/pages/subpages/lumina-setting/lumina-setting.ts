@@ -10,7 +10,7 @@ import {
     luminaLogout
 } from "../../../utils/store-utils/LoginStoreUtil";
 import {ErrorResponse, getErrorMessage, getHeightPx, getSafeAreaBottomPx} from '../../../utils/CommonUtil';
-import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
+import {groupStoreUtil, isJoinedAnyGroup} from "../../../utils/store-utils/GroupStoreUtil";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {checkIsSoterEnrolledInDevice, checkIsSupportSoter, luminaStartSoter} from "../../../utils/security/SoterUtil";
 import {LUMINA_SERVER_HOST} from "../../../env";
@@ -55,7 +55,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
             }
-            if (this.getGroupInfo().length > 0) await getIsUserSoterEnabled(this)
+            if (isJoinedAnyGroup(this)) await getIsUserSoterEnabled(this)
         } catch (e: any) {
             this.setData({
                 errorMessage: getErrorMessage(e), errorVisible: true
@@ -100,6 +100,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, async continueSoter() {
         this.closeSoterHelpPopup()
         setTimeout(async () => {
+            await loginStoreUtil.initLoginStore(this)
             await startSwitchSoter(this, true)
         }, 300)
     }

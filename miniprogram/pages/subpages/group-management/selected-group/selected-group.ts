@@ -7,14 +7,16 @@ import {
     getGroupInfoPromise,
     GroupInfo,
     GroupInfoMember,
-    groupStoreUtil
+    groupStoreUtil,
+    quitGroupPromise
 } from "../../../../utils/store-utils/GroupStoreUtil";
 import Message from 'tdesign-miniprogram/message/index';
 import {
     formatTime,
     getErrorMessage,
     isAdminAndSuperAdmin,
-    isNullOrEmptyOrUndefined
+    isNullOrEmptyOrUndefined,
+    isSuperAdmin
 } from "../../../../utils/CommonUtil";
 import dayjs from "dayjs";
 import {luminaStartSoter} from "../../../../utils/security/SoterUtil";
@@ -40,6 +42,8 @@ interface IData {
     renameGroupValue: string
     renameGroupPopupVisible: boolean
     isGroupRenaming: boolean
+    quitGroupPopupVisible: boolean
+    isGroupQuiting: boolean
 }
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
@@ -59,7 +63,9 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         isPreAuthTokenSubmitting: false,
         renameGroupValue: '',
         renameGroupPopupVisible: false,
-        isGroupRenaming: false
+        isGroupRenaming: false,
+        quitGroupPopupVisible: false,
+        isGroupQuiting: false
     }, async onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -150,6 +156,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isPreAuthTokenSubmitting: true
             })
             try {
+                await loginStoreUtil.initLoginStore(this)
                 let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
                 await getIsUserSoterEnabled(this)
                 if (this.getIsSoterEnabled()) {
@@ -203,6 +210,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isGroupRenaming: true
             })
             try {
+                await loginStoreUtil.initLoginStore(this)
                 let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
                 await getIsUserSoterEnabled(this)
                 if (this.getIsSoterEnabled()) {
@@ -232,7 +240,47 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 })
             }
         }
-    }
+    }, onQuitGroupClick() {
+        if (!isSuperAdmin(this.data.selectedGroupUserPermission)) {
+            this.setData({
+                quitGroupPopupVisible: true
+            })
+        }
+    }, quitGroupPopupVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            quitGroupPopupVisible: e.detail.visible
+        })
+    }, async continueQuitGroup() {
+        this.setData({
+            isQuitGroupSubmitting: true
+        })
+        try {
+            await loginStoreUtil.initLoginStore(this)
+            let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
+            await getIsUserSoterEnabled(this)
+            if (this.getIsSoterEnabled()) {
+                soterResult = await luminaStartSoter("退出团体 " + this.data.selectedGroupId)
+                if (soterResult === null) {
+                    this.setData({
+                        errorMessage: "此设备不支持 SOTER 生物认证，或用户未在设备中录入任何生物特征", errorVisible: true
+                    });
+                    return;
+                }
+            }
+            await quitGroupPromise(this.getJWT(), this.data.selectedGroupId, soterResult)
+            await groupStoreUtil.checkGroupStatus(this)
+            wx.navigateBack()
+        } catch (e: any) {
+            const errMsg = getErrorMessage(e)
+            if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                errorMessage: getErrorMessage(e), errorVisible: true
+            });
+        } finally {
+            this.setData({
+                isQuitGroupSubmitting: false
+            })
+        }
+    },
 })
 
 async function getSelectedGroupInfo(that: WechatMiniprogram.App.TrivialInstance, selectedGroupId: string) {

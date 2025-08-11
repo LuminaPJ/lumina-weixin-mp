@@ -47,9 +47,12 @@
                 在琳琅问中开启 SOTER 生物认证保护开关后，该用户账号在执行任何重要操作时（如退出团体、投出无法撤回的投票），需通过
                 SOTER 生物认证后才可执行。
             </view>
-            <view class="pt-12rpx text-28rpx">
+            <view class="py-12rpx text-28rpx">
                 <rich-text
                         nodes="如果您的设备未经过腾讯 SOTER 终端设备认证，则无法在琳琅问中使用 SOTER 生物认证保护。<b>同理，如果您在支持 SOTER 的设备下使用琳琅问打开 SOTER 生物认证保护开关后，您将无法在任何未经过 SOTER 认证的设备下使用琳琅问执行重要操作。</b>"></rich-text>
+            </view>
+            <view class="pt-12rpx text-28rpx">
+                如果您使用的是 OpenHarmony 设备且提示设备不支持 SOTER，请耐心等待微信后续版本更新。
             </view>
         </view>
         <view class="mt-32rpx mx-32rpx mb-32rpx flex">

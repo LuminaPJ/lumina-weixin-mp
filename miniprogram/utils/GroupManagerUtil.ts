@@ -11,23 +11,19 @@ import {ErrorResponse} from "./CommonUtil";
 export async function renameGroupPromise(jwt: string, groupId: string, newGroupName: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
     return new Promise((resolve, reject) => {
         wx.request({
-            url: 'https://' + LUMINA_SERVER_HOST + '/groupManager/' + groupId + '/rename',
-            method: 'POST',
-            header: {
+            url: 'https://' + LUMINA_SERVER_HOST + '/groupManager/' + groupId + '/rename', method: 'POST', header: {
                 Authorization: 'Bearer ' + jwt
-            },data: JSON.stringify(buildRenameGroupRequestBody(newGroupName,soterResult)),
-            success(res) {
+            }, data: JSON.stringify(buildRenameGroupRequestBody(newGroupName, soterResult)), success(res) {
                 if (res.statusCode === 200) resolve(res.data); else {
                     const resData = res.data as ErrorResponse;
                     reject(new Error(resData.message))
                 }
-            },
-            fail: reject
+            }, fail: reject
         })
     })
 }
 
-function buildRenameGroupRequestBody(newGroupName: string,soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null): Object {
+function buildRenameGroupRequestBody(newGroupName: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null): Object {
     const soterInfo = soterResult ? {
         json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
     } : {}
@@ -72,8 +68,4 @@ function buildSetGroupPreAuthTokenRequestBody(preAuthToken: string, validity: nu
         preAuthToken: preAuthToken, validity: validity, ...(soterResult && {soterInfo: {...soterInfo}})
     };
 }
-
-
-
-
 
