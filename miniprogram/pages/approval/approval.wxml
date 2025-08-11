@@ -37,7 +37,7 @@
         <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我收到'}}">
             <view class="py-16rpx" wx:for="{{approvalInfo}}" wx:key="approvalId">
                 <t-cell-group theme="card">
-                    <t-cell arrow bind:click="onApprovalItemClick" data-group-id="{{item.approvalId}}"
+                    <t-cell arrow bind:click="onApprovalItemClick" data-approval-id="{{item.approvalId}}"
                             description="{{utils.formatTime(item.createdAt)}}" hover
                             left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
                             title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">
@@ -54,7 +54,7 @@
         <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我申请'}}">
             <view class="py-16rpx" wx:for="{{selfApprovalInfo}}" wx:key="approvalId">
                 <t-cell-group theme="card">
-                    <t-cell arrow bind:click="onApprovalItemClick" data-group-id="{{item.approvalId}}"
+                    <t-cell arrow bind:click="onApprovalItemClick" data-approval-id="{{item.approvalId}}"
                             description="{{utils.formatTime(item.createdAt)}}" hover
                             left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
                             title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">

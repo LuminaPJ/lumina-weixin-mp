@@ -19,7 +19,7 @@ interface IData {
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
     data: {
-        EMPTY_JWT: EMPTY_JWT, isRefreshing: true,approvalTypeTabValue: '我收到'
+        EMPTY_JWT: EMPTY_JWT, isRefreshing: true, approvalTypeTabValue: '我收到'
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -75,9 +75,14 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isRefreshing: false
             })
         }
-    }, onApprovalTypeTabValueChange(e: WechatMiniprogram.CustomEvent){
+    }, onApprovalTypeTabValueChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             approvalTypeTabValue: e.detail.value
+        })
+    }, onApprovalItemClick(e: WechatMiniprogram.CustomEvent) {
+        const selectedApprovalId = e.currentTarget.dataset.approvalId
+        wx.navigateTo({
+            url: '/pages/approval/selected-approval/selected-approval?selectedApprovalId=' + selectedApprovalId
         })
     }
 })

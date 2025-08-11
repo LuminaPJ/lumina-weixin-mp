@@ -10,7 +10,7 @@
 </t-navbar>
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height:{{scrollHeightPx-44+safeAreaBottomPx}}px;">
-    <view class="pt-32rpx pb-32rpx">
+    <view class="pt-32rpx">
         <t-cell-group theme="card" wx:if="{{utils.isLogin(jwt)&&groupInfo.length>0}}">
             <t-cell bordered="{{false}}"
                     description="{{isSupportSoter?'开启后，当您的账号在执行重要操作时，需要进行设备端 SOTER 生物认证才可进行下一步操作':'此设备不支持 SOTER 生物认证'}}"
@@ -20,7 +20,7 @@
             </t-cell>
         </t-cell-group>
     </view>
-    <view class="mx-32rpx pb-32rpx">
+    <view class="pt-32rpx mx-32rpx pb-32rpx">
         <t-button bind:tap="logout" block disabled="{{!utils.isLogin(jwt)}}" size="large"
                   theme="danger">{{utils.isLogin(jwt) ? '退出登录' : '尚未登录'}}</t-button>
     </view>

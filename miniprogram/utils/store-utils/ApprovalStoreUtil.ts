@@ -1,5 +1,6 @@
 import {LUMINA_SERVER_HOST} from "../../env";
 import {isLogin} from "./LoginStoreUtil";
+import {ErrorResponse, GROUP_JOIN, TASK_CREATION, TASK_EXPAND_GROUP} from "../CommonUtil";
 
 export const approvalStoreUtil = {
     checkApprovalStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
@@ -12,8 +13,8 @@ export const approvalStoreUtil = {
 }
 
 export const getApprovalInfo = async (that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> => {
-    const approvalInfo = await getApprovalInfoPromise(jwt);
-    const selfApprovalInfo = await getSelfApprovalInfoPromise(jwt);
+    const approvalInfo = await getApprovalListPromise(jwt);
+    const selfApprovalInfo = await getSelfApprovalListPromise(jwt);
     that.setApprovalInfo(approvalInfo);
     that.setSelfApprovalInfo(selfApprovalInfo);
 }
@@ -29,7 +30,7 @@ export interface ApprovalInfo {
     reviewedAt: string | null,
 }
 
-async function getApprovalInfoPromise(jwt: string): Promise<ApprovalInfo[]> {
+async function getApprovalListPromise(jwt: string): Promise<ApprovalInfo[]> {
     return new Promise((resolve, reject) => {
         wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/approval/admin', header: {
@@ -41,7 +42,7 @@ async function getApprovalInfoPromise(jwt: string): Promise<ApprovalInfo[]> {
     })
 }
 
-async function getSelfApprovalInfoPromise(jwt: string): Promise<ApprovalInfo[]> {
+async function getSelfApprovalListPromise(jwt: string): Promise<ApprovalInfo[]> {
     return new Promise((resolve, reject) => {
         wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/approval/self', header: {
@@ -51,4 +52,52 @@ async function getSelfApprovalInfoPromise(jwt: string): Promise<ApprovalInfo[]> 
             }, fail: reject
         })
     })
+}
+
+export interface JoinGroupApprovalInfo {
+    approvalId: number,
+    targetGroupId: string,
+    requesterUserId: string,
+    requesterUserName: string,
+    createdAt: string,
+    approvalType: string,
+    status: string,
+    comment: string | null,
+    reviewer: string | null,
+    reviewerName: string | null,
+    reviewedAt: string | null,
+}
+
+export async function getApprovalInfoPromise(jwt: string, approvalId: string): Promise<JoinGroupApprovalInfo | null> {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/approval/' + approvalId, header: {
+                Authorization: 'Bearer ' + jwt
+            }, success: (res) => {
+                if (res.statusCode === 200) {
+                    const resData = res.data as any
+                    switch (resData.approvalType) {
+                        case GROUP_JOIN:
+                            resolve(resData as JoinGroupApprovalInfo);
+                            break;
+                        case TASK_CREATION:
+                            // TODO：创建任务
+                            break;
+                        case TASK_EXPAND_GROUP:
+                            // TODO：扩展团体
+                            break;
+                        default:
+                            reject("服务端错误");
+                    }
+                } else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
+            }, fail: reject
+        })
+    })
+}
+
+export function isJoinGroupApprovalInfo(object: any) {
+    return object && object.approvalType === GROUP_JOIN;
 }

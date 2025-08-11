@@ -89,7 +89,6 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 }); else if (selectedGroupId) await getSelectedGroupInfo(this, selectedGroupId)
             }
         } catch (e: any) {
-            console.error(e)
             this.setData({
                 errorMessage: getErrorMessage(e), errorVisible: true
             })

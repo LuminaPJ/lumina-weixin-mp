@@ -11,8 +11,6 @@
     "t-footer": "tdesign-miniprogram/footer/footer",
     "t-navbar": "tdesign-miniprogram/navbar/navbar",
     "t-result": "tdesign-miniprogram/result/result",
-    "t-tab-bar": "tdesign-miniprogram/tab-bar/tab-bar",
-    "t-tab-bar-item": "tdesign-miniprogram/tab-bar-item/tab-bar-item",
     "t-tag": "tdesign-miniprogram/tag/tag"
   }
 }

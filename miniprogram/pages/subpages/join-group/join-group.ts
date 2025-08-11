@@ -37,8 +37,8 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
-            fields: [...loginStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields],
-            actions: [...loginStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions]
+            fields: [...loginStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields, ...approvalStoreUtil.storeBinding.fields],
+            actions: [...loginStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...approvalStoreUtil.storeBinding.actions]
         });
         this.setData({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
@@ -126,17 +126,19 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
 
 })
 
-function buildJoinNewGroupRequestBodyJson(userId: string, userName: string, groupPreAuthToken: string | null, requesterComment: string | null): Object {
+function buildJoinNewGroupRequestBodyJson(userId: string, userName: string, device: string, groupPreAuthToken: string | null, requesterComment: string | null): Object {
     const optionalFields = {
         ...(groupPreAuthToken && {groupPreAuthToken}), ...(requesterComment && {requesterComment})
     };
     return {
-        requesterUserId: userId, requesterUserName: userName, ...optionalFields
+        requesterUserId: userId, requesterUserName: userName, requesterDevice: device, ...optionalFields
     };
 }
 
 async function joinNewGroupPromise(jwt: string, groupId: string, userId: string, userName: string, groupPreAuthToken: string | null, requesterComment: string | null) {
-    const requestJsonString = buildJoinNewGroupRequestBodyJson(userId, userName, groupPreAuthToken, requesterComment)
+    const deviceInfo = wx.getDeviceInfo()
+    const device = deviceInfo.brand + ' ' + deviceInfo.model;
+    const requestJsonString = buildJoinNewGroupRequestBodyJson(userId, userName, device, groupPreAuthToken, requesterComment)
     return new Promise((resolve, reject) => {
         wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/group/' + groupId + '/join', method: 'POST', header: {
