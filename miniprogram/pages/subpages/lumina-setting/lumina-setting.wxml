@@ -10,12 +10,21 @@
 </t-navbar>
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height:{{scrollHeightPx-44+safeAreaBottomPx}}px;">
-    <view class="pt-32rpx">
-        <t-cell-group theme="card" wx:if="{{utils.isLogin(jwt)&&groupInfo.length>0}}">
+    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)}}">
+        <t-cell-group theme="card">
+            <t-cell bordered="{{false}}"
+                    leftIcon="history" title="隐藏超过 7 天的日程和审批">
+                <t-switch bind:change="switchHideMore7Day" slot="note" value="{{isHideMore7DayEnabled}}"/>
+            </t-cell>
+        </t-cell-group>
+    </view>
+    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&groupInfo.length>0}}">
+        <t-cell-group theme="card">
             <t-cell bordered="{{false}}"
                     description="{{isSupportSoter?'开启后，当您的账号在执行重要操作时，需要进行设备端 SOTER 生物认证才可进行下一步操作':'此设备不支持 SOTER 生物认证'}}"
                     leftIcon="secured" title="SOTER 生物认证保护">
-                <t-switch bind:change="switchSoter" disabled="{{isLoading||isSoterLoading||!isSupportSoter}}" loading="{{isLoading||isSoterLoading}}"
+                <t-switch bind:change="switchSoter" disabled="{{isLoading||isSoterLoading||!isSupportSoter}}"
+                          loading="{{isLoading||isSoterLoading}}"
                           slot="note" value="{{isSoterEnabled}}" wx:if="{{!isLoading}}"/>
             </t-cell>
         </t-cell-group>
@@ -48,7 +57,7 @@
             <t-button bind:tap="continueSoter" block size="large" theme="light">我已知晓，下一步</t-button>
         </view>
         <view class="mt-32rpx mx-32rpx mb-32rpx flex">
-        <t-button bind:tap="closeSoterHelpPopup" block size="large" theme="light">取消</t-button>
-    </view>
+            <t-button bind:tap="closeSoterHelpPopup" block size="large" theme="light">取消</t-button>
+        </view>
     </view>
 </t-popup>

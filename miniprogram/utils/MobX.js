@@ -77,5 +77,13 @@ export const store = observable({
     }),
     getOSSLicensesDist: action(function () {
         return this.ossLicensesDist;
-    })
+    }),
+
+    isHideMore7DayEnabled: false,
+    setIsHideMore7DayEnabled: action(function (isHideMore7DayEnabled) {
+        this.isHideMore7DayEnabled = isHideMore7DayEnabled;
+    }),
+    getIsHideMore7DayEnabled: action(function () {
+        return this.isHideMore7DayEnabled;
+    }),
 });

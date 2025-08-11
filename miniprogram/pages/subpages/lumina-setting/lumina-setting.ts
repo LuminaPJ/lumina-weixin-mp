@@ -22,6 +22,7 @@ interface IData {
     isSupportSoter: boolean
     isSoterLoading: boolean
     soterHelpPopupVisible: boolean
+    isHideMore7DayEnabled: boolean
 }
 
 Page<IData, WechatMiniprogram.App.TrivialInstance>({
@@ -30,12 +31,13 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         isLoading: true,
         isSoterLoading: false,
         soterHelpPopupVisible: false,
-        isSupportSoter: false
+        isSupportSoter: false,
+        isHideMore7DayEnabled: wx.getStorageSync('isHideMore7DayEnabled') ?? false
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
-            fields: [...loginStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields],
-            actions: [...loginStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions]
+            fields: ["isHideMore7DayEnabled", ...loginStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields],
+            actions: ["setIsHideMore7DayEnabled", "getIsHideMore7DayEnabled", ...loginStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions]
         });
         let isSupportSoter = false
         try {
@@ -48,6 +50,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             safeAreaBottomPx: getSafeAreaBottomPx(),
             isLoading: true,
             isSupportSoter: isSupportSoter ?? false,
+            isHideMore7DayEnabled: wx.getStorageSync('isHideMore7DayEnabled') ?? false
         })
         try {
             await loginStoreUtil.initLoginStore(this)
@@ -103,6 +106,12 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             await loginStoreUtil.initLoginStore(this)
             await startSwitchSoter(this, true)
         }, 300)
+    }, switchHideMore7Day(e: WechatMiniprogram.CustomEvent) {
+        wx.setStorageSync('isHideMore7DayEnabled', e.detail.value)
+        this.setIsHideMore7DayEnabled(e.detail.value)
+        this.setData({
+            isHideMore7DayEnabled: e.detail.value
+        })
     }
 })
 

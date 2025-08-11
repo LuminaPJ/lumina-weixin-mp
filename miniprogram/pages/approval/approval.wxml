@@ -35,7 +35,9 @@
         </view>
 
         <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我收到'}}">
-            <view class="py-16rpx" wx:for="{{approvalInfo}}" wx:key="approvalId">
+            <view class="py-16rpx" wx:for="{{approvalInfo}}"
+                  wx:if="{{(isHideMore7DayEnabled&&!utils.isMoreThan7Day(item.createdAt)||!isHideMore7DayEnabled)}}"
+                  wx:key="approvalId">
                 <t-cell-group theme="card">
                     <t-cell arrow bind:click="onApprovalItemClick" data-approval-id="{{item.approvalId}}"
                             description="{{utils.formatTime(item.createdAt)}}" hover
@@ -49,10 +51,15 @@
                     </t-cell>
                 </t-cell-group>
             </view>
+            <view wx:if="{{isHideMore7DayEnabled}}">
+                <t-footer text="— 已隐藏超过 7 天的审批 —"/>
+            </view>
         </view>
 
         <view class="py-16rpx" wx:if="{{approvalTypeTabValue==='我申请'}}">
-            <view class="py-16rpx" wx:for="{{selfApprovalInfo}}" wx:key="approvalId">
+            <view class="py-16rpx" wx:for="{{selfApprovalInfo}}"
+                  wx:if="{{(isHideMore7DayEnabled&&!utils.isMoreThan7Day(item.createdAt)||!isHideMore7DayEnabled)}}"
+                  wx:key="approvalId">
                 <t-cell-group theme="card">
                     <t-cell arrow bind:click="onApprovalItemClick" data-approval-id="{{item.approvalId}}"
                             description="{{utils.formatTime(item.createdAt)}}" hover
@@ -65,6 +72,9 @@
                         </t-tag>
                     </t-cell>
                 </t-cell-group>
+            </view>
+            <view wx:if="{{isHideMore7DayEnabled}}">
+                <t-footer text="— 已隐藏超过 7 天的审批 —"/>
             </view>
         </view>
 

@@ -21,7 +21,7 @@
     "shelljs": "^0.10.0",
     "spdx-license-list": "^6.10.0",
     "uglify-js": "^3.19.3",
-    "unocss": "^66.4.1"
+    "unocss": "^66.4.2"
   },
   "main": "index.js",
   "scripts": {

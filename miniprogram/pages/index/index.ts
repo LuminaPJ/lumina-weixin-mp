@@ -23,10 +23,11 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
-            fields: [...loginStoreUtil.storeBinding.fields, ...taskStoreUtil.storeBinding.fields],
-            actions: [...loginStoreUtil.storeBinding.actions, ...taskStoreUtil.storeBinding.actions]
+            fields: ["isHideMore7DayEnabled", ...loginStoreUtil.storeBinding.fields, ...taskStoreUtil.storeBinding.fields],
+            actions: ["setIsHideMore7DayEnabled", "getIsHideMore7DayEnabled", ...loginStoreUtil.storeBinding.actions, ...taskStoreUtil.storeBinding.actions]
         });
         this.getTabBar().init();
+        this.setIsHideMore7DayEnabled(wx.getStorageSync('isHideMore7DayEnabled') ?? false)
         const scrollHeightPx = util.getHeightPx()
         this.setData({
             scrollHeightPx: scrollHeightPx - util.rpx2px(80),
