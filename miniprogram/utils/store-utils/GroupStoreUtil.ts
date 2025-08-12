@@ -19,7 +19,7 @@ export interface GroupInfo {
 }
 
 export async function getGroupList(that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> {
-    let groupList = await getGroupListPromise(jwt);
+    const groupList = await getGroupListPromise(jwt);
     that.setGroupInfo(groupList)
 }
 
@@ -39,7 +39,7 @@ async function getGroupListPromise(jwt: string): Promise<GroupInfo[]> {
     })
 }
 
-export interface GroupInfo {
+export interface GroupInfoDetail {
     groupId: string,
     groupName: string | null,
     createAt: string,
@@ -53,13 +53,13 @@ export interface GroupInfoMember {
     permission: string
 }
 
-export async function getGroupInfoPromise(jwt: string, groupId: string): Promise<GroupInfo> {
+export async function getGroupInfoPromise(jwt: string, groupId: string): Promise<GroupInfoDetail> {
     return new Promise((resolve, reject) => {
         wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/group/' + groupId, header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
-                resolve(res.data as GroupInfo);
+                resolve(res.data as GroupInfoDetail);
             }, fail: reject
         })
     })

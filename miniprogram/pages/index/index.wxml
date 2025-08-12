@@ -18,7 +18,28 @@
         </view>
 
         <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&taskInfo.length===0}}">
-            <t-result description="暂未收到任何日程" theme="default" title="暂无日程"/>
+            <t-result description="暂未收到任何任务" theme="default" title="暂无任务"/>
+        </view>
+
+        <view class="py-16rpx">
+            <view class="py-16rpx" wx:for="{{taskInfo}}"
+                  wx:if="{{(isHideMore7DayEnabled&&!utils.isMoreThan7Day(item.endTime)||!isHideMore7DayEnabled)}}"
+                  wx:key="taskId">
+                <t-cell-group theme="card">
+                    <t-cell arrow bind:click="onTaskItemClick" data-task-id="{{item.taskId}}"
+                            description="{{utils.formatTime(item.endTime)+' 截止'}}" hover
+                            title="{{item.taskName}}">
+                        <t-tag slot="note"
+                               theme="{{item.status==='NOT_REQUIRED'||item.status==='EXPIRED'?'default':item.status==='PENDING'?'warning':item.status==='PARTICIPATED'?'success':''}}"
+                               variant="light">
+                            {{utils.semanticsTaskStatus(item.status)}}
+                        </t-tag>
+                    </t-cell>
+                </t-cell-group>
+            </view>
+            <view wx:if="{{isHideMore7DayEnabled&&utils.isLogin(jwt)&&taskInfo.length!==0}}">
+                <t-footer text="— 已隐藏超过 7 天的任务 —"/>
+            </view>
         </view>
 
     </scroll-view>

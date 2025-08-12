@@ -4,7 +4,7 @@
 import ActionSheet, {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/index';
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
-import {EMPTY_JWT, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
+import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
 import {getErrorMessage} from "../../utils/CommonUtil";
 import {taskStoreUtil} from "../../utils/store-utils/TaskStoreUtil";
 
@@ -34,9 +34,14 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
             isRefreshing: true
         })
+        this.setIsHideMore7DayEnabled(wx.getStorageSync('isHideMore7DayEnabled') ?? false)
         try {
             await loginStoreUtil.initLoginStore(this)
+            if (isLogin(this.getJWT())) {
+                await taskStoreUtil.checkTaskStatus(this)
+            }
         } catch (e: any) {
+            console.error(e)
             this.setData({
                 errorMessage: getErrorMessage(e), errorVisible: true
             })
@@ -67,10 +72,20 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         this.setData({
             isRefreshing: true
         });
-        // TODO: 任务列表刷新
-        this.setData({
-            isRefreshing: false
-        });
+        try {
+            await loginStoreUtil.initLoginStore(this)
+            if (isLogin(this.getJWT())) {
+                await taskStoreUtil.checkTaskStatus(this)
+            }
+        } catch (e: any) {
+            this.setData({
+                errorMessage: getErrorMessage(e), errorVisible: true
+            })
+        } finally {
+            this.setData({
+                isRefreshing: false
+            })
+        }
     }, handleFabSelected(e: WechatMiniprogram.CustomEvent) {
         switch (e.detail.selected.label) {
             case '加入团体':
@@ -78,8 +93,10 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                     url: '/pages/subpages/join-group/join-group',
                 })
                 break;
-            case '新建日程':
-                // TODO: 新建日程
+            case '新建任务':
+                wx.navigateTo({
+                    url: '/pages/subpages/create-task/create-task',
+                })
                 break;
             case '刷新':
                 this.onRefresh()
@@ -96,7 +113,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
 const fabTaskGrid = [{
     label: '加入团体', icon: 'usergroup-add',
 }, {
-    label: '新建日程', icon: 'task-add',
+    label: '新建任务', icon: 'task-add',
 }, {
     label: '刷新', icon: 'refresh',
 },];

@@ -86,6 +86,10 @@ export const isNullOrEmptyOrUndefined = (value: any): boolean => {
     return value === null || value === undefined || value === ''
 }
 
+export const isNullOrUndefined = (value: any): boolean => {
+    return value === null || value === undefined
+}
+
 export interface ErrorResponse {
     statusCode: number;
     message: string;

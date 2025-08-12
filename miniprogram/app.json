@@ -13,7 +13,9 @@
     "pages/subpages/group-management/group-management",
     "pages/subpages/join-group/join-group",
     "pages/subpages/group-management/selected-group/selected-group",
-    "pages/approval/selected-approval/selected-approval"
+    "pages/approval/selected-approval/selected-approval",
+    "pages/subpages/group-management/selected-group-user/selected-group-user",
+    "pages/subpages/create-task/create-task"
   ],
   "tabBar": {
     "custom": true,

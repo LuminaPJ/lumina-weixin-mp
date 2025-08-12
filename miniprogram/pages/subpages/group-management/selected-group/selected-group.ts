@@ -5,7 +5,7 @@ import {store} from "../../../../utils/MobX";
 import {userInfoStoreUtil} from "../../../../utils/store-utils/UserInfoUtil";
 import {
     getGroupInfoPromise,
-    GroupInfo,
+    GroupInfo, GroupInfoDetail,
     GroupInfoMember,
     groupStoreUtil,
     quitGroupPromise
@@ -279,11 +279,15 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                 isQuitGroupSubmitting: false
             })
         }
-    },
+    },closeQuitGroupPopup(){
+        this.setData({
+            quitGroupPopupVisible: false
+        })
+    }
 })
 
 async function getSelectedGroupInfo(that: WechatMiniprogram.App.TrivialInstance, selectedGroupId: string) {
-    const selectedGroupInfo: GroupInfo = await getGroupInfoPromise(that.getJWT(), selectedGroupId);
+    const selectedGroupInfo: GroupInfoDetail = await getGroupInfoPromise(that.getJWT(), selectedGroupId);
     const selectedGroupUserPermission = selectedGroupInfo.memberList.find(member => member.userId === that.getUserInfo().userId)?.permission
     const selectedGroupCreateAt = formatTime(dayjs(selectedGroupInfo.createAt).toDate())
     that.setData({

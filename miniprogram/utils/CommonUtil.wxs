@@ -34,5 +34,7 @@ module.exports = {
         var date = getDate(dateString);
         var now = Date.now();
         return (now - date.getTime()) / (1000 * 60 * 60 * 24) > 7;
+    }, semanticsTaskStatus: function (taskStatus) {
+        return taskStatus === 'PENDING' ? '待参与' : taskStatus === 'STARTED' ? '进行中' : taskStatus === 'PARTICIPATED' ? '已参与' : taskStatus === 'NOT_REQUIRED' ? '无需参与' : taskStatus === 'EXPIRED' ? '已过期' : '';
     },
 };
