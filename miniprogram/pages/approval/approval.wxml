@@ -51,7 +51,7 @@
                     </t-cell>
                 </t-cell-group>
             </view>
-            <view wx:if="{{isHideMore7DayEnabled}}">
+            <view wx:if="{{isHideMore7DayEnabled&&utils.isLogin(jwt)&&approvalInfo.length!==0}}">
                 <t-footer text="— 已隐藏超过 7 天的审批 —"/>
             </view>
         </view>
@@ -73,7 +73,7 @@
                     </t-cell>
                 </t-cell-group>
             </view>
-            <view wx:if="{{isHideMore7DayEnabled}}">
+            <view wx:if="{{isHideMore7DayEnabled&&utils.isLogin(jwt)&&selfApprovalInfo.length!==0}}">
                 <t-footer text="— 已隐藏超过 7 天的审批 —"/>
             </view>
         </view>

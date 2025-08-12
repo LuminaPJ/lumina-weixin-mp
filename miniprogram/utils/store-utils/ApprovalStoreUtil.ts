@@ -62,9 +62,8 @@ export interface JoinGroupApprovalInfo {
     createdAt: string,
     approvalType: string,
     status: string,
+    targetGroupName: string | null,
     comment: string | null,
-    reviewer: string | null,
-    reviewerName: string | null,
     reviewedAt: string | null,
 }
 

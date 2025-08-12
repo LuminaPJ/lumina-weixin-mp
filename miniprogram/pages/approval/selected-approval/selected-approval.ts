@@ -170,7 +170,7 @@ async function getSelectedApprovalInfo(that: WechatMiniprogram.App.TrivialInstan
             selectedApprovalType: GROUP_JOIN,
             selectedApprovalId: selectApprovalInfo.approvalId,
             selectedApprovalTargetGroupId: selectApprovalInfo.targetGroupId,
-            isGroupAdmin: util.isAdminAndSuperAdmin(targetGroupInfo.permission),
+            isGroupAdmin: that.getGroupInfo().length !== 0 ? util.isAdminAndSuperAdmin(targetGroupInfo.permission) : false,
             selectedJoinGroupApproval: selectApprovalInfo
         })
     }

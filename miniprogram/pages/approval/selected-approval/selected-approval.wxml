@@ -36,12 +36,23 @@
                             {{utils.semanticsApprovalStatus(selectedJoinGroupApproval.status)}}
                         </t-tag>
                     </t-cell>
+                    <t-cell hover note="{{utils.formatTime(selectedJoinGroupApproval.reviewedAt)}}" title="审批时间"
+                            wx:if="{{selectedJoinGroupApproval.reviewedAt}}"/>
                 </t-cell-group>
             </view>
 
             <view class="pt-32rpx">
                 <t-cell-group theme="card">
-                    <t-cell hover note="{{selectedJoinGroupApproval.targetGroupId}}" title="目标团体"/>
+                    <t-cell hover title="目标团体">
+                        <view slot="note">
+                            <view class="mr-16rpx inline">{{selectedJoinGroupApproval.targetGroupName ? selectedJoinGroupApproval.targetGroupName : selectedJoinGroupApproval.targetGroupId}}</view>
+                            <t-tag class="inline-block vertical-bottom"
+                                   theme="default" variant="light"
+                                   wx:if="{{selectedJoinGroupApproval.targetGroupName}}">
+                                {{selectedJoinGroupApproval.targetGroupId}}
+                            </t-tag>
+                        </view>
+                    </t-cell>
                     <t-cell hover note="{{selectedJoinGroupApproval.requesterUserId}}" title="申请用户号"/>
                     <t-cell hover note="{{selectedJoinGroupApproval.requesterUserName}}" title="申请用户名"/>
                     <t-cell hover note="{{selectedJoinGroupApproval.requesterDevice}}" title="申请者设备"/>
@@ -71,7 +82,8 @@
                       loading="{{isApprovalApproving}}" size="large" theme="primary">同意
             </t-button>
         </view>
-        <view class="pt-32rpx mx-32rpx pb-32rpx flex"  wx:if="{{isGroupAdmin&&selectedJoinGroupApproval.status==='PENDING'}}">
+        <view class="pt-32rpx mx-32rpx pb-32rpx flex"
+              wx:if="{{isGroupAdmin&&selectedJoinGroupApproval.status==='PENDING'}}">
             <t-button bind:tap="rejectApproval" block disabled="{{isApprovalApproving||isApprovalRejecting}}"
                       icon="{{isSoterEnabled&&!isApprovalRejecting?'secured':''}}"
                       loading="{{isApprovalRejecting}}" size="large" theme="danger">拒绝
