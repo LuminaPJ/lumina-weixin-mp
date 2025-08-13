@@ -61,7 +61,7 @@
 
             <view class="pt-32rpx">
                 <t-cell-group theme="card">
-                    <t-cell hover note="{{selectedJoinGroupApproval.comment}}"
+                    <t-cell description="{{selectedJoinGroupApproval.comment}}" hover
                             title="{{selectedJoinGroupApproval.comment?'备注':'无备注'}}"/>
                 </t-cell-group>
             </view>

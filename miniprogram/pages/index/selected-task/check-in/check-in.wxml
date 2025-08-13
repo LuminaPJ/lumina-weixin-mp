@@ -27,12 +27,9 @@
         <view wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <view class="pt-32rpx">
                 <t-cell-group theme="card">
+                    <t-cell hover note="{{selectedTask.taskName}}" title="任务名"/>
                     <t-cell hover note="{{utils.semanticsCheckInTaskType(selectedTask.checkInType)}}"
-                            title="签到任务类型"/>
-                    <t-cell hover note="{{selectedTask.creatorName?selectedTask.creatorName:selectedTask.creatorId}}"
-                            title="创建者"/>
-                    <t-cell hover note="{{utils.formatTime(selectedTask.createdAt)}}" title="创建时间"/>
-                    <t-cell hover note="{{utils.formatTime(selectedTask.endTime)}}" title="结束时间"/>
+                            title="任务类型"/>
                     <t-cell hover title="任务状态">
                         <t-tag slot="note"
                                theme="{{selectedTask.status==='NOT_REQUIRED'||selectedTask.status==='EXPIRED'?'default':selectedTask.status==='PENDING'?'warning':selectedTask.status==='PARTICIPATED'?'success':''}}"
@@ -40,6 +37,7 @@
                             {{utils.semanticsCheckInTaskStatus(selectedTask.status)}}
                         </t-tag>
                     </t-cell>
+                    <t-cell hover note="{{utils.formatTime(selectedTask.endTime)}}" title="结束时间"/>
                 </t-cell-group>
             </view>
 
@@ -50,6 +48,30 @@
                                       format="{{countDownTime>24*60*60*1000?'DD 天 HH:mm:ss':'HH:mm:ss'}}"
                                       slot="note" time="{{countDownTime}}"/>
                     </t-cell>
+                </t-cell-group>
+            </view>
+
+            <view class="pt-32rpx">
+                <t-cell-group theme="card">
+                    <t-cell hover title="目标团体">
+                        <view slot="note">
+                            <view class="mr-16rpx inline">{{selectedTask.groupName ? selectedTask.groupName : selectedTask.groupId}}</view>
+                            <t-tag class="inline-block vertical-bottom"
+                                   theme="default" variant="light"
+                                   wx:if="{{selectedTask.groupName}}">
+                                {{selectedTask.groupId}}
+                            </t-tag>
+                        </view>
+                    </t-cell>
+                    <t-cell hover note="{{selectedTask.creatorName?selectedTask.creatorName:selectedTask.creatorId}}"
+                            title="创建者"/>
+                    <t-cell hover note="{{utils.formatTime(selectedTask.createdAt)}}" title="创建时间"/>
+                </t-cell-group>
+            </view>
+
+            <view class="pt-32rpx" wx:if="{{selectedTask.description}}">
+                <t-cell-group theme="card">
+                    <t-cell description="{{selectedTask.description}}" hover title="任务描述"/>
                 </t-cell-group>
             </view>
 
