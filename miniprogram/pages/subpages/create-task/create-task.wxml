@@ -11,17 +11,17 @@
 
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;">
-    <view class="pt-96rpx mx-32rpx" wx:if="{{!utils.isLogin(jwt)}}">
+    <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&!utils.isLogin(jwt)}}">
         <t-result theme="default" title="尚未登录"/>
         <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
     </view>
 
-    <view class="pt-96rpx mx-32rpx" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length===0}}">
+    <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&utils.isLogin(jwt)&&administratedGroup.length===0}}">
         <t-result description="未成为管理的团体成员暂时无法申请创建团体任务，请耐心等待后续更新" theme="default"
                   title="尚无正在管理的团体"/>
     </view>
 
-    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)}}">
+    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0}}">
         <t-cell-group theme="card">
             <t-cell arrow bind:click="onTaskTypePickerStart" hover note="{{selectedTaskType.label}}" title="任务类型"/>
             <t-cell arrow bind:click="onGroupPickerStart" hover note="{{selectedGroup.groupId}}" title="目标团体"/>
@@ -30,18 +30,18 @@
         </t-cell-group>
     </view>
 
-    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)}}">
+    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0}}">
         <t-cell-group theme="card">
-            <t-input bind:change="onChangeTaskTitle" cursor-spacing="30" label="任务标题"
+            <t-input bind:change="onChangeTaskTitle" confirm-type="next" cursor-spacing="30" label="任务标题"
                      placeholder="选填" tips="{{selectedTaskType.label?'默认值：'+selectedTaskType.label+'任务':''}}"
                      value="{{taskTitleValue}}"/>
-            <t-input bind:change="onChangeTaskDescription" borderless="{{true}}" cursor-spacing="30" label="任务描述"
-                     placeholder="选填" value="{{taskDescriptionValue}}"/>
+            <t-input bind:change="onChangeTaskDescription" borderless="{{true}}" confirm-type="done" cursor-spacing="30"
+                     label="任务描述" placeholder="选填" value="{{taskDescriptionValue}}"/>
         </t-cell-group>
     </view>
 
     <view class="pt-32rpx"
-          wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)&&selectedTaskType.value==='CHECK_IN'}}">
+          wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedTaskType.value==='CHECK_IN'}}">
         <t-cell-group theme="card">
             <t-cell arrow bind:click="startCheckInSetting"
                     hover note="{{isCheckInTokenEnabled&&checkInTokenValue?'验证码签到':'普通签到'}}"
@@ -49,7 +49,7 @@
         </t-cell-group>
     </view>
 
-    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)&&selectedGroup.groupId}}">
+    <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedGroup.groupId}}">
         <t-cell-group theme="card">
             <t-cell description="白名单模式下，仅选中的成员可参与任务，且团体新成员默认无法参与任务" hover
                     title="白名单模式">
@@ -62,7 +62,7 @@
         </t-cell-group>
     </view>
 
-    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)}}">
+    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0}}">
         <t-button bind:tap="createTask" block
                   disabled="{{isTaskCreating}}"
                   icon="{{isSoterEnabled&&!isTaskCreating?'secured':''}}" loading="{{isTaskCreating}}" size="large"
@@ -70,10 +70,11 @@
         </t-button>
     </view>
 
-    <view class="mx-32rpx py-16rpx" wx:if="{{utils.isLogin(jwt)&&!(administratedGroup.length===0)}}">
+    <view class="mx-32rpx py-16rpx" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0}}">
         <t-footer class="text-center"
                   text="为保证任务数据不失真，任务信息一经创建不可修改，请在创建前核对信息是否准确完整"/>
     </view>
+    <view style="padding-bottom: {{safeAreaBottomPx}}px;"/>
 </scroll-view>
 
 
@@ -108,11 +109,12 @@
         </view>
         <view>
             <t-cell description="开启后，团体成员在执行签到任务时需提供与下方一致的验证码" hover
-                    title="签到时需验证码">
+                    title="签到时需验证码" bordered="{{isCheckInTokenEnabled}}">
                 <t-switch bind:change="switchCheckInToken" slot="note" value="{{isCheckInTokenEnabled}}"/>
             </t-cell>
             <t-input bind:change="onChangeCheckInToken" borderless="{{true}}" cursor-spacing="30" label="验证码"
-                     placeholder="请输入签到验证码" value="{{checkInTokenValue}}" wx:if="{{isCheckInTokenEnabled}}"/>
+                     placeholder="请输入签到验证码" tips="请保管好输入的验证码，验证码一经提交无法再次查看"
+                     value="{{checkInTokenValue}}" wx:if="{{isCheckInTokenEnabled}}"/>
         </view>
         <view class="m-32rpx flex">
             <t-button bind:tap="closeSetCheckInSetting" block size="large" theme="primary">确定

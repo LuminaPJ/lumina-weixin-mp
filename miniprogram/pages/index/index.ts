@@ -6,7 +6,7 @@ import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store} from "../../utils/MobX";
 import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
 import {getErrorMessage} from "../../utils/CommonUtil";
-import {taskStoreUtil} from "../../utils/store-utils/TaskStoreUtil";
+import {CHECK_IN, taskStoreUtil} from "../../utils/store-utils/TaskStoreUtil";
 
 const util = require('../../utils/CommonUtil');
 
@@ -98,8 +98,17 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
                     url: '/pages/subpages/create-task/create-task',
                 })
                 break;
-            case '刷新':
-                this.onRefresh()
+            default:
+                break;
+        }
+    }, onTaskItemClick(e: WechatMiniprogram.CustomEvent) {
+        const selectedTaskId = e.currentTarget.dataset.taskId
+        const selectedTaskType = e.currentTarget.dataset.taskType
+        switch (selectedTaskType) {
+            case CHECK_IN:
+                wx.navigateTo({
+                    url: '/pages/index/selected-task/check-in/check-in?selectedTaskId=' + selectedTaskId
+                });
                 break;
             default:
                 break;
@@ -111,9 +120,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
  * 点击首页浮动按钮的弹出菜单
  */
 const fabTaskGrid = [{
-    label: '加入团体', icon: 'usergroup-add',
-}, {
     label: '新建任务', icon: 'task-add',
 }, {
-    label: '刷新', icon: 'refresh',
+    label: '加入团体', icon: 'usergroup-add',
 },];

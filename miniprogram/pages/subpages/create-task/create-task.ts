@@ -352,7 +352,7 @@ function buildCreateCheckInTaskRequestBody(taskName: string, taskEndTime: string
         taskType: CHECK_IN,
         checkInType: checkInType,
         endTime: taskEndTime,
-        memberPolicy: taskMemberPolicyType, ...(taskDescription && {description: {taskDescription}}), ...(groupInfoMemberForSubmit && {memberPolicyList: groupInfoMemberForSubmit}), ...(checkInToken && {checkInToken}), ...(soterResult && {soterInfo: {...soterInfo}})
+        memberPolicy: taskMemberPolicyType, ...(taskDescription && {description: taskDescription}), ...(groupInfoMemberForSubmit && {memberPolicyList: groupInfoMemberForSubmit}), ...(checkInToken && {checkInToken}), ...(soterResult && {soterInfo: {...soterInfo}})
     }
 }
 

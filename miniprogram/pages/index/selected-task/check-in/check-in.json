@@ -7,6 +7,7 @@
     "t-button": "tdesign-miniprogram/button/button",
     "t-cell": "tdesign-miniprogram/cell/cell",
     "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-count-down": "tdesign-miniprogram/count-down/count-down",
     "t-fab": "tdesign-miniprogram/fab/fab",
     "t-input": "tdesign-miniprogram/input/input",
     "t-message": "tdesign-miniprogram/message/message",

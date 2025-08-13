@@ -7,11 +7,11 @@
     <view class="title" slot="left">日程</view>
 </t-navbar>
 
-<t-pull-down-refresh bind:refresh="onRefresh"
-                     enable-passive loadingTexts="{{['下拉刷新', '松手刷新', '', '加载完成']}}"
-                     usingCustomNavbar value="{{isRefreshing}}">
-    <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
-                 style="height: {{scrollHeightPx-56}}px;">
+<scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
+             style="height: {{scrollHeightPx-56}}px;">
+    <t-pull-down-refresh bind:refresh="onRefresh"
+                         enable-passive loadingTexts="{{['下拉刷新', '松手刷新', '', '加载完成']}}"
+                         usingCustomNavbar value="{{isRefreshing}}">
         <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&!utils.isLogin(jwt)}}">
             <t-result theme="default" title="尚未登录"/>
             <t-button bind:tap="login" block class="mt-32rpx" size="large" theme="primary">登录</t-button>
@@ -27,12 +27,14 @@
                   wx:key="taskId">
                 <t-cell-group theme="card">
                     <t-cell arrow bind:click="onTaskItemClick" data-task-id="{{item.taskId}}"
-                            description="{{utils.formatTime(item.endTime)+' 截止'}}" hover
+                            data-task-type="{{item.taskType}}" description="{{utils.formatTime(item.endTime)+' 截止'}}"
+                            hover
+                            left-icon="{{item.taskType==='CHECK_IN'?'calendar-2':item.taskType==='VOTE'?'chart-bar':item.taskType==='LOTTERY'?'gift':''}}"
                             title="{{item.taskName}}">
                         <t-tag slot="note"
                                theme="{{item.status==='NOT_REQUIRED'||item.status==='EXPIRED'?'default':item.status==='PENDING'?'warning':item.status==='PARTICIPATED'?'success':''}}"
                                variant="light">
-                            {{utils.semanticsTaskStatus(item.status)}}
+                            {{utils.semanticsCheckInTaskStatus(item.status)}}
                         </t-tag>
                     </t-cell>
                 </t-cell-group>
@@ -42,8 +44,8 @@
             </view>
         </view>
 
-    </scroll-view>
-</t-pull-down-refresh>
+    </t-pull-down-refresh>
+</scroll-view>
 
 <t-fab aria-label="新建" bind:click="handleFabTaskClick" icon="add" style="margin-bottom: {{40+safeMarginBottomPx}}px;"
        using-custom-navbar wx:if="{{utils.isLogin(jwt)}}"></t-fab>

@@ -15,6 +15,12 @@ export const approvalStoreUtil = {
 export const getApprovalInfo = async (that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> => {
     const approvalInfo = await getApprovalListPromise(jwt);
     const selfApprovalInfo = await getSelfApprovalListPromise(jwt);
+    approvalInfo.sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    selfApprovalInfo.sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
     that.setApprovalInfo(approvalInfo);
     that.setSelfApprovalInfo(selfApprovalInfo);
 }
