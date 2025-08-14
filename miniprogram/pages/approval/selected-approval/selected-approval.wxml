@@ -29,7 +29,8 @@
                 <t-cell-group theme="card">
                     <t-cell hover note="{{utils.semanticsApprovalType(selectedApprovalType)}}" title="审批类型"/>
                     <t-cell hover note="{{utils.formatTime(selectedJoinGroupApproval.createdAt)}}" title="创建时间"/>
-                    <t-cell hover title="审批状态">
+                    <t-cell description="{{selectedJoinGroupApproval.status==='AUTO_PASSED'?'此用户提供了有效的团体预授权凭证':''}}"
+                            hover title="审批状态">
                         <t-tag slot="note"
                                theme="{{selectedJoinGroupApproval.status==='REJECTED'||selectedJoinGroupApproval.status==='WITHDRAWN'?'default':selectedJoinGroupApproval.status==='PENDING'?'warning':selectedJoinGroupApproval.status==='AUTO_PASSED'?'primary':selectedJoinGroupApproval.status==='APPROVED'?'success':''}}"
                                variant="light">

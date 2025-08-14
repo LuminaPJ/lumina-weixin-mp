@@ -6,6 +6,7 @@ const sm4 = require('miniprogram-sm-crypto').sm4
 export interface EncryptContent {
     encryptContent: string;
     encryptVersion: number;
+    hmacSignature: string;
     weixinLoginCode: string;
 }
 
@@ -25,9 +26,17 @@ export interface EncryptContent {
 export async function sm4EncryptContent(content: string): Promise<EncryptContent> {
     const encryptKey = await getWeixinCryptoKey()
     const weixinLoginCode = await weixinLoginPromise()
-    const encryptData = sm4.encrypt(content, encryptKey.encryptKey, {mode: 'cbc', iv: encryptKey.iv})
+    const encryptData = sm4.encrypt(content, encryptKey.encryptKey, {
+        mode: 'cbc', iv: encryptKey.iv
+    })
+    const hmacSignature = sm3(encryptData, {
+        mode: 'hmac', key: encryptKey.encryptKey,
+    })
     return {
-        encryptContent: encryptData, encryptVersion: encryptKey.version, weixinLoginCode: weixinLoginCode
+        encryptContent: encryptData,
+        encryptVersion: encryptKey.version,
+        hmacSignature: hmacSignature,
+        weixinLoginCode: weixinLoginCode
     }
 }
 
@@ -68,18 +77,14 @@ function base64KeyToHex(base64Str: string): string {
     let binaryStr = '';
     for (let i = 0; i < base64Clean.length; i++) {
         const pos = lookupTable.indexOf(base64Clean[i]);
-        if (pos >= 0) {
-            binaryStr += pos.toString(2).padStart(6, '0');
-        }
+        if (pos >= 0) binaryStr += pos.toString(2).padStart(6, '0');
     }
 
     // 转换为十六进制
     let hexStr = '';
     for (let i = 0; i < binaryStr.length; i += 8) {
         const byteStr = binaryStr.substr(i, 8);
-        if (byteStr.length === 8) {
-            hexStr += parseInt(byteStr, 2).toString(16).padStart(2, '0');
-        }
+        if (byteStr.length === 8) hexStr += parseInt(byteStr, 2).toString(16).padStart(2, '0');
     }
 
     return hexStr.toLowerCase();
