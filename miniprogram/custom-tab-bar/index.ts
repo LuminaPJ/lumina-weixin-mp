@@ -8,13 +8,19 @@ Page({
     }, onChange(e: any) {
         switch (e.detail.value) {
             case "task":
-                wx.switchTab({url: '/pages/index/index',});
+                wx.switchTab({
+                    url: '/pages/index/index'
+                });
                 break;
             case "approval":
-                wx.switchTab({url: '/pages/approval/approval',});
+                wx.switchTab({
+                    url: '/pages/approval/approval'
+                });
                 break;
             case 'user':
-                wx.switchTab({url: '/pages/user/user',});
+                wx.switchTab({
+                    url: '/pages/user/user'
+                });
                 break;
         }
     },
@@ -22,8 +28,8 @@ Page({
     /**
      * **重要**
      *
-     * 由于微信小程序的页面或组件构建器中的 onLoad() 等生命周期方法在 custom tab 不生效，
-     * 所以需要在涉及 custom tab 的页面或组件的 onLoad() 方法中手动调用 init() 方法。如：
+     * 由于微信小程序的页面或组件构建器中的 `onLoad()` 等生命周期方法在 custom tab 不生效，
+     * 所以需要在涉及 custom tab 的页面或组件的 `onLoad()` 方法中手动调用 `init()` 方法。如：
      *
      * ```JavaScript
      * onLoad() {

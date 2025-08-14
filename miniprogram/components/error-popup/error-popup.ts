@@ -11,9 +11,9 @@ Component({
                 }
             }
         }, message: {
-            type: String | null, value: '', observer(newVal) {
+            type: String | null, value: '', observer(newVal: string | null) {
                 this.setData({
-                    errorMessage: newVal,
+                    errorMessage: newVal ?? '',
                 })
             }
         },
