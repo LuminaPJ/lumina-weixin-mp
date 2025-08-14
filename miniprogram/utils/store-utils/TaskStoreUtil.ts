@@ -24,10 +24,12 @@ export interface TaskInfo {
 
 export async function getTaskList(that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> {
     const taskList = await getTaskListPromise(jwt);
-    if (taskList.length !== 0) taskList.sort((a, b) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-    that.setTaskInfo(taskList)
+    if ((typeof taskList).toLowerCase() === 'object') {
+        if (taskList.length !== 0) taskList.sort((a, b) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        that.setTaskInfo(taskList)
+    } else that.setTaskInfo([]);
 }
 
 async function getTaskListPromise(jwt: string): Promise<TaskInfo[]> {

@@ -19,7 +19,7 @@ export interface GroupInfo {
 
 export async function getGroupList(that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> {
     const groupList = await getGroupListPromise(jwt);
-    that.setGroupInfo(groupList)
+    if ((typeof groupList).toLowerCase() === 'object') that.setGroupInfo(groupList); else that.setGroupInfo([])
 }
 
 export const isJoinedAnyGroup = (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance): boolean => {

@@ -15,14 +15,18 @@ export const approvalStoreUtil = {
 export const getApprovalInfo = async (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> => {
     const approvalInfo = await getApprovalListPromise(jwt);
     const selfApprovalInfo = await getSelfApprovalListPromise(jwt);
-    if (approvalInfo.length !== 0) approvalInfo.sort((a, b) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-    if (selfApprovalInfo.length !== 0) selfApprovalInfo.sort((a, b) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-    that.setApprovalInfo(approvalInfo);
-    that.setSelfApprovalInfo(selfApprovalInfo);
+    if ((typeof approvalInfo).toLowerCase() === 'object') {
+        if (approvalInfo.length !== 0) approvalInfo.sort((a, b) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        that.setApprovalInfo(approvalInfo);
+    } else that.setApprovalInfo([]);
+    if ((typeof selfApprovalInfo).toLowerCase() === 'object') {
+        if (selfApprovalInfo.length !== 0) selfApprovalInfo.sort((a, b) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        that.setSelfApprovalInfo(selfApprovalInfo);
+    } else that.setSelfApprovalInfo([]);
 }
 
 export interface ApprovalInfo {
