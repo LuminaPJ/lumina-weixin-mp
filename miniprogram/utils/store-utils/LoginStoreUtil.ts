@@ -5,9 +5,10 @@ import {LUMINA_SERVER_HOST} from "../../env";
 export const EMPTY_JWT = 'Empty JSON Web Token'
 
 export const loginStoreUtil = {
-    initLoginStore: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    initLoginStore: async function (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
         await this.checkLoginStatus(that);
-    }, checkLoginStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    },
+    checkLoginStatus: async function (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
         if (!that.getIsLoginStateChecked()) {
             const isCancellationStateFromWeixinStorage: boolean = getWeixinStorageSyncWithDefault<boolean>('isCancellationState', true)
             that.setIsCancellationState(isCancellationStateFromWeixinStorage)
@@ -27,13 +28,14 @@ export const loginStoreUtil = {
                 }
             }
         }
-    }, storeBinding: {
+    },
+    storeBinding: {
         fields: ['isLoginStateChecked', 'jwt', 'isCancellationState', 'isSoterEnabled'],
         actions: ['setIsLoginStateChecked', 'getIsLoginStateChecked', 'setJWT', 'getJWT', 'setIsCancellationState', 'getIsCancellationState', 'setIsSoterEnabled', 'getIsSoterEnabled']
     }
 }
 
-export const luminaLogin = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
+export const luminaLogin = async (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance): Promise<void> => {
     const jwt = await luminaLoginRequestPromise();
     if (!isNullOrEmptyOrUndefined(jwt)) {
         that.setJWT(jwt);
@@ -42,7 +44,7 @@ export const luminaLogin = async (that: WechatMiniprogram.App.TrivialInstance): 
     }
 }
 
-export const luminaLogout = async (that: WechatMiniprogram.App.TrivialInstance): Promise<void> => {
+export const luminaLogout = async (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance): Promise<void> => {
     await wx.setStorage({key: 'JWT', data: EMPTY_JWT, encrypt: true})
     await wx.setStorage({key: 'isCancellationState', data: true})
     that.setJWT(EMPTY_JWT);
@@ -104,7 +106,7 @@ async function validateJwtPromise(jwt: string): Promise<boolean> {
     })
 }
 
-interface IsUserSoterEnabledResponse{
+interface IsUserSoterEnabledResponse {
     isUserSoterEnabled: boolean
 }
 
@@ -112,7 +114,7 @@ interface IsUserSoterEnabledResponse{
  * 获取用户是否开启 Soter 生物认证保护
  * @param that 小程序 Page 实例
  */
-export async function getIsUserSoterEnabled(that: WechatMiniprogram.App.TrivialInstance): Promise<void>{
+export async function getIsUserSoterEnabled(that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance): Promise<void> {
     const isUserSoterEnabled = await getIsUserSoterEnabledPromise(that.getJWT());
     that.setIsSoterEnabled(isUserSoterEnabled)
 }

@@ -1,6 +1,6 @@
 // pages/subpages/group-management/group-management.ts
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../utils/MobX";
+import {store, StoreInstance} from "../../../utils/MobX";
 import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../../utils/store-utils/LoginStoreUtil";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
@@ -14,7 +14,7 @@ interface IData {
     isRefreshing: boolean
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true
     }, async onLoad() {
@@ -45,7 +45,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible

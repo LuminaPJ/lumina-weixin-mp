@@ -1,11 +1,11 @@
 // pages/subpages/group-management/selected-group/selected-group.ts
 import {EMPTY_JWT, getIsUserSoterEnabled, isLogin, loginStoreUtil} from "../../../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../../utils/MobX";
+import {store, StoreInstance} from "../../../../utils/MobX";
 import {userInfoStoreUtil} from "../../../../utils/store-utils/UserInfoUtil";
 import {
     getGroupInfoPromise,
-    GroupInfo, GroupInfoDetail,
+    GroupInfoDetail,
     GroupInfoMember,
     groupStoreUtil,
     quitGroupPromise
@@ -46,7 +46,7 @@ interface IData {
     isGroupQuiting: boolean
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT,
         isRefreshing: true,
@@ -98,7 +98,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible
@@ -286,7 +286,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }
 })
 
-async function getSelectedGroupInfo(that: WechatMiniprogram.App.TrivialInstance, selectedGroupId: string) {
+async function getSelectedGroupInfo(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedGroupId: string) {
     const selectedGroupInfo: GroupInfoDetail = await getGroupInfoPromise(that.getJWT(), selectedGroupId);
     const selectedGroupUserPermission = selectedGroupInfo.memberList.find(member => member.userId === that.getUserInfo().userId)?.permission
     const selectedGroupCreateAt = formatTime(dayjs(selectedGroupInfo.createAt).toDate())
@@ -300,7 +300,7 @@ async function getSelectedGroupInfo(that: WechatMiniprogram.App.TrivialInstance,
     })
 }
 
-function normalToast(that: WechatMiniprogram.App.TrivialInstance, content: string) {
+function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {
     Message.success({
         context: that, offset: [90, 32], duration: 3000, icon: false, single: false, content: content, align: 'center'
     });

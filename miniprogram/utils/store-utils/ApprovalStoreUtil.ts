@@ -3,7 +3,7 @@ import {isLogin} from "./LoginStoreUtil";
 import {ErrorResponse, GROUP_JOIN, TASK_CREATION, TASK_EXPAND_GROUP} from "../CommonUtil";
 
 export const approvalStoreUtil = {
-    checkApprovalStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    checkApprovalStatus: async function (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
         const jwt = that.getJWT();
         if (isLogin(jwt)) await getApprovalInfo(that, that.getJWT())
     }, storeBinding: {
@@ -12,13 +12,13 @@ export const approvalStoreUtil = {
     }
 }
 
-export const getApprovalInfo = async (that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> => {
+export const getApprovalInfo = async (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> => {
     const approvalInfo = await getApprovalListPromise(jwt);
     const selfApprovalInfo = await getSelfApprovalListPromise(jwt);
-    approvalInfo.sort((a, b) => {
+    if (approvalInfo.length !== 0) approvalInfo.sort((a, b) => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-    selfApprovalInfo.sort((a, b) => {
+    if (selfApprovalInfo.length !== 0) selfApprovalInfo.sort((a, b) => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     that.setApprovalInfo(approvalInfo);

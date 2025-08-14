@@ -1,7 +1,7 @@
 // pages/index/selected-task/check-in/check-in.ts
 import {EMPTY_JWT, getIsUserSoterEnabled, isLogin, loginStoreUtil} from "../../../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../../utils/MobX";
+import {store, StoreInstance} from "../../../../utils/MobX";
 import {userInfoStoreUtil} from "../../../../utils/store-utils/UserInfoUtil";
 import {GroupInfo, groupStoreUtil} from "../../../../utils/store-utils/GroupStoreUtil";
 import {ErrorResponse, getErrorMessage, isNullOrEmptyOrUndefined} from "../../../../utils/CommonUtil";
@@ -21,9 +21,10 @@ interface IData {
     isGroupAdmin: boolean
     countDownTime: number
     checkInTokenValue: string
+    selectedCheckInId: string,
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true, isSelectedNotFound: false, selectedCheckInId: '', isGroupAdmin: false
     }, async onLoad(options) {
@@ -59,7 +60,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible
@@ -122,14 +123,14 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }
 })
 
-async function getSelectedCheckInTaskInfo(that: WechatMiniprogram.App.TrivialInstance, selectedTaskId: string) {
+async function getSelectedCheckInTaskInfo(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedTaskId: string) {
     const selectCheckInTaskInfo = await getCheckInTaskInfoPromise(that.getJWT(), selectedTaskId)
     if (selectCheckInTaskInfo == null) that.setData({
         errorMessage: "未找到任务", errorVisible: true
     }); else {
         const countDownTime = new Date(selectCheckInTaskInfo.endTime).getTime() - Date.now()
-        const targetGroupInfo: GroupInfo = that.getGroupInfo().find((groupInfo: GroupInfo) => groupInfo.groupId === selectCheckInTaskInfo.groupId)
-        that.setData({
+        const targetGroupInfo: GroupInfo | undefined = that.getGroupInfo().find((groupInfo: GroupInfo) => groupInfo.groupId === selectCheckInTaskInfo.groupId)
+        if (targetGroupInfo) that.setData({
             selectedTaskId: selectedTaskId,
             selectedTask: selectCheckInTaskInfo,
             countDownTime: countDownTime,
@@ -155,7 +156,7 @@ async function startCheckInPromise(jwt: string, taskId: string, token: string | 
     })
 }
 
-function normalToast(that: WechatMiniprogram.App.TrivialInstance, content: string) {
+function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {
     Message.success({
         context: that, offset: [90, 32], duration: 3000, icon: false, single: false, content: content, align: 'center'
     });

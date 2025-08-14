@@ -1,6 +1,6 @@
 // pages/lumina-setting/lumina-setting.ts
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../utils/MobX";
+import {store, StoreInstance} from "../../../utils/MobX";
 import Message from 'tdesign-miniprogram/message/index';
 import {
     EMPTY_JWT,
@@ -25,7 +25,11 @@ interface IData {
     isHideMore7DayEnabled: boolean
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+interface IMethods extends WechatMiniprogram.Page.InstanceMethods<IData> {
+    closeSoterHelpPopup: () => void;
+}
+
+Page<IData, StoreInstance & IMethods>({
     data: {
         EMPTY_JWT: EMPTY_JWT,
         isLoading: true,
@@ -69,7 +73,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, async logout() {
         await luminaLogout(this)
         wx.navigateBack()
@@ -115,7 +119,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }
 })
 
-async function startSwitchSoter(that: WechatMiniprogram.App.TrivialInstance, actionBoolean: boolean) {
+async function startSwitchSoter(that: WechatMiniprogram.Page.Instance<IData,StoreInstance>, actionBoolean: boolean) {
     that.setData({
         isSoterLoading: true
     })

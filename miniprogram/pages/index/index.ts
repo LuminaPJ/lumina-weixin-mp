@@ -3,7 +3,7 @@
 // @ts-ignore
 import ActionSheet, {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/index';
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../utils/MobX";
+import {store, StoreInstance} from "../../utils/MobX";
 import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil"
 import {getErrorMessage} from "../../utils/CommonUtil";
 import {CHECK_IN, taskStoreUtil} from "../../utils/store-utils/TaskStoreUtil";
@@ -17,7 +17,7 @@ interface IData {
     isRefreshing: boolean
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true
     }, async onLoad() {
@@ -51,7 +51,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings()
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings()
     }, onResize() {
         this.setData({
             safeMarginBottomPx: util.getSafeAreaBottomPx()

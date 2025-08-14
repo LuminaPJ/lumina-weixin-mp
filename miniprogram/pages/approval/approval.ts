@@ -1,8 +1,7 @@
 // pages/approval/approval.ts
 
-// @ts-ignore
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../utils/MobX";
+import {store, StoreInstance} from "../../utils/MobX";
 import {EMPTY_JWT, isLogin, loginStoreUtil} from "../../utils/store-utils/LoginStoreUtil";
 import {getErrorMessage} from "../../utils/CommonUtil";
 import {approvalStoreUtil} from "../../utils/store-utils/ApprovalStoreUtil";
@@ -17,7 +16,7 @@ interface IData {
     approvalTypeTabValue: string
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true, approvalTypeTabValue: '我收到'
     }, async onLoad() {
@@ -49,7 +48,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings()
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings()
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible

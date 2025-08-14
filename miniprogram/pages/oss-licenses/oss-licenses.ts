@@ -2,7 +2,7 @@
 import {createStoreBindings} from 'mobx-miniprogram-bindings';
 import Uri from 'jsuri'
 import ossLicensesDistText from '../../utils/OSSLicensesDistText';
-import {store} from "../../utils/MobX";
+import {store, StoreInstance} from "../../utils/MobX";
 import {copyUtil} from "../../utils/CommonUtil";
 import Message from "tdesign-miniprogram/message/index"
 
@@ -18,8 +18,7 @@ interface IData {
     safeAreaBottomPx: number;
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
-    // @ts-ignore
+Page<IData, StoreInstance>({
     data: {
         title: "", version: "", licenseBody: "", repoLink: "", repoType: ""
     },
@@ -54,7 +53,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })()
         })
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, copyRepo() {
         copyUtil(this.data.repoLink, Message, this)
     }

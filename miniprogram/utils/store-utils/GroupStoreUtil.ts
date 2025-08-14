@@ -3,12 +3,11 @@ import {isLogin} from "./LoginStoreUtil";
 import {ErrorResponse} from "../CommonUtil";
 
 export const groupStoreUtil = {
-    checkGroupStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    checkGroupStatus: async function (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
         const jwt = that.getJWT();
         if (isLogin(jwt)) await getGroupList(that, that.getJWT())
     }, storeBinding: {
-        fields: ['groupInfo'],
-        actions: ['setGroupInfo', 'getGroupInfo']
+        fields: ['groupInfo'], actions: ['setGroupInfo', 'getGroupInfo']
     }
 }
 
@@ -18,12 +17,12 @@ export interface GroupInfo {
     permission: string
 }
 
-export async function getGroupList(that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> {
+export async function getGroupList(that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> {
     const groupList = await getGroupListPromise(jwt);
     that.setGroupInfo(groupList)
 }
 
-export const isJoinedAnyGroup = (that: WechatMiniprogram.App.TrivialInstance): boolean =>{
+export const isJoinedAnyGroup = (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance): boolean => {
     return that.getGroupInfo().length > 0;
 }
 

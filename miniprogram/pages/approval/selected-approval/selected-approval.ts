@@ -1,7 +1,7 @@
 // pages/approval/selected-approval/selected-approval.ts
 import {EMPTY_JWT, getIsUserSoterEnabled, isLogin, loginStoreUtil} from "../../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../utils/MobX";
+import {store, StoreInstance} from "../../../utils/MobX";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {GroupInfo, groupStoreUtil} from "../../../utils/store-utils/GroupStoreUtil";
 import {ErrorResponse, getErrorMessage, GROUP_JOIN, isNullOrEmptyOrUndefined} from "../../../utils/CommonUtil";
@@ -29,7 +29,7 @@ interface IData {
     isGroupAdmin: boolean
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT, isRefreshing: true, isSelectedNotFound: false, selectedApprovalId: '', isGroupAdmin: false
     }, async onLoad(options) {
@@ -65,7 +65,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible
@@ -160,15 +160,15 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
 })
 
 
-async function getSelectedApprovalInfo(that: WechatMiniprogram.App.TrivialInstance, selectedApprovalId: string) {
+async function getSelectedApprovalInfo(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedApprovalId: string) {
     const selectApprovalInfo = await getApprovalInfoPromise(that.getJWT(), selectedApprovalId)
     if (selectApprovalInfo == null) that.setData({
         errorMessage: "未找到审批", errorVisible: true
     }); else if (isJoinGroupApprovalInfo(selectApprovalInfo)) {
-        const targetGroupInfo: GroupInfo = that.getGroupInfo().find((groupInfo: GroupInfo) => groupInfo.groupId === selectApprovalInfo.targetGroupId)
-        that.setData({
+        const targetGroupInfo: GroupInfo | undefined = that.getGroupInfo().find((groupInfo: GroupInfo) => groupInfo.groupId === selectApprovalInfo.targetGroupId)
+        if (targetGroupInfo) that.setData({
             selectedApprovalType: GROUP_JOIN,
-            selectedApprovalId: selectApprovalInfo.approvalId,
+            selectedApprovalId: selectApprovalInfo.approvalId.toString(),
             selectedApprovalTargetGroupId: selectApprovalInfo.targetGroupId,
             isGroupAdmin: that.getGroupInfo().length !== 0 ? util.isAdminAndSuperAdmin(targetGroupInfo.permission) : false,
             selectedJoinGroupApproval: selectApprovalInfo
@@ -176,7 +176,7 @@ async function getSelectedApprovalInfo(that: WechatMiniprogram.App.TrivialInstan
     }
 }
 
-async function actionToApproval(that: WechatMiniprogram.App.TrivialInstance, selectedApprovalId: string, action: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+async function actionToApproval(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedApprovalId: string, action: string, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
     const jwt = that.getJWT()
     const approvalType = that.data.selectedApprovalType
     const requestBodyString = JSON.stringify(buildActionToApprovalRequestBody(action, approvalType, soterResult))
@@ -208,7 +208,7 @@ function buildActionToApprovalRequestBody(action: string, approvalType: string, 
     return {approvalType: approvalType, action: action, ...(soterResult && {soterInfo: {...soterInfo}})};
 }
 
-function normalToast(that: WechatMiniprogram.App.TrivialInstance, content: string) {
+function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {
     Message.success({
         context: that, offset: [90, 32], duration: 3000, icon: false, single: false, content: content, align: 'center'
     });

@@ -1,9 +1,8 @@
 // pages/login/login.ts
 
-// @ts-ignore
 import {loginStoreUtil, luminaLogin} from "../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../utils/MobX";
+import {store, StoreInstance} from "../../utils/MobX";
 import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
 import {checkIsSupportSoter} from "../../utils/security/SoterUtil";
 import {getErrorMessage} from "../../utils/CommonUtil";
@@ -23,8 +22,7 @@ interface IData {
     soterHelpPopupVisible: boolean;
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
-    // @ts-ignore
+Page<IData, StoreInstance>({
     data: {
         footerLink: [{
             name: '用户协议', url: USER_AGREEMENT_URL, openType: '',
@@ -51,7 +49,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
         })
         await loginStoreUtil.initLoginStore(this)
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, async login() {
         try {
             this.setData({

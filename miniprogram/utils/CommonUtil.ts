@@ -59,7 +59,7 @@ export const getSafeAreaBottomPx = (): number => {
  * @param copyData 要复制的字符串
  * @param that 当前页面实例
  */
-export function copyUtil(copyData: string, Message: any, that: WechatMiniprogram.App.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
+export function copyUtil(copyData: string, Message: any, that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
     wx.setClipboardData({
         data: copyData, success(_) {
             setTimeout(() => {

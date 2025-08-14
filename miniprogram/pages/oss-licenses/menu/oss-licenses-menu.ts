@@ -1,6 +1,6 @@
 // pages/oss-licenses/menu/oss-licenses-menu.ts
 import {createStoreBindings} from 'mobx-miniprogram-bindings';
-import {store} from '../../../utils/MobX';
+import {store, StoreInstance} from '../../../utils/MobX';
 import ossLicensesDist from '../../../utils/OSSLicensesDist';
 
 const util = require("../../../utils/CommonUtil");
@@ -10,7 +10,7 @@ interface IData {
     safeAreaBottomPx: number
 }
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     // @ts-ignore
     data: {},
     onLoad() {
@@ -27,7 +27,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             scrollHeightPx: util.getHeightPx(), safeAreaBottomPx: util.getSafeAreaBottomPx(),
         })
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, licenseDistClick(e: WechatMiniprogram.BaseEvent) {
         wx.navigateTo({
             url: '/pages/oss-licenses/oss-licenses?index=' + e.currentTarget.dataset.index,

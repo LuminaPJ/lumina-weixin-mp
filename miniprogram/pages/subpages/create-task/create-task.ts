@@ -1,7 +1,7 @@
 // pages/subpages/create-task/create-task.ts
 import {EMPTY_JWT, getIsUserSoterEnabled, isLogin, loginStoreUtil} from "../../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {store} from "../../../utils/MobX";
+import {store, StoreInstance} from "../../../utils/MobX";
 import {userInfoStoreUtil} from "../../../utils/store-utils/UserInfoUtil";
 import {
     getGroupInfoPromise,
@@ -57,7 +57,7 @@ const TaskTypeOptions = [{label: '签到', value: CHECK_IN}, {label: '抽签', v
     label: '投票', value: VOTE
 },]
 
-Page<IData, WechatMiniprogram.App.TrivialInstance>({
+Page<IData, StoreInstance>({
     data: {
         EMPTY_JWT: EMPTY_JWT,
         isRefreshing: true,
@@ -109,7 +109,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
             })
         }
     }, onUnload() {
-        this.storeBindings.destroyStoreBindings();
+        if (this.storeBindings) this.storeBindings.destroyStoreBindings();
     }, errorVisibleChange(e: WechatMiniprogram.CustomEvent) {
         this.setData({
             errorVisible: e.detail.visible
@@ -307,7 +307,7 @@ Page<IData, WechatMiniprogram.App.TrivialInstance>({
     }
 })
 
-async function getSelectedGroupMember(that: WechatMiniprogram.App.TrivialInstance, selectedGroupId: string) {
+async function getSelectedGroupMember(that: WechatMiniprogram.Page.Instance<IData,StoreInstance>, selectedGroupId: string) {
     const selectedGroupInfo: GroupInfoDetail = await getGroupInfoPromise(that.getJWT(), selectedGroupId);
     that.setData({
         memberFromSelectedGroup: selectedGroupInfo.memberList,
@@ -319,8 +319,8 @@ interface GroupInfoMemberForSubmit {
     userName: string | null
 }
 
-async function createCheckInTask(that: WechatMiniprogram.App.TrivialInstance, selectedGroupId: string, taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterInfo: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
-    const jwt = await that.getJWT();
+async function createCheckInTask(that: WechatMiniprogram.Page.Instance<IData,StoreInstance>, selectedGroupId: string, taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterInfo: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    const jwt = that.getJWT();
     const createCheckInTaskRequestBody = buildCreateCheckInTaskRequestBody(taskName, taskEndTime, taskMemberPolicyType, checkInType, checkInToken, groupInfoMemberForSubmit, taskDescription, soterInfo)
     const encryptRequest = await sm4EncryptContent(JSON.stringify(createCheckInTaskRequestBody))
     await createCheckInTaskPromise(jwt, selectedGroupId, encryptRequest)
@@ -356,7 +356,7 @@ function buildCreateCheckInTaskRequestBody(taskName: string, taskEndTime: string
     }
 }
 
-function normalToast(that: WechatMiniprogram.App.TrivialInstance, content: string) {
+function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {
     Message.success({
         context: that, offset: [90, 32], duration: 3000, icon: false, single: false, content: content, align: 'center'
     });

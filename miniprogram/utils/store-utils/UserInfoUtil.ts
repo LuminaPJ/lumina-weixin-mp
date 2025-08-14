@@ -2,7 +2,7 @@ import {LUMINA_SERVER_HOST} from "../../env";
 import {isLogin} from "./LoginStoreUtil";
 
 export const userInfoStoreUtil = {
-    checkUserInfoStatus: async function (that: WechatMiniprogram.App.TrivialInstance) {
+    checkUserInfoStatus: async function (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance) {
         const jwt = that.getJWT();
         if (isLogin(jwt)) await getUserInfo(that, that.getJWT())
     }, storeBinding: {
@@ -10,7 +10,7 @@ export const userInfoStoreUtil = {
     }
 }
 
-export const getUserInfo = async (that: WechatMiniprogram.App.TrivialInstance, jwt: string): Promise<void> => {
+export const getUserInfo = async (that: WechatMiniprogram.Page.TrivialInstance | WechatMiniprogram.Component.TrivialInstance, jwt: string): Promise<void> => {
     const userInfo: UserInfo = await getUserInfoPromise(jwt);
     that.setUserInfo(userInfo);
 }
