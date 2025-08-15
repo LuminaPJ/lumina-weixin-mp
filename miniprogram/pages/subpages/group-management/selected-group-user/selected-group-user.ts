@@ -4,7 +4,7 @@ import ActionSheet, {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/in
 import {store, StoreInstance} from "../../../../utils/MobX";
 import {EMPTY_JWT, getIsUserSoterEnabled, isLogin, loginStoreUtil} from "../../../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
-import {userInfoStoreUtil} from "../../../../utils/store-utils/UserInfoUtil";
+import {UserInfo, userInfoStoreUtil} from "../../../../utils/store-utils/UserInfoUtil";
 import Message from 'tdesign-miniprogram/message/index';
 import {
     getGroupInfoPromise,
@@ -35,6 +35,9 @@ interface IData {
     clickedUserId: string,
     clickedUserName: string | null,
     clickedUserPermission: string | null,
+    selectedSetAdminGroupMemberCache: string[]
+    selectedRemoveAdminGroupMemberCache: string[]
+    selectedDeleteGroupMemberCache: string[]
 }
 
 Page<IData, StoreInstance>({
@@ -46,6 +49,9 @@ Page<IData, StoreInstance>({
         selectedGroupName: null,
         selectedGroupUserPermission: '',
         selectedGroupMemberList: [],
+        selectedSetAdminGroupMemberCache: [],
+        selectedRemoveAdminGroupMemberCache: [],
+        selectedDeleteGroupMemberCache: []
     }, async onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -143,7 +149,13 @@ Page<IData, StoreInstance>({
                 isAdminSetting: true
             })
             try {
-                await performGroupUserAction(this, SET_ADMIN)
+                const userInfo = {
+                    userId: this.data.clickedUserId, ...(this.data.clickedUserName && {userName: this.data.clickedUserName})
+                }
+                await performGroupUserAction(this, [userInfo], SET_ADMIN)
+                this.setData({
+                    userDetailPopupVisible: false
+                })
             } catch (e: any) {
                 const errMsg = getErrorMessage(e)
                 if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
@@ -163,7 +175,13 @@ Page<IData, StoreInstance>({
                 isAdminRemoving: true
             })
             try {
-                await performGroupUserAction(this, RESET_TO_MEMBER)
+                const userInfo = {
+                    userId: this.data.clickedUserId, ...(this.data.clickedUserName && {userName: this.data.clickedUserName})
+                }
+                await performGroupUserAction(this, [userInfo], RESET_TO_MEMBER)
+                this.setData({
+                    userDetailPopupVisible: false
+                })
             } catch (e: any) {
                 const errMsg = getErrorMessage(e)
                 if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
@@ -183,7 +201,13 @@ Page<IData, StoreInstance>({
                 isUserDeleting: true
             })
             try {
-                await performGroupUserAction(this, REMOVE_MEMBER)
+                const userInfo = {
+                    userId: this.data.clickedUserId, ...(this.data.clickedUserName && {userName: this.data.clickedUserName})
+                }
+                await performGroupUserAction(this, [userInfo], REMOVE_MEMBER)
+                this.setData({
+                    userDetailPopupVisible: false
+                })
             } catch (e: any) {
                 const errMsg = getErrorMessage(e)
                 if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
@@ -195,10 +219,171 @@ Page<IData, StoreInstance>({
                 })
             }
         }
+    }, handleManageGroupUserFabSelected(e: WechatMiniprogram.CustomEvent) {
+        switch (e.detail.selected.label) {
+            case '批量设为管理':
+                this.setData({
+                    setAdminGroupMemberPickerVisible: true
+                })
+                break;
+            case '批量撤销管理':
+                this.setData({
+                    removeAdminGroupMemberPickerVisible: true
+                })
+                break;
+            case '批量移除成员':
+                this.setData({
+                    deleteGroupMemberPickerVisible: true
+                })
+                break;
+            default:
+                break;
+        }
+    }, onSetAdminGroupMemberPickerChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            setAdminGroupMemberPickerVisible: e.detail.visible
+        })
+    }, onRemoveAdminGroupMemberPickerChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            removeAdminGroupMemberPickerVisible: e.detail.visible
+        })
+    }, onDeleteGroupMemberPickerChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            deleteGroupMemberPickerVisible: e.detail.visible
+        })
+    }, cancelSelectSetAdminGroupMember() {
+        this.setData({
+            setAdminGroupMemberPickerVisible: false
+        })
+    }, cancelSelectRemoveAdminGroupMember() {
+        this.setData({
+            removeAdminGroupMemberPickerVisible: false
+        })
+    }, cancelSelectDeleteGroupMember() {
+        this.setData({
+            deleteGroupMemberPickerVisible: false
+        })
+    }, handleSetAdminGroupMemberChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            selectedSetAdminGroupMemberCache: e.detail.value
+        })
+    }, handleRemoveAdminGroupMemberChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            selectedRemoveAdminGroupMemberCache: e.detail.value
+        })
+    }, handleDeleteGroupMemberChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            selectedDeleteGroupMemberCache: e.detail.value
+        })
+    }, async batchSetAdmin() {
+        if (!isSuperAdmin(this.data.selectedGroupUserPermission)) this.setData({
+            errorMessage: '您的权限不足以执行此操作', errorVisible: true
+        }); else if (this.data.selectedSetAdminGroupMemberCache.length === 0) this.setData({
+            errorMessage: '提交的成员不能为空', errorVisible: true
+        }); else {
+            this.setData({
+                isAdminBatchSetting: true
+            })
+            try {
+                const memberMap = new Map(this.data.selectedGroupMemberList.map(m => [m.userId, m]));
+                const selectedUserInfo = (this.data.selectedSetAdminGroupMemberCache ?? [])
+                    .map(id => memberMap.get(id))
+                    .filter((member): member is GroupInfoMember => member !== undefined)
+                    .map(member => ({
+                        userId: member.userId, ...(member.userName && {userName: member.userName})
+                    }))
+                await performGroupUserAction(this, selectedUserInfo, SET_ADMIN)
+                this.setData({
+                    setAdminGroupMemberPickerVisible: false,
+                    selectedSetAdminGroupMemberCache: [],
+                    selectedRemoveAdminGroupMemberCache: [],
+                    selectedDeleteGroupMemberCache: []
+                })
+            } catch (e: any) {
+                const errMsg = getErrorMessage(e)
+                if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                    errorMessage: getErrorMessage(e), errorVisible: true
+                });
+            } finally {
+                this.setData({
+                    isAdminBatchSetting: false
+                })
+            }
+        }
+    }, async batchRemoveAdmin() {
+        if (!isSuperAdmin(this.data.selectedGroupUserPermission)) this.setData({
+            errorMessage: '您的权限不足以执行此操作', errorVisible: true
+        }); else if (this.data.selectedRemoveAdminGroupMemberCache.length === 0) this.setData({
+            errorMessage: '提交的成员不能为空', errorVisible: true
+        }); else {
+            this.setData({
+                isAdminBatchRemoving: true
+            })
+            try {
+                const memberMap = new Map(this.data.selectedGroupMemberList.map(m => [m.userId, m]));
+                const selectedUserInfo = (this.data.selectedRemoveAdminGroupMemberCache ?? [])
+                    .map(id => memberMap.get(id))
+                    .filter((member): member is GroupInfoMember => member !== undefined)
+                    .map(member => ({
+                        userId: member.userId, ...(member.userName && {userName: member.userName})
+                    }))
+                await performGroupUserAction(this, selectedUserInfo, RESET_TO_MEMBER)
+                this.setData({
+                    removeAdminGroupMemberPickerVisible: false,
+                    selectedSetAdminGroupMemberCache: [],
+                    selectedRemoveAdminGroupMemberCache: [],
+                    selectedDeleteGroupMemberCache: []
+                })
+            } catch (e: any) {
+                const errMsg = getErrorMessage(e)
+                if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                    errorMessage: getErrorMessage(e), errorVisible: true
+                });
+            } finally {
+                this.setData({
+                    isAdminBatchRemoving: false
+                })
+            }
+        }
+    }, async batchDeleteUser() {
+        if (!isAdminAndSuperAdmin(this.data.selectedGroupUserPermission)) this.setData({
+            errorMessage: '您的权限不足以执行此操作', errorVisible: true
+        }); else if (this.data.selectedDeleteGroupMemberCache.length === 0) this.setData({
+            errorMessage: '提交的成员不能为空', errorVisible: true
+        }); else {
+            this.setData({
+                isUserBatchDeleting: true
+            })
+            try {
+                const memberMap = new Map(this.data.selectedGroupMemberList.map(m => [m.userId, m]));
+                const selectedUserInfo = (this.data.selectedDeleteGroupMemberCache ?? [])
+                    .map(id => memberMap.get(id))
+                    .filter((member): member is GroupInfoMember => member !== undefined)
+                    .map(member => ({
+                        userId: member.userId, ...(member.userName && {userName: member.userName})
+                    }))
+                await performGroupUserAction(this, selectedUserInfo, REMOVE_MEMBER)
+                this.setData({
+                    deleteGroupMemberPickerVisible: false,
+                    selectedSetAdminGroupMemberCache: [],
+                    selectedRemoveAdminGroupMemberCache: [],
+                    selectedDeleteGroupMemberCache: []
+                })
+            } catch (e: any) {
+                const errMsg = getErrorMessage(e)
+                if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                    errorMessage: getErrorMessage(e), errorVisible: true
+                });
+            } finally {
+                this.setData({
+                    isUserBatchDeleting: false
+                })
+            }
+        }
     },
 })
 
-async function performGroupUserAction(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, action: string) {
+async function performGroupUserAction(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, userList: UserInfo[], action: string) {
     await loginStoreUtil.initLoginStore(that)
     let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
     await getIsUserSoterEnabled(that)
@@ -211,14 +396,8 @@ async function performGroupUserAction(that: WechatMiniprogram.Page.Instance<IDat
             return;
         }
     }
-    const userInfo = {
-        userId: that.data.clickedUserId, ...(that.data.clickedUserName && {userName: that.data.clickedUserName})
-    }
-    await groupUserActionPromise(action, that.getJWT(), that.data.selectedGroupId, [userInfo], soterResult)
+    await groupUserActionPromise(action, that.getJWT(), that.data.selectedGroupId, userList, soterResult)
     if (!that.data.isSelectedNotFound) await getSelectedGroupInfo(that, that.data.selectedGroupId)
-    that.setData({
-        userDetailPopupVisible: false
-    })
 }
 
 async function getSelectedGroupInfo(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedGroupId: string) {
@@ -239,7 +418,7 @@ function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: stri
 }
 
 const manageGroupUserFabTaskGridWithAdmin = [{
-    label: '批量删除用户', icon: 'user-clear',
+    label: '批量移除成员', icon: 'user-clear',
 }];
 
 const manageGroupUserFabTaskGridWithSuperAdmin = [{
@@ -247,6 +426,6 @@ const manageGroupUserFabTaskGridWithSuperAdmin = [{
 }, {
     label: '批量撤销管理', icon: 'user-arrow-down',
 }, {
-    label: '批量删除用户', icon: 'user-clear',
+    label: '批量移除成员', icon: 'user-clear',
 }];
 

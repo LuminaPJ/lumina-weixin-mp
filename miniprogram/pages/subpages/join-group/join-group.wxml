@@ -31,7 +31,7 @@
         <t-input bind:change="onRequesterCommentInput" borderless class="rounded-18rpx mt-32rpx" confirm-type="done"
                  cursor-spacing="30" label="留言" placeholder="选填" tips="仅申请者本人和团体管理员可查看留言内容"
                  value="{{requesterCommentValue}}"/>
-        <t-button bind:tap="joinNewGroup" block class="mt-32rpx" cursor-spacing="30" disable="{{isJoining}}"
+        <t-button bind:tap="joinNewGroup" block class="mt-32rpx" cursor-spacing="30" disabled="{{isJoining}}"
                   loading="{{isJoining}}" size="large" theme="primary">加入团体
         </t-button>
     </view>

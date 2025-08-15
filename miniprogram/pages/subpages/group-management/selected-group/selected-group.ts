@@ -15,7 +15,7 @@ import {
     formatTime,
     getErrorMessage,
     isAdminAndSuperAdmin,
-    isNullOrEmptyOrUndefined, isNullOrUndefined,
+    isNullOrEmptyOrUndefined,
     isSuperAdmin
 } from "../../../../utils/CommonUtil";
 import dayjs from "dayjs";

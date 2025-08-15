@@ -84,7 +84,7 @@ export const RESET_TO_MEMBER = 'resetToMember';
  */
 export async function groupUserActionPromise(action: string, jwt: string, groupId: string, userInfo: UserInfo[], soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
     return new Promise((resolve, reject) => {
-        if (action !== 'removeMember' && action !== 'setAdmin' && action !== 'resetToMember') reject(new Error('无效的操作')); else wx.request({
+        if (action !== 'removeMember' && action !== 'setAdmin' && action !== 'resetToMember') reject(new Error('无效的操作')); else if (userInfo.length === 0) reject(new Error('提交的用户不能为空')); else wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/groupManager/' + groupId + '/' + action, method: 'POST', header: {
                 Authorization: 'Bearer ' + jwt
             }, data: JSON.stringify(buildGroupUserActionInfo(userInfo, soterResult)), success(res) {

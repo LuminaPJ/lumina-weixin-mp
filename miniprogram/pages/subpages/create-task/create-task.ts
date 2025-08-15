@@ -80,7 +80,7 @@ Page<IData, StoreInstance>({
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
-            fields: [...loginStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields,...taskStoreUtil.storeBinding.fields],
+            fields: [...loginStoreUtil.storeBinding.fields, ...userInfoStoreUtil.storeBinding.fields, ...groupStoreUtil.storeBinding.fields, ...taskStoreUtil.storeBinding.fields],
             actions: [...loginStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...taskStoreUtil.storeBinding.actions]
         });
         this.setData({
@@ -197,11 +197,10 @@ Page<IData, StoreInstance>({
             selectedGroupMemberCache: e.detail.value
         })
     }, submitGroupMember() {
-        const selectedGroupMember: GroupInfoMember[] = [];
-        this.data.selectedGroupMemberCache.forEach((item) => {
-            const itemMember = this.data.memberFromSelectedGroup.find(member => member.userId === item)
-            if (itemMember) selectedGroupMember.push(itemMember)
-        })
+        const memberMap = new Map(this.data.memberFromSelectedGroup.map(m => [m.userId, m]));
+        const selectedGroupMember = this.data.selectedGroupMemberCache
+            .map(id => memberMap.get(id))
+            .filter((member): member is GroupInfoMember => member !== undefined);
         this.setData({
             groupMemberPickerVisible: false, selectedGroupMember: selectedGroupMember
         });
@@ -313,7 +312,7 @@ Page<IData, StoreInstance>({
     }
 })
 
-async function getSelectedGroupMember(that: WechatMiniprogram.Page.Instance<IData,StoreInstance>, selectedGroupId: string) {
+async function getSelectedGroupMember(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedGroupId: string) {
     const selectedGroupInfo: GroupInfoDetail = await getGroupInfoPromise(that.getJWT(), selectedGroupId);
     that.setData({
         memberFromSelectedGroup: selectedGroupInfo.memberList,
@@ -325,7 +324,7 @@ interface GroupInfoMemberForSubmit {
     userName: string | null
 }
 
-async function createCheckInTask(that: WechatMiniprogram.Page.Instance<IData,StoreInstance>, selectedGroupId: string, taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterInfo: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+async function createCheckInTask(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedGroupId: string, taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterInfo: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
     const jwt = that.getJWT();
     const createCheckInTaskRequestBody = buildCreateCheckInTaskRequestBody(taskName, taskEndTime, taskMemberPolicyType, checkInType, checkInToken, groupInfoMemberForSubmit, taskDescription, soterInfo)
     const encryptRequest = await sm4EncryptContent(JSON.stringify(createCheckInTaskRequestBody))
