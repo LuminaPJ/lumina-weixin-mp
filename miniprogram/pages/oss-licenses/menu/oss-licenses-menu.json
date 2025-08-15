@@ -1,5 +1,6 @@
 {
   "component": true,
+  "disableScroll": true,
   "styleIsolation": "apply-shared",
   "usingComponents": {
     "t-cell": "tdesign-miniprogram/cell/cell",
