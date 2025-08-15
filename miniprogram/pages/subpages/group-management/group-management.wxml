@@ -36,6 +36,7 @@
                 </t-cell-group>
             </view>
         </view>
+
         <view style="padding-bottom: {{safeAreaBottomPx}}px;"/>
     </t-pull-down-refresh>
 </scroll-view>

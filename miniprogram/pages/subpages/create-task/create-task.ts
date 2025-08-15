@@ -150,6 +150,9 @@ Page<IData, StoreInstance>({
             taskTypePickerVisible: false
         });
     }, switchWhiteList(e: WechatMiniprogram.CustomEvent) {
+        wx.vibrateShort({
+            type: 'light',
+        });
         this.setData({
             isWhiteListEnabled: e.detail.value
         });
@@ -211,6 +214,9 @@ Page<IData, StoreInstance>({
             setCheckInSettingPopupVisible: e.detail.visible
         })
     }, switchCheckInToken(e: WechatMiniprogram.CustomEvent) {
+        wx.vibrateShort({
+            type: 'light',
+        });
         this.setData({
             isCheckInTokenEnabled: e.detail.value
         })

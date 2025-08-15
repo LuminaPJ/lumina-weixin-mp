@@ -95,7 +95,7 @@ Page<IData, StoreInstance & IMethods>({
             if (supportMode.length > 0) {
                 if (e.detail.value) this.setData({
                     soterHelpPopupVisible: true
-                }); else startSwitchSoter(this, e.detail.value)
+                }); else await startSwitchSoter(this, e.detail.value)
             } else this.setData({
                 errorMessage: "此设备不支持 SOTER 生物认证，或用户未在设备中录入任何生物特征", errorVisible: true
             });
@@ -111,6 +111,9 @@ Page<IData, StoreInstance & IMethods>({
             await startSwitchSoter(this, true)
         }, 300)
     }, switchHideMore7Day(e: WechatMiniprogram.CustomEvent) {
+        wx.vibrateShort({
+            type: 'light',
+        });
         wx.setStorageSync('isHideMore7DayEnabled', e.detail.value)
         this.setIsHideMore7DayEnabled(e.detail.value)
         this.setData({
@@ -129,7 +132,12 @@ async function startSwitchSoter(that: WechatMiniprogram.Page.Instance<IData,Stor
             errorMessage: "此设备不支持 SOTER 生物认证，或用户未在设备中录入任何生物特征", errorVisible: true
         }); else {
             const switchSoterResult = await switchSoterRequest(that.getJWT(), actionBoolean, soterResult)
-            if (switchSoterResult.statusCode === 200) that.setIsSoterEnabled(actionBoolean)
+            if (switchSoterResult.statusCode === 200) {
+                wx.vibrateShort({
+                    type: 'light',
+                });
+                that.setIsSoterEnabled(actionBoolean)
+            }
         }
     } catch (e: any) {
         const errMsg = getErrorMessage(e)

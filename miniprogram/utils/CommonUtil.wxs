@@ -16,6 +16,8 @@ module.exports = {
         return permission === 'ADMIN' || permission === 'SUPER_ADMIN'
     }, isSuperAdmin: function (permission) {
         return permission === 'SUPER_ADMIN'
+    }, isAdmin: function (permission) {
+        return permission === 'ADMIN'
     }, semanticsApprovalType: function (approvalType) {
         return approvalType === 'TASK_CREATION' ? '创建任务' : approvalType === 'GROUP_JOIN' ? '加入团体' : approvalType === 'TASK_EXPAND_GROUP' ? '扩展任务团体' : '';
     }, semanticsApprovalStatus: function (approvalStatus) {

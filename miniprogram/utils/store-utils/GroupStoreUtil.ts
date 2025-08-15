@@ -32,7 +32,10 @@ async function getGroupListPromise(jwt: string): Promise<GroupInfo[]> {
             url: 'https://' + LUMINA_SERVER_HOST + '/group', header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
-                resolve(res.data as GroupInfo[]);
+                if (res.statusCode === 200) resolve(res.data as GroupInfo[]); else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
             }, fail: reject
         })
     })
@@ -58,7 +61,10 @@ export async function getGroupInfoPromise(jwt: string, groupId: string): Promise
             url: 'https://' + LUMINA_SERVER_HOST + '/group/' + groupId, header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
-                resolve(res.data as GroupInfoDetail);
+                if (res.statusCode === 200) resolve(res.data as GroupInfoDetail); else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
             }, fail: reject
         })
     })

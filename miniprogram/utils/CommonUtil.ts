@@ -107,6 +107,10 @@ export function isSuperAdmin(permission: string) {
     return permission === 'SUPER_ADMIN'
 }
 
+export function isAdmin(permission: string) {
+    return permission === 'ADMIN'
+}
+
 export const GROUP_JOIN = 'GROUP_JOIN'
 export const TASK_EXPAND_GROUP = 'TASK_EXPAND_GROUP'
 export const TASK_CREATION = 'TASK_CREATION'

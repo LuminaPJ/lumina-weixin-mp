@@ -16,9 +16,9 @@ export const getUserInfo = async (that: WechatMiniprogram.Page.TrivialInstance |
 }
 
 
-interface UserInfo {
+export interface UserInfo {
     userId: string,
-    userName: string | null
+    userName?: string | null
 }
 
 /**

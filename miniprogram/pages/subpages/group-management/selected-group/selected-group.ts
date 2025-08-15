@@ -15,7 +15,7 @@ import {
     formatTime,
     getErrorMessage,
     isAdminAndSuperAdmin,
-    isNullOrEmptyOrUndefined,
+    isNullOrEmptyOrUndefined, isNullOrUndefined,
     isSuperAdmin
 } from "../../../../utils/CommonUtil";
 import dayjs from "dayjs";
@@ -239,6 +239,10 @@ Page<IData, StoreInstance>({
                 })
             }
         }
+    }, onClickGroupUser() {
+        wx.navigateTo({
+            url: '/pages/subpages/group-management/selected-group-user/selected-group-user?selectedGroupId=' + this.data.selectedGroupId
+        })
     }, onQuitGroupClick() {
         if (!isSuperAdmin(this.data.selectedGroupUserPermission)) {
             this.setData({
@@ -279,7 +283,7 @@ Page<IData, StoreInstance>({
                 isQuitGroupSubmitting: false
             })
         }
-    },closeQuitGroupPopup(){
+    }, closeQuitGroupPopup() {
         this.setData({
             quitGroupPopupVisible: false
         })

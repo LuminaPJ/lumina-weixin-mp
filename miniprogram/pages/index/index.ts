@@ -1,6 +1,5 @@
 // index.ts
 
-// @ts-ignore
 import ActionSheet, {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/index';
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store, StoreInstance} from "../../utils/MobX";

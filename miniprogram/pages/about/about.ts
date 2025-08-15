@@ -34,6 +34,10 @@ Page({
         this.setData({
             feedbackPopupVisible: e.detail.visible
         })
+    }, closeFeedbackPopup() {
+        this.setData({
+            feedbackPopupVisible: false
+        })
     }, ossLicense() {
         wx.navigateTo({
             url: '/pages/oss-licenses/menu/oss-licenses-menu',

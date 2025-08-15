@@ -43,7 +43,8 @@
 
         <view class="pt-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
             <t-cell-group theme="card">
-                <t-cell arrow hover leftIcon="user-list" note="{{selectedGroupMemberList.length + ' 位成员'}}"
+                <t-cell arrow bind:click="onClickGroupUser" hover leftIcon="user-list"
+                        note="{{selectedGroupMemberList.length + ' 位成员'}}"
                         title="团体成员"/>
             </t-cell-group>
         </view>
@@ -56,7 +57,8 @@
             </t-cell-group>
         </view>
 
-        <view class="py-32rpx mx-32rpx" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
+        <view class="pt-32rpx mx-32rpx"
+              wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&selectedGroupUserPermission}}">
             <t-button bind:tap="onQuitGroupClick" block
                       disabled="{{utils.isSuperAdmin(selectedGroupUserPermission)||isRefreshing||!utils.isLogin(jwt)}}"
                       size="large" theme="danger">
@@ -64,8 +66,7 @@
             </t-button>
         </view>
 
-        <view style="padding-bottom: {{safeAreaBottomPx}}px;"/>
-
+        <view class="pt-32rpx" style="padding-bottom: {{safeAreaBottomPx}}px;"/>
     </t-pull-down-refresh>
 </scroll-view>
 
