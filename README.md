@@ -10,11 +10,29 @@
 
 1. 在微信开发者工具中导入并打开项目（需已在[微信公众平台](https://mp.weixin.qq.com/)新建小程序）
 2. 在微信开发者工具中构建 `npm`（参见[微信官方文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)）：
-    1. 在项目根目录下执行：
+    1. 请根据您使用的包管理器，在项目根目录下执行以下命令之一：
+    > npm
     
     ```Shell
     npm install
-    # 对于 yarn 用户，请执行 yarn install
+    ```
+    
+    > yarn
+    
+    ```Shell
+    yarn install
+    ```
+   
+    > pnpm
+    
+    ```Shell
+    pnpm install
+    ```
+   
+    > vlt
+    
+    ```Shell
+    vlt install
     ```
     2. 在微信开发者工具中，点击开发者工具中的菜单栏：工具 --> 构建 `npm` 
 

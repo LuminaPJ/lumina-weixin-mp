@@ -1,10 +1,13 @@
 // pages/about/about.ts
 
 // @ts-ignore
-const util = require("../../utils/CommonUtil");
-import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from '../../env';
+import {copyUtil} from "../../utils/CommonUtil";
+import {ICP_ID, MINI_PROGRAM_NAME, ORGANIZATION_NAME, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from '../../env';
+import Message from 'tdesign-miniprogram/message/index';
 
-const app = getApp()
+const app = getApp();
+const util = require("../../utils/CommonUtil");
+
 
 Page({
     data: {
@@ -20,7 +23,9 @@ Page({
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
             theme: wx.getAppBaseInfo().theme || 'light',
             luminaVersion: `${app.globalData.LUMINA_VERSION} (${accountInfo.miniProgram.envVersion})`,
-            icpInfo: ICP_NUMBER,
+            icpInfo: ICP_ID,
+            orgName: ORGANIZATION_NAME,
+            mpName: MINI_PROGRAM_NAME
         })
     }, onResize() {
         this.setData({
@@ -42,5 +47,19 @@ Page({
         wx.navigateTo({
             url: '/pages/oss-licenses/menu/oss-licenses-menu',
         })
+    }, dataStatementPopupVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            dataStatementPopupVisible: e.detail.visible
+        })
+    }, closeDataStatementPopup() {
+        this.setData({
+            dataStatementPopupVisible: false
+        })
+    }, openDataStatementPopup() {
+        this.setData({
+            dataStatementPopupVisible: true
+        })
+    }, luminaOpenSource() {
+        copyUtil('https://github.com/LuminaPJ/lumina-weixin-mp', Message, this)
     }
 })

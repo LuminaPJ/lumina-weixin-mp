@@ -44,10 +44,17 @@ export const getSafeAreaBottomPx = (): number => {
  * **注意**：需要在使用的页面中，插入
  *
  * ```wxml
+ * <!-- WXML -->
  * <t-message id="t-message"/>
  * ```
  *
- * ```json
+ * ```TypeScript
+ * // TypeScript
+ * import Message from 'tdesign-miniprogram/message/index';
+ * ```
+ *
+ * ```json5
+ * // JSON
  * {
  *   "component": true,
  *   "usingComponents": {

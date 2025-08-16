@@ -3,7 +3,7 @@
 import {loginStoreUtil, luminaLogin} from "../../utils/store-utils/LoginStoreUtil";
 import {createStoreBindings} from "mobx-miniprogram-bindings";
 import {store, StoreInstance} from "../../utils/MobX";
-import {ICP_NUMBER, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
+import {ICP_ID, PRIVACY_POLICY_URL, USER_AGREEMENT_URL} from "../../env";
 import {checkIsSupportSoter} from "../../utils/security/SoterUtil";
 import {getErrorMessage} from "../../utils/CommonUtil";
 
@@ -44,7 +44,7 @@ Page<IData, StoreInstance>({
             scrollHeightPx: util.getHeightPx(),
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
             theme: wx.getAppBaseInfo().theme || 'light',
-            icpInfo: ICP_NUMBER,
+            icpInfo: ICP_ID,
             isSupportSoter: isSupportSoter ?? false,
         })
         await loginStoreUtil.initLoginStore(this)
