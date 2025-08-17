@@ -8,9 +8,9 @@
 <scroll-view enable-passive enhanced scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
              style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;" type="list">
     <view class="pt-128rpx mx-32rpx flex justify-center items-center">
-        <image class="h-auto self-center" mode="widthFix"
-               src="{{ theme === 'dark' ? '../../assets/LogoColorWhite.png' : '../../assets/LogoColorBlack.png' }}"
-               style="width: 66%;"/>
+            <image class="h-auto self-center" mode="widthFix" bind:tap="copyEnvData"
+                   src="{{ theme === 'dark' ? '../../assets/LogoColorWhite.png' : '../../assets/LogoColorBlack.png' }}"
+                   style="width: 66%;"/>
     </view>
     <view class="mt-128rpx">
         <t-cell-group theme="card">

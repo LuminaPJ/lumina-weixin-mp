@@ -100,7 +100,8 @@ Page<IData, StoreInstance>({
             safeMarginBottomPx: util.getSafeAreaBottomPx(),
             scrollHeightPx: util.getHeightPx(),
             safeAreaBottomPx: util.getSafeAreaBottomPx(),
-            isRefreshing: true
+            isRefreshing: true,
+            endDateTime: dayjs(Date.now() + 10 * 60 * 1000).format('YYYY-MM-DDTHH:mm:ss'),
         })
         try {
             await loginStoreUtil.initLoginStore(this)
@@ -403,10 +404,16 @@ Page<IData, StoreInstance>({
             maxChoiceValue: e.detail.value
         })
     }, switchVoteResultPublic(e: WechatMiniprogram.CustomEvent) {
+        wx.vibrateShort({
+            type: 'light',
+        });
         this.setData({
             isVoteResultPublicDisabled: e.detail.value
         })
     }, switchVoteCanRecall(e: WechatMiniprogram.CustomEvent) {
+        wx.vibrateShort({
+            type: 'light',
+        });
         this.setData({
             isVoteCanRecallEnabled: e.detail.value
         })
