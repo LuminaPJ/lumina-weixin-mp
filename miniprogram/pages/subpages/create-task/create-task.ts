@@ -26,6 +26,7 @@ import {
     taskStoreUtil,
     TOKEN_CHECK_IN,
     VOTE,
+    VoteOption,
     WHITELIST
 } from "../../../utils/store-utils/TaskStoreUtil";
 import dayjs from "dayjs";
@@ -51,6 +52,10 @@ interface IData {
     endDateTime: string
     isWhiteListEnabled: boolean
     isCheckInTokenEnabled: boolean
+    voteOptions: VoteOption[]
+    isVoteCanRecallEnabled: boolean
+    isVoteResultPublicDisabled: boolean
+    maxChoiceValue: number
 }
 
 const TaskTypeOptions = [{label: '签到', value: CHECK_IN}, {label: '抽签', value: LOTTERY}, {
@@ -77,6 +82,14 @@ Page<IData, StoreInstance>({
         checkInTokenValue: '',
         taskTitleValue: '',
         taskDescriptionValue: '',
+        voteOptions: [{
+            optionName: '', sortOrder: 1, optionDescription: ''
+        }, {
+            optionName: '', sortOrder: 2, optionDescription: ''
+        },],
+        isVoteCanRecallEnabled: false,
+        isVoteResultPublicDisabled: false,
+        maxChoiceValue: 1
     }, async onLoad() {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -297,9 +310,49 @@ Page<IData, StoreInstance>({
                 }
                 break;
             case VOTE:
+                const hasEmptyOption = this.data.voteOptions.some(option => {
+                    return isNullOrEmptyOrUndefined(option.optionName);
+                });
+                if (hasEmptyOption) {
+                    this.setData({
+                        errorMessage: '存在尚未填写的信息，请检查所有信息是否填写完毕', errorVisible: true
+                    });
+                    break;
+                }
+
                 this.setData({
-                    errorMessage: '这块代码还没写完，请耐心等待后续更新', errorVisible: true
+                    isTaskCreating: true
                 })
+                try {
+                    await loginStoreUtil.initLoginStore(this)
+                    let soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null = null
+                    await getIsUserSoterEnabled(this)
+                    if (this.getIsSoterEnabled()) {
+                        soterResult = await luminaStartSoter("创建任务")
+                        if (soterResult === null) {
+                            this.setData({
+                                errorMessage: "此设备不支持 SOTER 生物认证，或用户未在设备中录入任何生物特征",
+                                errorVisible: true
+                            });
+                            return;
+                        }
+                    }
+                    let maxChoiceValue = this.data.maxChoiceValue
+                    if (maxChoiceValue > this.data.voteOptions.length) maxChoiceValue = this.data.voteOptions.length
+                    await createVoteTask(this, selectedGroupId, taskTitle, taskEndTime, taskMemberPolicyType, maxChoiceValue, this.data.isVoteCanRecallEnabled, !this.data.isVoteResultPublicDisabled, this.data.voteOptions, groupInfoMemberForSubmit, taskDescription, soterResult)
+                    await taskStoreUtil.checkTaskStatus(this)
+                    wx.navigateBack()
+                } catch (e) {
+                    console.log(e)
+                    const errMsg = getErrorMessage(e)
+                    if (errMsg === "用户手动取消 SOTER 生物认证") normalToast(this, errMsg); else this.setData({
+                        errorMessage: getErrorMessage(e), errorVisible: true
+                    });
+                } finally {
+                    this.setData({
+                        isTaskCreating: false
+                    })
+                }
                 break;
             case LOTTERY:
                 this.setData({
@@ -309,6 +362,54 @@ Page<IData, StoreInstance>({
             default:
                 break;
         }
+    }, addVoteOption() {
+        this.setData({
+            voteOptions: [...this.data.voteOptions, {
+                optionName: "", sortOrder: this.data.voteOptions.length + 1, optionDescription: ""
+            }]
+        })
+    }, removeVoteOption() {
+        this.setData({
+            voteOptions: this.data.voteOptions.slice(0, this.data.voteOptions.length - 1)
+        })
+    }, onChangeVoteOptionName(e: WechatMiniprogram.CustomEvent) {
+        const changeIndex = e.currentTarget.dataset.index;
+        const newVoteOptions = this.data.voteOptions;
+        newVoteOptions[changeIndex].optionName = e.detail.value
+        this.setData({
+            voteOptions: newVoteOptions
+        });
+    }, onChangeVoteOptionDescription(e: WechatMiniprogram.CustomEvent) {
+        const changeIndex = e.currentTarget.dataset.index;
+        const newVoteOptions = this.data.voteOptions;
+        newVoteOptions[changeIndex].optionDescription = e.detail.value
+        this.setData({
+            voteOptions: newVoteOptions
+        });
+    }, startVoteSetting() {
+        this.setData({
+            setVoteSettingPopupVisible: true
+        })
+    }, setVoteSettingPopupVisibleChange(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            setVoteSettingPopupVisible: e.detail.visible
+        })
+    }, closeSetVoteSetting() {
+        this.setData({
+            setVoteSettingPopupVisible: false
+        })
+    }, onChangeMaxChoice(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            maxChoiceValue: e.detail.value
+        })
+    }, switchVoteResultPublic(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            isVoteResultPublicDisabled: e.detail.value
+        })
+    }, switchVoteCanRecall(e: WechatMiniprogram.CustomEvent) {
+        this.setData({
+            isVoteCanRecallEnabled: e.detail.value
+        })
     }
 })
 
@@ -328,10 +429,46 @@ async function createCheckInTask(that: WechatMiniprogram.Page.Instance<IData, St
     const jwt = that.getJWT();
     const createCheckInTaskRequestBody = buildCreateCheckInTaskRequestBody(taskName, taskEndTime, taskMemberPolicyType, checkInType, checkInToken, groupInfoMemberForSubmit, taskDescription, soterInfo)
     const encryptRequest = await sm4EncryptContent(JSON.stringify(createCheckInTaskRequestBody))
-    await createCheckInTaskPromise(jwt, selectedGroupId, encryptRequest)
+    await createTaskPromise(jwt, selectedGroupId, encryptRequest)
 }
 
-async function createCheckInTaskPromise(jwt: string, selectedGroupId: string, encryptRequest: EncryptContent) {
+async function createVoteTask(that: WechatMiniprogram.Page.Instance<IData, StoreInstance>, selectedGroupId: string, taskName: string, taskEndTime: string, taskMemberPolicyType: string, voteMaxSelectable: number, voteCanRecall: boolean, isVoteResultPublic: boolean, voteTaskOption: VoteOption[], groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterInfo: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    const jwt = that.getJWT();
+    const createVoteTaskRequestBody = buildCreateVoteTaskRequestBody(taskName, taskEndTime, taskMemberPolicyType, voteMaxSelectable, voteCanRecall, isVoteResultPublic, voteTaskOption, groupInfoMemberForSubmit, taskDescription, soterInfo)
+    const encryptRequest = await sm4EncryptContent(JSON.stringify(createVoteTaskRequestBody))
+    await createTaskPromise(jwt, selectedGroupId, encryptRequest)
+}
+
+function buildCreateCheckInTaskRequestBody(taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    const soterInfo = soterResult ? {
+        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
+    } : {}
+    return {
+        taskName: taskName,
+        taskType: CHECK_IN,
+        checkInType: checkInType,
+        endTime: taskEndTime,
+        memberPolicy: taskMemberPolicyType, ...(taskDescription && {description: taskDescription}), ...(groupInfoMemberForSubmit && {memberPolicyList: groupInfoMemberForSubmit}), ...(checkInToken && {checkInToken}), ...(soterResult && {soterInfo: {...soterInfo}})
+    }
+}
+
+function buildCreateVoteTaskRequestBody(taskName: string, taskEndTime: string, taskMemberPolicyType: string, voteMaxSelectable: number, voteCanRecall: boolean, isVoteResultPublic: boolean, voteTaskOption: VoteOption[], groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
+    const soterInfo = soterResult ? {
+        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
+    } : {}
+    return {
+        taskName: taskName,
+        taskType: VOTE,
+        endTime: taskEndTime,
+        voteMaxSelectable: voteMaxSelectable,
+        voteCanRecall: voteCanRecall,
+        isVoteResultPublic: isVoteResultPublic,
+        voteTaskOption: voteTaskOption,
+        memberPolicy: taskMemberPolicyType, ...(taskDescription && {description: taskDescription}), ...(groupInfoMemberForSubmit && {memberPolicyList: groupInfoMemberForSubmit}), ...(soterResult && {soterInfo: {...soterInfo}})
+    }
+}
+
+async function createTaskPromise(jwt: string, selectedGroupId: string, encryptRequest: EncryptContent) {
     return new Promise((resolve, reject) => {
         wx.request({
             url: 'https://' + LUMINA_SERVER_HOST + '/task/create/' + selectedGroupId, header: {
@@ -346,19 +483,6 @@ async function createCheckInTaskPromise(jwt: string, selectedGroupId: string, en
             }, fail: reject
         })
     })
-}
-
-function buildCreateCheckInTaskRequestBody(taskName: string, taskEndTime: string, taskMemberPolicyType: string, checkInType: string, checkInToken: string | null, groupInfoMemberForSubmit: GroupInfoMemberForSubmit[] | null, taskDescription: string | null, soterResult: WechatMiniprogram.StartSoterAuthenticationSuccessCallbackResult | null) {
-    const soterInfo = soterResult ? {
-        json_string: soterResult.resultJSON, json_signature: soterResult.resultJSONSignature
-    } : {}
-    return {
-        taskName: taskName,
-        taskType: CHECK_IN,
-        checkInType: checkInType,
-        endTime: taskEndTime,
-        memberPolicy: taskMemberPolicyType, ...(taskDescription && {description: taskDescription}), ...(groupInfoMemberForSubmit && {memberPolicyList: groupInfoMemberForSubmit}), ...(checkInToken && {checkInToken}), ...(soterResult && {soterInfo: {...soterInfo}})
-    }
 }
 
 function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {

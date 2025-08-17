@@ -17,7 +17,6 @@
     "t-popup": "tdesign-miniprogram/popup/popup",
     "t-pull-down-refresh": "tdesign-miniprogram/pull-down-refresh/pull-down-refresh",
     "t-result": "tdesign-miniprogram/result/result",
-    "t-stepper": "tdesign-miniprogram/stepper/stepper",
     "t-tag": "tdesign-miniprogram/tag/tag"
   }
 }

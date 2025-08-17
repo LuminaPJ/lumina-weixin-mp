@@ -76,6 +76,13 @@ export async function getCheckInTaskInfoPromise(jwt: string, taskId: string): Pr
     })
 }
 
+export interface VoteOption {
+    optionName: string,
+    sortOrder: number,
+    optionDescription?: string | null,
+    voteCount?: number | null
+}
+
 export const CHECK_IN = "CHECK_IN"
 export const LOTTERY = "LOTTERY"
 export const VOTE = "VOTE"

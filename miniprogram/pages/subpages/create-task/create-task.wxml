@@ -43,9 +43,39 @@
     <view class="pt-32rpx"
           wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedTaskType.value==='CHECK_IN'}}">
         <t-cell-group theme="card">
-            <t-cell arrow bind:click="startCheckInSetting"
-                    hover note="{{isCheckInTokenEnabled&&checkInTokenValue?'验证码签到':'普通签到'}}"
+            <t-cell arrow bind:click="startCheckInSetting" hover
+                    note="{{isCheckInTokenEnabled&&checkInTokenValue?'验证码签到':'普通签到'}}"
                     title="签到任务配置"/>
+        </t-cell-group>
+    </view>
+
+
+    <view wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedTaskType.value==='VOTE'}}">
+        <view class="pt-32rpx" wx:for="{{voteOptions}}" wx:key="sortOrder">
+            <t-cell-group theme="card">
+                <t-input bind:change="onChangeVoteOptionName" borderless="{{false}}" confirm-type="next"
+                         cursor-spacing="30" data-index="{{index}}" label="选项名" placeholder="必填"
+                         tips="{{'第 '+item.sortOrder+' 个选项'}}" value="{{item.optionName}}"/>
+                <t-input bind:change="onChangeVoteOptionDescription" borderless="{{true}}" confirm-type="done"
+                         cursor-spacing="30" data-index="{{index}}" label="选项描述" placeholder="选填"
+                         value="{{item.optionDescription}}"/>
+            </t-cell-group>
+        </view>
+        <view class="pt-32rpx mx-32rpx flex">
+            <t-button bind:tap="removeVoteOption" block class="mr-16rpx"
+                      disabled="{{isTaskCreating||voteOptions.length<=2}}" icon="minus-circle" size="large"
+                      theme="light" variant="outline">减少选项
+            </t-button>
+            <t-button bind:tap="addVoteOption" block class="ml-16rpx" disabled="{{isTaskCreating}}"
+                      icon="add-circle" size="large" theme="light" variant="outline">增加选项
+            </t-button>
+        </view>
+    </view>
+
+    <view class="pt-32rpx"
+          wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedTaskType.value==='VOTE'}}">
+        <t-cell-group theme="card">
+            <t-cell arrow bind:click="startVoteSetting" hover title="投票任务配置"/>
         </t-cell-group>
     </view>
 
@@ -63,8 +93,7 @@
     </view>
 
     <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0}}">
-        <t-button bind:tap="createTask" block
-                  disabled="{{isTaskCreating}}"
+        <t-button bind:tap="createTask" block disabled="{{isTaskCreating}}"
                   icon="{{isSoterEnabled&&!isTaskCreating?'secured':''}}" loading="{{isTaskCreating}}" size="large"
                   theme="primary">创建
         </t-button>
@@ -108,8 +137,9 @@
             <view class="flex-1 text-center font-600 text-36rpx">签到任务配置</view>
         </view>
         <view>
-            <t-cell description="开启后，团体成员在执行签到任务时需提供与下方一致的验证码" hover
-                    title="签到时需验证码" bordered="{{isCheckInTokenEnabled}}">
+            <t-cell bordered="{{isCheckInTokenEnabled}}"
+                    description="开启后，团体成员在执行签到任务时需提供与下方一致的验证码"
+                    hover title="签到时需验证码">
                 <t-switch bind:change="switchCheckInToken" slot="note" value="{{isCheckInTokenEnabled}}"/>
             </t-cell>
             <t-input bind:change="onChangeCheckInToken" borderless="{{true}}" cursor-spacing="30" label="验证码"
@@ -118,6 +148,33 @@
         </view>
         <view class="m-32rpx flex">
             <t-button bind:tap="closeSetCheckInSetting" block size="large" theme="primary">确定
+            </t-button>
+        </view>
+    </view>
+</t-popup>
+
+<t-popup bind:visible-change="setVoteSettingPopupVisibleChange" placement="bottom"
+         visible="{{setVoteSettingPopupVisible}}">
+    <view class="block">
+        <view class="flex items-center h-116rpx">
+            <view class="flex-1 text-center font-600 text-36rpx">签到任务配置</view>
+        </view>
+        <view>
+            <t-cell-group>
+                <t-cell description="开启后，团体成员在结束时间之前可撤回投票重投" hover title="投票可撤回">
+                    <t-switch bind:change="switchVoteCanRecall" slot="note" value="{{isVoteCanRecallEnabled}}"/>
+                </t-cell>
+                <t-cell description="开启后，仅任务创建者可查看投票结果" hover title="结果不公开">
+                    <t-switch bind:change="switchVoteResultPublic" slot="note" value="{{isVoteResultPublicDisabled}}"/>
+                </t-cell>
+                <t-cell hover title="最大多选数">
+                    <t-stepper bind:change="onChangeMaxChoice" max="{{voteOptions.length}}" min="1" slot="note"
+                               theme="filled" value="{{maxChoiceValue}}"/>
+                </t-cell>
+            </t-cell-group>
+        </view>
+        <view class="m-32rpx flex">
+            <t-button bind:tap="closeSetVoteSetting" block size="large" theme="primary">确定
             </t-button>
         </view>
     </view>
