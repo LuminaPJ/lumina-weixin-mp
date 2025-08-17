@@ -22,6 +22,8 @@ module.exports = {
         return approvalType === 'TASK_CREATION' ? '创建任务' : approvalType === 'GROUP_JOIN' ? '加入团体' : approvalType === 'TASK_EXPAND_GROUP' ? '扩展任务团体' : '';
     }, semanticsApprovalStatus: function (approvalStatus) {
         return approvalStatus === 'PENDING' ? '待审批' : approvalStatus === 'APPROVED' ? '已通过' : approvalStatus === 'AUTO_PASSED' ? '自动通过' : approvalStatus === 'REJECTED' ? '已拒绝' : approvalStatus === 'WITHDRAWN' ? '已撤回' : '';
+    }, themedApprovalStatus: function (taskType) {
+        return taskType === 'REJECTED' || taskType === 'WITHDRAWN' ? 'default' : taskType === 'PENDING' ? 'warning' : taskType === 'AUTO_PASSED' ? 'primary' : taskType === 'APPROVED' ? 'success' : ''
     }, formatTime: function (dateString) {
         var date = getDate(dateString);
         var year = date.getFullYear()
@@ -37,8 +39,10 @@ module.exports = {
         var now = Date.now();
         return (now - date.getTime()) / (1000 * 60 * 60 * 24) > 7;
     }, semanticsCheckInTaskStatus: function (taskStatus) {
-        return taskStatus === 'PENDING' ? '待参与' : taskStatus === 'STARTED' ? '进行中' : taskStatus === 'PARTICIPATED' ? '已参与' : taskStatus === 'NOT_REQUIRED' ? '无需参与' : taskStatus === 'EXPIRED' ? '已过期' : '';
+        return taskStatus === 'MARK_AS_PARTICIPANT' ? '标记为已参与' : taskStatus === 'MARK_AS_NOT_PARTICIPANT' ? '标记为未参与' : taskStatus === 'MARK_AS_PENDING' ? '标记为待定' : taskStatus === 'PENDING' ? '待参与' : taskStatus === 'STARTED' ? '进行中' : taskStatus === 'PARTICIPATED' ? '已参与' : taskStatus === 'NOT_REQUIRED' ? '无需参与' : taskStatus === 'EXPIRED' ? '已过期' : '';
+    }, themedCheckInTaskStatus: function (taskStatus) {
+        return taskStatus === 'MARK_AS_NOT_PARTICIPANT' ? 'danger' : taskStatus === 'NOT_REQUIRED' || taskStatus === 'EXPIRED' ? 'default' : taskStatus === 'PENDING' || taskStatus === 'MARK_AS_PENDING' ? 'warning' : taskStatus === 'PARTICIPATED' || taskStatus === 'MARK_AS_PARTICIPANT' ? 'success' : ''
     }, semanticsCheckInTaskType: function (taskType) {
         return taskType === 'TOKEN' ? '验证码签到' : taskType === 'ORDINARY' ? '普通签到' : '';
-    },
+    }
 };

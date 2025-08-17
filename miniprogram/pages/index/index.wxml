@@ -30,9 +30,7 @@
                         hover
                         left-icon="{{item.taskType==='CHECK_IN'?'calendar-2':item.taskType==='VOTE'?'chart-bar':item.taskType==='LOTTERY'?'gift':''}}"
                         title="{{item.taskName}}">
-                    <t-tag slot="note"
-                           theme="{{item.status==='NOT_REQUIRED'||item.status==='EXPIRED'?'default':item.status==='PENDING'?'warning':item.status==='PARTICIPATED'?'success':''}}"
-                           variant="light">
+                    <t-tag slot="note" theme="{{utils.themedCheckInTaskStatus(item.status)}}" variant="light">
                         {{utils.semanticsCheckInTaskStatus(item.status)}}
                     </t-tag>
                 </t-cell>

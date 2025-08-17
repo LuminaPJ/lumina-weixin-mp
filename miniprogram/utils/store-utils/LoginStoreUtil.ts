@@ -1,5 +1,5 @@
 import {getWeixinStorageSyncWithDefault, getWeixinStorageWithDefault} from '../WeixinStorageUtil';
-import {isNullOrEmptyOrUndefined} from "../CommonUtil";
+import {ErrorResponse, isNullOrEmptyOrUndefined} from "../CommonUtil";
 import {LUMINA_SERVER_HOST} from "../../env";
 
 export const EMPTY_JWT = 'Empty JSON Web Token'
@@ -79,12 +79,15 @@ async function luminaLoginRequestPromise(): Promise<string> {
             method: 'POST',
             data: JSON.stringify({code: weixinLoginCode}),
             success: (res) => {
-                if (typeof res.data === 'string') {
-                    const responseData = JSON.parse(res.data);
-                    if (responseData && typeof responseData === 'object' && 'jwt' in responseData) {
-                        resolve(responseData.jwt);
-                    } else reject(new Error('服务端未返回 JWT'));
-                } else if ('jwt' in res.data) resolve(res.data.jwt); else reject(new Error('服务端未返回 JWT'));
+                if (res.statusCode === 200) {
+                    if (typeof res.data === 'string') {
+                        const responseData = JSON.parse(res.data);
+                        if (responseData && typeof responseData === 'object' && 'jwt' in responseData) resolve(responseData.jwt); else reject(new Error('服务端未返回 JWT'));
+                    } else if ('jwt' in res.data) resolve(res.data.jwt); else reject(new Error('服务端未返回 JWT'));
+                } else {
+                    const resData = res.data as ErrorResponse
+                    reject(new Error(resData.message))
+                }
             },
             fail: reject
         })
@@ -125,8 +128,13 @@ async function getIsUserSoterEnabledPromise(jwt: string): Promise<boolean> {
             url: 'https://' + LUMINA_SERVER_HOST + '/soter/check', header: {
                 Authorization: 'Bearer ' + jwt
             }, success: (res) => {
-                const resData = res.data as IsUserSoterEnabledResponse;
-                resolve(resData.isUserSoterEnabled);
+                if (res.statusCode === 200) {
+                    const resData = res.data as IsUserSoterEnabledResponse;
+                    resolve(resData.isUserSoterEnabled);
+                } else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
             }, fail: reject
         })
     })

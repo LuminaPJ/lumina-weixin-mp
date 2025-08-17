@@ -41,9 +41,7 @@
                         description="{{utils.formatTime(item.createdAt)}}" hover
                         left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
                         title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">
-                    <t-tag slot="note"
-                           theme="{{item.status==='REJECTED'||item.status==='WITHDRAWN'?'default':item.status==='PENDING'?'warning':item.status==='AUTO_PASSED'?'primary':item.status==='APPROVED'?'success':''}}"
-                           variant="light">
+                    <t-tag slot="note" theme="{{utils.themedApprovalStatus(item.status)}}" variant="light">
                         {{utils.semanticsApprovalStatus(item.status)}}
                     </t-tag>
                 </t-cell>
@@ -63,9 +61,7 @@
                         description="{{utils.formatTime(item.createdAt)}}" hover
                         left-icon="{{item.approvalType==='TASK_CREATION'?'task-add':item.approvalType==='GROUP_JOIN'?'usergroup-add':item.approvalType==='TASK_EXPAND_GROUP'?'':''}}"
                         title="{{utils.semanticsApprovalType(item.approvalType)+'请求'}}">
-                    <t-tag slot="note"
-                           theme="{{item.status==='REJECTED'||item.status==='WITHDRAWN'?'default':item.status==='PENDING'?'warning':item.status==='AUTO_PASSED'?'primary':item.status==='APPROVED'?'success':''}}"
-                           variant="light">
+                    <t-tag slot="note" theme="{{utils.themedApprovalStatus(item.status)}}" variant="light">
                         {{utils.semanticsApprovalStatus(item.status)}}
                     </t-tag>
                 </t-cell>

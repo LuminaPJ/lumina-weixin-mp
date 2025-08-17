@@ -31,9 +31,7 @@
                 <t-cell hover note="{{selectedTask.taskName}}" title="任务名"/>
                 <t-cell hover note="{{utils.semanticsCheckInTaskType(selectedTask.checkInType)}}" title="任务类型"/>
                 <t-cell hover title="任务状态">
-                    <t-tag slot="note"
-                           theme="{{selectedTask.status==='NOT_REQUIRED'||selectedTask.status==='EXPIRED'?'default':selectedTask.status==='PENDING'?'warning':selectedTask.status==='PARTICIPATED'?'success':''}}"
-                           variant="light">
+                    <t-tag slot="note" theme="{{utils.themedCheckInTaskStatus(selectedTask.status)}}" variant="light">
                         {{utils.semanticsCheckInTaskStatus(selectedTask.status)}}
                     </t-tag>
                 </t-cell>

@@ -11,8 +11,7 @@
 
 <t-pull-down-refresh bind:refresh="onRefresh" enable-passive enhanced
                      loadingTexts="{{['下拉刷新', '松手刷新', '', '加载完成']}}"
-                     scroll-with-animation scroll-y="{{true}}"
-                     show-scrollbar="{{false}}"
+                     scroll-with-animation scroll-y="{{true}}" show-scrollbar="{{false}}"
                      style="height: {{scrollHeightPx-44+safeAreaBottomPx}}px;" usingCustomNavbar
                      value="{{isRefreshing}}">
     <view class="pt-96rpx mx-32rpx" wx:if="{{!isRefreshing&&!utils.isLogin(jwt)}}">
@@ -32,8 +31,7 @@
                 <t-cell hover note="{{utils.formatTime(selectedJoinGroupApproval.createdAt)}}" title="创建时间"/>
                 <t-cell description="{{selectedJoinGroupApproval.status==='AUTO_PASSED'?'此用户提供了有效的团体预授权凭证':''}}"
                         hover title="审批状态">
-                    <t-tag slot="note"
-                           theme="{{selectedJoinGroupApproval.status==='REJECTED'||selectedJoinGroupApproval.status==='WITHDRAWN'?'default':selectedJoinGroupApproval.status==='PENDING'?'warning':selectedJoinGroupApproval.status==='AUTO_PASSED'?'primary':selectedJoinGroupApproval.status==='APPROVED'?'success':''}}"
+                    <t-tag slot="note" theme="{{utils.themedApprovalStatus(selectedJoinGroupApproval.status)}}"
                            variant="light">
                         {{utils.semanticsApprovalStatus(selectedJoinGroupApproval.status)}}
                     </t-tag>
