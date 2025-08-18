@@ -109,6 +109,11 @@ Page<IData, StoreInstance>({
                     url: '/pages/index/selected-task/check-in/check-in?selectedTaskId=' + selectedTaskId
                 });
                 break;
+            case 'VOTE':
+                wx.navigateTo({
+                    url: '/pages/index/selected-task/vote/vote?selectedTaskId=' + selectedTaskId
+                });
+                break;
             default:
                 break;
         }

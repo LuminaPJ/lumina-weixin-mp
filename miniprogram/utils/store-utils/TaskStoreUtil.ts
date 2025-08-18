@@ -76,11 +76,47 @@ export async function getCheckInTaskInfoPromise(jwt: string, taskId: string): Pr
     })
 }
 
+export interface VoteTaskInfo {
+    taskId: string,
+    groupId: string,
+    groupName: string | null,
+    taskName: string,
+    voteMaxSelectable: number,
+    voteCanRecall: boolean,
+    isVoteResultPublic: boolean,
+    voteTaskOptions: VoteOption[],
+    description: string | null,
+    endTime: string,
+    status: string,
+    createdAt: string,
+    creatorId: string,
+    creatorName: string | null
+}
+
 export interface VoteOption {
     optionName: string,
     sortOrder: number,
+    isUserSelected?: boolean,
     optionDescription?: string | null,
     voteCount?: number | null
+}
+
+export async function getVoteTaskInfoPromise(jwt: string, taskId: string): Promise<VoteTaskInfo | null> {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: 'https://' + LUMINA_SERVER_HOST + '/task/vote/' + taskId, header: {
+                Authorization: 'Bearer ' + jwt
+            }, success: (res) => {
+                if (res.statusCode === 200) {
+                    const resData = res.data as VoteTaskInfo
+                    resolve(resData);
+                } else {
+                    const resData = res.data as ErrorResponse;
+                    reject(new Error(resData.message))
+                }
+            }, fail: reject
+        })
+    })
 }
 
 export const CHECK_IN = "CHECK_IN"

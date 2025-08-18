@@ -21,12 +21,11 @@ interface IData {
     isGroupAdmin: boolean
     countDownTime: number
     checkInTokenValue: string
-    selectedCheckInId: string,
 }
 
 Page<IData, StoreInstance>({
     data: {
-        EMPTY_JWT: EMPTY_JWT, isRefreshing: true, isSelectedNotFound: false, selectedCheckInId: '', isGroupAdmin: false
+        EMPTY_JWT: EMPTY_JWT, isRefreshing: true, isSelectedNotFound: false, isGroupAdmin: false
     }, async onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store,
@@ -42,6 +41,7 @@ Page<IData, StoreInstance>({
         try {
             await loginStoreUtil.initLoginStore(this)
             if (isLogin(this.getJWT())) {
+                await taskStoreUtil.checkTaskStatus(this)
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
                 await getIsUserSoterEnabled(this)
@@ -76,6 +76,7 @@ Page<IData, StoreInstance>({
         try {
             await loginStoreUtil.initLoginStore(this)
             if (isLogin(this.getJWT())) {
+                await taskStoreUtil.checkTaskStatus(this)
                 await userInfoStoreUtil.checkUserInfoStatus(this)
                 await groupStoreUtil.checkGroupStatus(this)
                 await getIsUserSoterEnabled(this)
@@ -110,6 +111,7 @@ Page<IData, StoreInstance>({
             const checkInTokenValue = checkInType === 'TOKEN' ? this.data.checkInTokenValue : null
             await startCheckInPromise(this.getJWT(), this.data.selectedTaskId, checkInTokenValue)
             normalToast(this, "签到成功")
+            await taskStoreUtil.checkTaskStatus(this)
             if (!this.data.isSelectedNotFound) await getSelectedCheckInTaskInfo(this, this.data.selectedTaskId)
         } catch (e: any) {
             this.setData({

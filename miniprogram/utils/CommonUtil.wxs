@@ -44,5 +44,13 @@ module.exports = {
         return taskStatus === 'MARK_AS_NOT_PARTICIPANT' ? 'danger' : taskStatus === 'NOT_REQUIRED' || taskStatus === 'EXPIRED' ? 'default' : taskStatus === 'PENDING' || taskStatus === 'MARK_AS_PENDING' ? 'warning' : taskStatus === 'PARTICIPATED' || taskStatus === 'MARK_AS_PARTICIPANT' ? 'success' : ''
     }, semanticsCheckInTaskType: function (taskType) {
         return taskType === 'TOKEN' ? '验证码签到' : taskType === 'ORDINARY' ? '普通签到' : '';
+    }, semanticsTaskStatus: function (taskStatus) {
+        return taskStatus === 'PENDING' ? '待参与' : taskStatus === 'STARTED' ? '进行中' : taskStatus === 'PARTICIPATED' ? '已参与' : taskStatus === 'NOT_REQUIRED' ? '无需参与' : taskStatus === 'EXPIRED' ? '已过期' : '';
+    }, themedTaskStatus: function (taskStatus) {
+        return taskStatus === 'NOT_REQUIRED' || taskStatus === 'EXPIRED' ? 'default' : taskStatus === 'PENDING' ? 'warning' : taskStatus === 'PARTICIPATED' ? 'success' : ''
+    }, toFixed2: function (num) {
+        return Math.round(num * 100) / 100;
+    }, isVoteResultShow: function (status, isVoteResultPublic) {
+        return (status === 'PARTICIPATED' || status === 'EXPIRED') && isVoteResultPublic
     }
 };

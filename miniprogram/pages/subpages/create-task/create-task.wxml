@@ -75,7 +75,9 @@
     <view class="pt-32rpx"
           wx:if="{{utils.isLogin(jwt)&&administratedGroup.length!==0&&selectedTaskType.value==='VOTE'}}">
         <t-cell-group theme="card">
-            <t-cell arrow bind:click="startVoteSetting" hover title="投票任务配置"/>
+            <t-cell arrow bind:click="startVoteSetting" hover
+                    note="{{maxChoiceValue===1?'单选投票':'多选，最多选 '+maxChoiceValue+' 个'}}"
+                    title="投票任务配置"/>
         </t-cell-group>
     </view>
 
