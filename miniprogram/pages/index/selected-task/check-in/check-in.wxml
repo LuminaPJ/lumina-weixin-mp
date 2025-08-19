@@ -25,7 +25,7 @@
                   title="参数缺失"/>
     </view>
 
-    <view wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
+    <view wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&selectedTask}}">
         <view class="pt-32rpx">
             <t-cell-group theme="card">
                 <t-cell hover note="{{selectedTask.taskName}}" title="任务名"/>
@@ -79,7 +79,7 @@
         </view>
     </view>
 
-    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
+    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&selectedTask}}">
         <t-button bind:tap="startCheckIn" block
                   disabled="{{(selectedTask.checkInType==='TOKEN'&&!checkInTokenValue)||selectedTask.status!=='PENDING'||isCheckInStarting}}"
                   loading="{{isCheckInStarting}}" size="large"

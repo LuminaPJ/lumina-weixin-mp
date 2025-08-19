@@ -25,7 +25,7 @@
                   title="参数缺失"/>
     </view>
 
-    <view wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
+    <view wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&selectedTask}}">
         <view class="pt-32rpx">
             <t-cell-group theme="card">
                 <t-cell hover note="{{selectedTask.taskName}}" title="任务名"/>
@@ -96,17 +96,17 @@
 
     </view>
 
-    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound}}">
+    <view class="pt-32rpx mx-32rpx flex" wx:if="{{utils.isLogin(jwt)&&!isSelectedNotFound&&selectedTask}}">
         <t-button bind:tap="startVote" block
                   disabled="{{selectedVoteOptionsCache.length===0||selectedTask.status!=='PENDING'||isVoteStarting}}"
-                  icon="{{isSoterEnabled&&!isVoteStarting?'secured':''}}" loading="{{isVoteStarting}}" size="large"
-                  theme="primary">
+                  icon="{{(selectedTask.status==='PENDING'&&isSoterEnabled&&!isVoteStarting)?'secured':''}}"
+                  loading="{{isVoteStarting}}" size="large" theme="primary">
             {{selectedTask.status === 'PENDING' ? (selectedVoteOptionsCache.length === 0 ? '需选择投票选项' : '执行投票') : selectedTask.status === 'EXPIRED' ? '投票已结束' : selectedTask.status === 'NOT_REQUIRED' ? '您无需参与' : selectedTask.status === 'PARTICIPATED' ? '已成功投票' : ''}}
         </t-button>
     </view>
 
     <view class="pt-32rpx mx-32rpx flex"
-          wx:if="{{utils.isLogin(jwt)&&selectedTask.voteCanRecall&&selectedTask.status==='PARTICIPATED'&&!isSelectedNotFound}}">
+          wx:if="{{utils.isLogin(jwt)&&selectedTask.voteCanRecall&&selectedTask.status==='PARTICIPATED'&&!isSelectedNotFound&&selectedTask}}">
         <t-button bind:tap="recallVote" block disabled="{{selectedTask.status!=='PARTICIPATED'||isVoteRecalling}}"
                   icon="{{isSoterEnabled&&!isVoteRecalling?'secured':''}}"
                   loading="{{isVoteRecalling}}" size="large" theme="light" variant="outline">撤回投票
