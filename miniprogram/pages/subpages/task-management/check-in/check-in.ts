@@ -51,9 +51,7 @@ Page<IData, StoreInstance>({
             actions: [...loginStoreUtil.storeBinding.actions, ...userInfoStoreUtil.storeBinding.actions, ...groupStoreUtil.storeBinding.actions, ...taskStoreUtil.storeBinding.actions]
         });
         this.setData({
-            scrollHeightPx: util.getHeightPx(),
-            safeAreaBottomPx: util.getSafeAreaBottomPx(),
-            isRefreshing: true
+            scrollHeightPx: util.getHeightPx(), safeAreaBottomPx: util.getSafeAreaBottomPx(), isRefreshing: true
         })
         try {
             await loginStoreUtil.initLoginStore(this)
@@ -260,43 +258,8 @@ async function getSelectedCheckInTaskManagerInfo(that: WechatMiniprogram.Page.In
     }); else {
         const countDownTime = new Date(selectCheckInTaskManagerInfo.endTime).getTime() - Date.now()
         const targetGroupInfo: GroupInfo | undefined = that.getGroupInfo().find((groupInfo: GroupInfo) => groupInfo.groupId === selectCheckInTaskManagerInfo.groupId)
-        const expiredUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === EXPIRED).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const pendingUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === PENDING).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const markAsNotParticipantUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === MARK_AS_NOT_PARTICIPANT).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const markAsPendingUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === MARK_AS_PENDING).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const markAsParticipantUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === MARK_AS_PARTICIPANT).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const participatedUserList = selectCheckInTaskManagerInfo.memberList.filter((memberInfo: CheckInTaskUserStatusInfo) => memberInfo.status === PARTICIPATED).sort((a, b) => {
-            if (a.participatedAt === null && b.participatedAt === null) return 0;
-            if (a.participatedAt === null) return -1;
-            if (b.participatedAt === null) return 1;
-            return new Date(b.participatedAt).getTime() - new Date(a.participatedAt).getTime();
-        });
-        const allUserList = [...expiredUserList, ...pendingUserList, ...markAsNotParticipantUserList, ...markAsPendingUserList, ...markAsParticipantUserList, ...participatedUserList]
+        const orderedStatuses = [EXPIRED, PENDING, MARK_AS_NOT_PARTICIPANT, MARK_AS_PENDING, MARK_AS_PARTICIPANT, PARTICIPATED]
+        const allUserList = groupAndSort(selectCheckInTaskManagerInfo.memberList, orderedStatuses)
         let newSelectCheckInTaskManagerInfo = selectCheckInTaskManagerInfo
         newSelectCheckInTaskManagerInfo.memberList = allUserList
         if (targetGroupInfo) that.setData({
@@ -307,6 +270,25 @@ async function getSelectedCheckInTaskManagerInfo(that: WechatMiniprogram.Page.In
             selectedTask: newSelectCheckInTaskManagerInfo
         })
     }
+}
+
+function groupAndSort(list: CheckInTaskUserStatusInfo[], statuses: string[]): CheckInTaskUserStatusInfo[] {
+    const groups = new Map<string, CheckInTaskUserStatusInfo[]>();
+
+    list.forEach(user => {
+        const group = groups.get(user.status) || [];
+        group.push(user);
+        groups.set(user.status, group);
+    });
+
+    return statuses.flatMap(status => (groups.get(status) || []).sort(byParticipatedAt));
+}
+
+function byParticipatedAt(a: CheckInTaskUserStatusInfo, b: CheckInTaskUserStatusInfo) {
+    if (!a.participatedAt && !b.participatedAt) return 0
+    if (!a.participatedAt) return -1
+    if (!b.participatedAt) return 1
+    return +new Date(b.participatedAt) - +new Date(a.participatedAt)
 }
 
 function normalToast(that: WechatMiniprogram.Page.TrivialInstance, content: string) {
