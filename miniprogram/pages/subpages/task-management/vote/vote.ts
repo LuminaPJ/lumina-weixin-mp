@@ -122,7 +122,7 @@ Page<IData, StoreInstance>({
                 optionsSelectedUserVisible: true,
                 clickedOptionName: clickedOptionName,
                 clickedUserList: clickedOption?.voteParticipants ?? [],
-                clickedOptionDescription: clickedOption?.optionDescription ?? undefined
+                clickedOptionDescription: clickedOption?.optionDescription ?? null
             })
         }
     }

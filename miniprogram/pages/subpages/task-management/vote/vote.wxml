@@ -46,7 +46,7 @@
     <view style="padding-bottom: {{safeAreaBottomPx}}px;"/>
 </t-pull-down-refresh>
 
-<t-popup bind:visible-change="onOptionsSelectedUserChange" close-on-overlay-click="{{false}}" placement="bottom"
+<t-popup bind:visible-change="onOptionsSelectedUserChange" close-on-overlay-click placement="bottom"
          visible="{{optionsSelectedUserVisible}}">
     <view class="block">
         <view class="flex items-center h-116rpx">
@@ -56,11 +56,11 @@
                      style="height: 40vh;">
             <t-cell-group>
                 <t-cell hover
-                        title="{{clickedOptionName+((clickedVoteParticipants.length)?'（'+clickedVoteParticipants.length+' 人选择）':'')}}"
+                        title="{{clickedOptionName+((clickedUserList.length)?'（'+clickedUserList.length+' 人选择）':'')}}"
                         wx:if="{{!isClickedNonParticipant}}">
                     <view slot="description">
-                        {{clickedOptionDescription}}
-                        <t-progress percentage="{{utils.toFixed2(clickedVoteParticipants.length*100/participantCount)}}"
+                        {{(clickedOptionDescription && clickedOptionDescription !== null) ? clickedOptionDescription : ''}}
+                        <t-progress percentage="{{utils.toFixed2(clickedUserList.length*100/participantCount)}}"
                                     style="margin-top: 12rpx;font-family: TCloudNumber, sans-serif;"
                                     theme="plump"/>
                     </view>
