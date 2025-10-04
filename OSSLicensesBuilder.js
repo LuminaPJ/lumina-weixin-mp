@@ -100,6 +100,10 @@ function buildLicenses(outputFile, customFormat, customPath, startPath = '') {
         if (minifiedResultLicenseText.error) throw minifiedResultLicenseText.error;
         fs.writeFileSync(jsFileText, minifiedResultLicenseText.code, {encoding: 'utf8', flag: 'w', mode: 0o644});
 
+        const tscCommand = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFile} --outDir ${outputDir}`;
+        shell.exec(tscCommand);
+        const tscCommandText = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFileText} --outDir ${outputDir}`;
+        shell.exec(tscCommandText);
     } finally {
         if (fs.existsSync(jsonFile)) shell.rm('-f', jsonFile);
     }
@@ -107,11 +111,15 @@ function buildLicenses(outputFile, customFormat, customPath, startPath = '') {
 
 function main() {
     if (!shell.which('license-checker-rseidelsohn')) {
-        console.error('请先安装 license-checker-rseidelsohn: yarn add license-checker-rseidelsohn');
+        console.error('请先安装 license-checker-rseidelsohn: yarn add --dev license-checker-rseidelsohn');
         process.exit(1);
     }
     if (!shell.which('json5')) {
-        console.error('请先安装 json5: yarn add json5');
+        console.error('请先安装 json5: yarn add --dev json5');
+        process.exit(1);
+    }
+    if (!shell.which('tsc')) {
+        console.error('请先安装 TypeScript: yarn add --dev typescript');
         process.exit(1);
     }
     const configPath = path.join(__dirname, 'OSSLicensesBuilderConfig.json5');

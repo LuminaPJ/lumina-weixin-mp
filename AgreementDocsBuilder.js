@@ -25,6 +25,7 @@ const path = require('path');
 const marked = require('marked');
 const uglifyJS = require('uglify-js');
 const JSON5 = require('json5');
+const shell = require('shelljs');
 
 marked.setOptions({
     gfm: true, breaks: true,
@@ -75,3 +76,6 @@ if (minifiedResult.error) {
 
 const outputFilePath = path.join(targetDir, 'AgreementDocsDist.js');
 fs.writeFileSync(outputFilePath, minifiedResult.code, 'utf-8');
+
+const tscCommand = `npx tsc --declaration --emitDeclarationOnly --allowJs ${outputFilePath} --outDir ${targetDir}`;
+shell.exec(tscCommand);
