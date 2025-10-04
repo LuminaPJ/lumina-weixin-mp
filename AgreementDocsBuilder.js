@@ -18,6 +18,7 @@
  * 3. 将所有文档内容打包成一个JavaScript对象模块
  * 4. 使用 uglify-js 对生成的模块进行压缩混淆
  * 5. 输出为 AgreementDocsDist.js 文件供小程序使用
+ * 6. 生成 AgreementDocsDist.d.ts 声明文件
  */
 
 const fs = require('fs');

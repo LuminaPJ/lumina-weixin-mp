@@ -17,9 +17,11 @@
 /**
  * 此文件用于为微信小程序生成开源项目许可证 JSON 信息，并通过 JavaScript `module.exports` 语句导出为 JS 对象。
  *
- * 为缩减文件大小，防止文件内存在过多重复的许可证文本，将生成两个文件：
+ * 为缩减文件大小，防止文件内存在过多重复的许可证文本，将生成四个文件：
  * - `OSSLicensesDist.js`：包含所有依赖项许可证信息的 JavaScript 文件
  * - `OSSLicensesDistText.js`：包含所有许可证文本的 JavaScript 文件
+ * - `OSSLicensesDist.d.ts`: `OSSLicensesDist.js` 的 TypeScript 声明文件
+ * - `OSSLicensesDistText.d.ts`: `OSSLicensesDistText.js` 的 TypeScript 声明文件
  *
  * `OSSLicensesDist.js` 中的子项将存在 `licenseTextHash` 字段，该字段的值为许可证文本的 SHA256 杂凑值，可在 `OSSLicensesDistText.js` 中作为键找到。
  *
@@ -53,12 +55,13 @@ function runCommand(command, args) {
  * 该函数通过执行外部命令获取项目依赖的许可证信息，并将其保存为 JSON 和 JS 文件
  * 执行完成后，会删除 JSON 文件，仅保留 JS 文件
  *
+ * @param {boolean} isTypeScript - 是否为生成的 JS 文件添加 TypeScript 定义
  * @param {string} outputFile - 输出文件的名称，不包含文件扩展名
  * @param {string} customFormat 指定输出许可证信息格式，必填
  * @param {string} customPath - 指定依赖项的自定义路径
  * @param {string} [startPath=''] - 可选参数，指定从哪个路径开始查找依赖项，默认为当前目录
  */
-function buildLicenses(outputFile, customFormat, customPath, startPath = '') {
+function buildLicenses(isTypeScript, outputFile, customFormat, customPath, startPath = '') {
     const outputDir = path.join(__dirname, customPath);
     shell.mkdir('-p', outputDir);
     const jsonFile = path.join(outputDir, `${outputFile}.json`);
@@ -100,10 +103,12 @@ function buildLicenses(outputFile, customFormat, customPath, startPath = '') {
         if (minifiedResultLicenseText.error) throw minifiedResultLicenseText.error;
         fs.writeFileSync(jsFileText, minifiedResultLicenseText.code, {encoding: 'utf8', flag: 'w', mode: 0o644});
 
-        const tscCommand = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFile} --outDir ${outputDir}`;
-        shell.exec(tscCommand);
-        const tscCommandText = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFileText} --outDir ${outputDir}`;
-        shell.exec(tscCommandText);
+        if (isTypeScript) {
+            const tscCommand = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFile} --outDir ${outputDir}`;
+            shell.exec(tscCommand);
+            const tscCommandText = `npx tsc --declaration --emitDeclarationOnly --allowJs ${jsFileText} --outDir ${outputDir}`;
+            shell.exec(tscCommandText);
+        }
     } finally {
         if (fs.existsSync(jsonFile)) shell.rm('-f', jsonFile);
     }
@@ -129,7 +134,7 @@ function main() {
     }
     try {
         const configs = JSON5.parse(fs.readFileSync(configPath, 'utf8'));
-        for (const config of configs) if (config["startPath"] === undefined) buildLicenses(config["outputFile"], config["customFormat"], config["customPath"]); else buildLicenses(config["outputFile"], config["customFormat"], config["customPath"], config["startPath"]);
+        for (const config of configs) if (config["startPath"] === undefined) buildLicenses(config["isTypeScript"], config["outputFile"], config["customFormat"], config["customPath"]); else buildLicenses(config["outputFile"], config["customFormat"], config["customPath"], config["startPath"]);
     } catch (error) {
         console.error(`构建失败: ${error.message}`);
         process.exit(1);
