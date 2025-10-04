@@ -71,7 +71,7 @@ const minifiedResult = uglifyJS.minify(jsContent, {
 });
 
 if (minifiedResult.error) {
-    console.error('压缩过程中出现错误:', minifiedResult.error);
+    console.error('压缩过程中出现错误：', minifiedResult.error);
     process.exit(1);
 }
 

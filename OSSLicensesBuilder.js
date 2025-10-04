@@ -116,33 +116,33 @@ function buildLicenses(isTypeScript, outputFile, customFormat, customPath, start
 
 function main() {
     if (!shell.which('license-checker-rseidelsohn')) {
-        console.error('请先安装 license-checker-rseidelsohn: yarn add --dev license-checker-rseidelsohn');
+        console.error('请先安装 license-checker-rseidelsohn：yarn add --dev license-checker-rseidelsohn');
         process.exit(1);
     }
     if (!shell.which('json5')) {
-        console.error('请先安装 json5: yarn add --dev json5');
+        console.error('请先安装 json5：yarn add --dev json5');
         process.exit(1);
     }
     if (!shell.which('tsc')) {
-        console.error('请先安装 TypeScript: yarn add --dev typescript');
+        console.error('请先安装 TypeScript：yarn add --dev typescript');
         process.exit(1);
     }
     const configPath = path.join(__dirname, 'OSSLicensesBuilderConfig.json5');
     if (!fs.existsSync(configPath)) {
-        console.error(`找不到配置文件: ${configPath}`);
+        console.error(`找不到配置文件：${configPath}`);
         process.exit(1);
     }
     try {
         const configs = JSON5.parse(fs.readFileSync(configPath, 'utf8'));
         for (const config of configs) if (config["startPath"] === undefined) buildLicenses(config["isTypeScript"], config["outputFile"], config["customFormat"], config["customPath"]); else buildLicenses(config["outputFile"], config["customFormat"], config["customPath"], config["startPath"]);
     } catch (error) {
-        console.error(`构建失败: ${error.message}`);
+        console.error(`构建失败：${error.message}`);
         process.exit(1);
     }
 }
 
 process.on('uncaughtException', (err) => {
-    console.error('未捕获异常:', err);
+    console.error('未捕获异常：', err);
     process.exit(1);
 });
 
