@@ -10,7 +10,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "@unocss/cli@66.5.2": {
+    "@unocss/cli@66.5.6": {
         licenses: string;
         repository: string;
         publisher: string;
@@ -21,7 +21,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "dayjs@1.11.18": {
+    "dayjs@1.11.19": {
         licenses: string;
         repository: string;
         publisher: string;
@@ -76,7 +76,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "marked@16.3.0": {
+    "marked@16.4.2": {
         licenses: string;
         repository: string;
         publisher: string;
@@ -131,7 +131,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "semver@7.7.2": {
+    "semver@7.7.3": {
         licenses: string;
         repository: string;
         publisher: string;
@@ -164,7 +164,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "tdesign-miniprogram@1.11.0-beta.2": {
+    "tdesign-miniprogram@1.11.1": {
         licenses: string;
         repository: string;
         publisher: string;
@@ -197,7 +197,7 @@ declare const _default: {
         licenseTextHash: string;
         licenseName: string;
     };
-    "unocss@66.5.2": {
+    "unocss@66.5.6": {
         licenses: string;
         repository: string;
         publisher: string;
